@@ -96,6 +96,7 @@ class DistributionTests(unittest.TestCase):
     def test_unsafe_paths_fail_before_creating_archive(self):
         cases = ['../secret', '/secret', 'C:/secret', 'a\\secret', 'a/../secret',
                  'output/report.json', '.git/config', 'presentations/notes.txt',
+                 'dev/browser/package.json',
                  'a/.env', 'a/.env.local', 'a/__pycache__/x.pyc', 'a//b',
                  'README.md\nreadme.md']
         with temporary_workspace() as directory:

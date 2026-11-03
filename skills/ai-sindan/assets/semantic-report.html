@@ -45,10 +45,10 @@ h2 { font-size: 1.75rem; line-height: 1.5; }
 h3 { font-size: 16px; }
 h4 { font-size: 15px; }
 img { max-width: 100%; }
-.shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); width: min(100%, 1600px); min-height: 100vh; margin: auto; }
-.topbar { padding: 0 8px 40px; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); width: min(100%, 1600px); min-height: 100vh; margin: auto; }
+.topbar { min-width: 0; padding: 0 0 32px; }
 .brand { min-width: 0; }
-.brand-logo { display: block; width: min(100%, 188px); height: auto; aspect-ratio: 640 / 213; object-fit: contain; background: var(--paper); padding: 6px; border-radius: 4px; }
+.brand-logo { display: block; width: 100%; height: auto; aspect-ratio: 640 / 213; object-fit: contain; background: var(--paper); padding: 3px; border-radius: 4px; }
 .brand span { display: block; font-size: 13px; color: var(--soft); margin-top: 8px; font-weight: 400; }
 .top-actions { display: flex; flex-direction: column; align-items: start; gap: 8px; font-size: 13px; margin-top: auto; padding: 28px 8px 0; }
 .quiet-button { min-height: 44px; border: 1px solid var(--control-line); border-radius: 6px; background: transparent; padding: 8px 12px; }
@@ -178,7 +178,7 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 #candidates:empty { display: none; }
 .noscript { padding: 20px; border: 1px solid var(--line); }
 
-.sidebar { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; padding: 36px 16px 24px; background: var(--accent); color: var(--surface); }
+.sidebar { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; padding: 24px 16px; background: var(--accent); color: var(--surface); }
 .sidebar a { color: var(--surface); }
 .sidebar .quiet-button { border-color: var(--soft); color: var(--surface); }
 .sidebar .quiet-button:hover { background: var(--action-hover); }
@@ -199,9 +199,9 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 }
 @media (max-width: 1000px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
-  .sidebar { grid-column: auto; grid-row: auto; position: static; height: auto; overflow: visible; padding: 20px 28px 0; display: grid; grid-template-columns: 1fr auto; gap: 16px; }
+  .sidebar { grid-column: auto; grid-row: auto; position: static; height: auto; overflow: visible; padding: 20px 28px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; }
   .topbar { padding: 0; }
-  .brand { font-size: 22px; }
+  .brand-logo { width: min(100%, 244px); }
   .brand span { display: none; }
   .top-actions { grid-column: 2; grid-row: 1; flex-direction: row; align-items: center; margin: 0; padding: 0; gap: 16px; }
   .navigation { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
@@ -213,7 +213,7 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 @media (max-width: 700px) {
   html { scroll-padding-top: 12px; }
   .sidebar { padding: 16px 16px 0; gap: 12px; }
-  .brand { font-size: 19px; }
+  .brand-logo { width: min(100%, 224px); }
   .top-actions { font-size: 12px; gap: 10px; }
   .quiet-button { padding: 8px; }
   .navigation button { min-height: 48px; font-size: 13px; padding: 10px 2px; }
@@ -260,11 +260,12 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 .summary-mode { min-height: 100vh; min-height: 100dvh; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .summary-toolbar { width: min(100%, 1280px); display: flex; align-items: center; gap: 16px; }
 .summary-toolbar p { color: var(--muted); font-size: 13px; }
+.summary-hint-narrow { display: none; }
 .summary-toolbar button { flex: none; }
 .summary-sheet { position: relative; container-type: inline-size; width: min(1280px, calc(100vw - 32px), calc((100dvh - 112px) * 16 / 9)); aspect-ratio: 16 / 9; background: var(--paper); border: 1px solid var(--line); }
 .summary-content { position: absolute; inset: 0; padding: 2.5cqw 3cqw; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.6cqw; }
 .summary-brand { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; padding-bottom: 1cqw; border-bottom: 1px solid var(--line); }
-.summary-logo { display: block; width: 15cqw; height: auto; aspect-ratio: 640 / 213; object-fit: contain; }
+.summary-logo { display: block; width: 18cqw; height: auto; aspect-ratio: 640 / 213; object-fit: contain; }
 .summary-brand span { font-size: 1.15cqw; color: var(--muted); }
 .summary-main { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 4cqw; min-height: 0; }
 .summary-identity { min-width: 0; text-align: center; }
@@ -289,11 +290,13 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 .summary-examples { display: flex; flex-wrap: wrap; gap: .5cqw 2.4cqw; margin-top: .5cqw; }
 .summary-examples span { font-size: 1.45cqw; font-weight: 600; color: var(--accent); }
 .summary-note { font-size: 1cqw; color: var(--muted); margin-top: 1cqw; }
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+  .summary-hint-wide { display: none; }
+  .summary-hint-narrow { display: inline; }
   .summary-toolbar { align-items: start; }
   .summary-sheet { width: 100%; aspect-ratio: auto; }
   .summary-content { position: static; padding: 24px 20px; gap: 24px; }
-  .summary-logo { width: 160px; max-width: 48%; }
+  .summary-logo { width: 220px; max-width: 55%; }
   .summary-brand span, .summary-status, .summary-axis-header h4, .summary-axis .axis-labels, .summary-bottom h3, .summary-note { font-size: 12px; }
   .summary-brand { padding-bottom: 12px; }
   .summary-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -337,7 +340,7 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 </style>
 </head>
 <body><a id="skip-content" class="skip-link" href="#report-main">本文へ移動</a><section id="summary-mode" class="summary-mode" aria-label="1画面サマリー" hidden>
-<div class="summary-toolbar"><button id="close-summary" class="quiet-button" type="button">通常表示に戻る</button><p>枠内が16:9の撮影範囲です。狭い画面では読みやすい縦表示になります。</p></div>
+<div class="summary-toolbar"><button id="close-summary" class="quiet-button" type="button">通常表示に戻る</button><p><span class="summary-hint-wide">枠内が16:9の撮影範囲です。</span><span class="summary-hint-narrow">読みやすい縦表示です。16:9で撮影する場合は画面を横に広げてください。</span></p></div>
 <article id="summary-sheet" class="summary-sheet" tabindex="-1" aria-label="診断結果のサマリー"><div class="summary-content">
 <div class="summary-brand"><img class="summary-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div>
 <div class="summary-main"><div class="summary-identity"><div id="summary-image"></div><h2 id="summary-name" class="summary-name"></h2><p id="summary-description" class="summary-description"></p><p id="summary-status" class="summary-status"></p></div>

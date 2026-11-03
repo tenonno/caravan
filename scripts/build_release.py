@@ -6,7 +6,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = 'distribution-files.txt'
-FORBIDDEN = {'output', 'presentations', '.git', '.agents', '.codex', '.aws',
+FORBIDDEN = {'output', 'presentations', 'dev', '.git', '.agents', '.codex', '.aws',
              '__pycache__', 'node_modules', '.pytest_cache', '.env'}
 
 
