@@ -44,6 +44,34 @@ class SemanticTests(unittest.TestCase):
             s.prepare(self.home,self.out)
         self.assertFalse(self.out.exists())
 
+    def test_structured_answers_keep_question_ownership_and_visible_omissions(self):
+        text=json.dumps([dict(questionItemId='q1',question='AI PROVIDED WORDING',answer='SELECTED ANSWER')])
+        items=s.attributed_messages('user',text)
+        self.assertEqual(items,[('assistant','AI PROVIDED WORDING','structured_question'),
+                                ('user','SELECTED ANSWER','structured_answer')])
+        self.assertEqual(s.attributed_messages('user','<send_user_message_question_reply>\n'+text+'\n</send_user_message_question_reply>'),items)
+        self.assertEqual(s.attributed_messages('assistant',text),[('assistant',text,'message')])
+        self.assertEqual(s.attributed_messages('user','{"answer":"ordinary JSON"}')[0][2],'message')
+        masked=s.redact('code:\n```secret code```\n> quoted instructions\nhttps://example.org/a C:/private/file\ntoken=privatevalue')
+        self.assertIn('[code omitted]',masked);self.assertIn('[quoted text omitted]',masked)
+        self.assertIn('https://example.org/a',masked);self.assertIn('[local path]',masked)
+        for value in ('secret code','quoted instructions','privatevalue','C:/private'):self.assertNotIn(value,masked)
+
+    def test_any_source_packet_exclusion_and_structured_transcript(self):
+        self.fixture(3);initial=self.prepare();key=initial['selected'][0]['session']
+        current=self.prepare(exclude_sessions=['sample:'+key])
+        self.assertEqual(len(current['selected']),2)
+        self.assertNotIn(key,[p['session'] for p in current['selected']])
+        path=self.home/'.codex/sessions/0.jsonl'
+        rows=[json.loads(line) for line in path.read_text(encoding='utf-8').splitlines()]
+        rows[1]['payload']['content'][0]['text']='<send_user_message_question_reply>\n'+json.dumps([dict(questionItemId='q1',question='AI question',answer='Human answer')])+'\n</send_user_message_question_reply>'
+        path.write_text('\n'.join(json.dumps(row) for row in rows),encoding='utf-8')
+        now=s.datetime.now(s.timezone.utc)
+        parsed=s.transcript(path,'codex',now-s.timedelta(days=1),now,s.Counter())
+        self.assertEqual([(m['role'],m['origin']) for m in parsed['messages'][:2]],
+                         [('assistant','structured_question'),('user','structured_answer')])
+        with self.assertRaises(ValueError):self.prepare(exclude_sessions=['sample:invalid'])
+
     def test_bounded_deterministic_sampling_and_cache(self):
         self.fixture(18);m=self.prepare()
         self.assertEqual(len(m['selected']),12)

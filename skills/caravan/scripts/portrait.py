@@ -81,6 +81,9 @@ def validate(review,packet):
     for item in review['tones'].values():
         if item.get('status') not in ('observed','not_observed','uncertain'):raise ValueError('Invalid tone status')
         text(item.get('reason'),300);evidence(item.get('evidence'),item['status']=='observed')
+        if item['status']=='observed' and not any(refs[v]['role']=='user' and
+                refs[v].get('origin')!='structured_answer' for v in item['evidence']):
+            raise ValueError('Tone needs human-authored wording, not only a structured answer')
     discoveries=review.get('discoveries')
     if not isinstance(discoveries,list) or len(discoveries)>2:raise ValueError('At most two discovery notes per excerpt')
     used=set()
@@ -147,6 +150,34 @@ def aggregate(packets,reviews):
                                                       relation=note['relation'],dimensions=note['dimensions']))
     return dict(schema=SCHEMA,generated_at=datetime.now(timezone.utc).isoformat(),rules=RULES,
                 axes=axes,classification=classification,tones=tones,discoveries=list(discoveries.values()),sessions=len(reviews))
+
+
+def material_checks(portrait):
+    """Leave one observed conversation out, keeping the saved rules and ratings.
+
+    This tests threshold sensitivity only, not uncertainty of human/model judgments,
+    representativeness, or statistical confidence. Never changes classification.
+    """
+    rules=portrait.get('rules')
+    if portrait.get('schema')!=SCHEMA or not rules or not all(k in rules for k in ('min_sessions','dominance')):
+        return {}
+    def state(counts):
+        n=sum(counts.get(k,0) for k in ('left','right','both'))
+        if n<rules['min_sessions']:return 'insufficient'
+        fraction=(counts.get('left',0)+.5*counts.get('both',0))/n
+        return 'left' if fraction>=rules['dominance'] else 'right' if 1-fraction>=rules['dominance'] else 'mixed'
+    result={}
+    for axis in portrait['axes']:
+        counts=axis['counts'];baseline=state(counts);changed=0;states=set();tested=0
+        if baseline!=axis['state']:continue  # Do not explain an inconsistent saved result.
+        for side in ('left','right','both'):
+            number=counts.get(side,0)
+            if not number:continue
+            smaller=dict(counts);smaller[side]-=1
+            after=state(smaller);states.add(after);tested+=number
+            if after!=baseline:changed+=number
+        result[axis['id']]=dict(changed=changed,tested=tested,states=sorted(states))
+    return result
 
 
 def finalize(output,reviews_path=None):

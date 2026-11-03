@@ -22,6 +22,14 @@
 | [0014](0014-caravan-brand.md) | Accepted | Caravanの表示名と軽量ロゴを採用し、既存の識別名・診断を維持する |
 | [0015](0015-development-browser-checks.md) | Accepted | 開発専用Playwrightで架空ページを描画し、配布には含めない |
 | [0016](0016-caravan-repository-name.md) | Accepted | 公開リポジトリ・診断スキル・配布名をCaravanへ統一する |
+| [0017](0017-no-user-packages.md) | Accepted | 利用者には追加パッケージを導入せず、標準ライブラリと既存環境で動かす |
+| [0018](0018-budgeted-context-and-materials.md) | Accepted | 予算内で時期・作業場所と文脈を広げ、材料の限界・1会話への依存を表示する |
+| [0019](0019-private-result-backup.md) | Accepted | 本人用の保存・復元を共有用プロフィールと分ける |
+| [0020](0020-bounded-analysis-validation.md) | Accepted | 合成例の意味確認と、総予算を固定した抽出比較を分ける |
+| [0021](0021-grounded-use-cases.md) | Accepted | 具体的な利用場面を入口にし、16タイプと集計共有の境界を維持する |
+| [0022](0022-specific-choices-without-quota.md) | Accepted | 条件・別案・つながった手順を根拠付きで整理し、冒頭の件数を埋めない |
+| [0023](0023-overview-before-practices.md) | Accepted | 冒頭は旅人と4軸で全体像を示し、具体的な工夫を直後に続ける |
+| [0024](0024-result-reading-structure.md) | Accepted | 結果の具体例を役割別に整理し、追加の観察と内部参照表示を分ける |
 
 0002〜0008は、この会話と実装を照合した**事後記録**です。記録日は実際の決定日を意味しません。記載した比較対象は判断を説明するため今回整理したもので、過去にすべてを実験したという意味ではありません。
 

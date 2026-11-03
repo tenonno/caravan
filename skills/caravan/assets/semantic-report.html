@@ -18,7 +18,12 @@
   --action-hover: #19544d;
   --control-line: #7c8674;
   --text-small: .8125rem;
-  --text-body: .9375rem;
+  --text-body: 1rem;
+  --type-page: 2.5rem;
+  --type-section: 2rem;
+  --type-item: 1.5rem;
+  --type-label: 1rem;
+  --type-meta: .875rem;
   --radius-panel: 12px;
   --title-font: "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif;
 }
@@ -26,24 +31,26 @@
 html { scroll-padding-top: 24px; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: var(--text-body)/1.75 "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; }
 ::selection { background: #cbded0; color: var(--ink); }
-input, select { caret-color: var(--accent); accent-color: var(--accent); }
+input, select, textarea { caret-color: var(--accent); accent-color: var(--accent); }
 input::placeholder { color: var(--muted); opacity: 1; }
 button:disabled, input:disabled, select:disabled { cursor: default; opacity: .6; }
 .skip-link { position: absolute; top: 8px; left: 16px; z-index: 10; transform: translateY(-180%); padding: 10px 16px; background: var(--surface); border: 1px solid var(--accent); }
 .skip-link:focus { transform: none; }
-button, input, select { font: inherit; color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
 button, a, summary { touch-action: manipulation; }
 button { cursor: pointer; }
 a { color: var(--accent); text-underline-offset: 4px; }
-button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
 [hidden] { display: none !important; }
-p, h1, h2, h3, h4 { margin: 0; overflow-wrap: anywhere; }
+p, h1, h2, h3, h4 { margin: 0; overflow-wrap: break-word; line-break: strict; }
+p { text-wrap: pretty; }
+h1, h2, h3, h4 { text-wrap: balance; }
 p + p { margin-top: 8px; }
 h1, h2 { font-family: var(--title-font); font-weight: 600; }
-h1 { font-size: 3rem; line-height: 1.35; letter-spacing: -.025em; text-wrap: balance; }
-h2 { font-size: 1.75rem; line-height: 1.5; }
-h3 { font-size: 16px; }
-h4 { font-size: 15px; }
+h1 { font-size: var(--type-page); line-height: 1.35; letter-spacing: -.025em; text-wrap: balance; }
+h2 { font-size: var(--type-section); line-height: 1.5; }
+h3 { font-size: var(--type-item); font-weight: 700; line-height: 1.5; }
+h4 { font-size: var(--type-label); font-weight: 700; line-height: 1.6; }
 img { max-width: 100%; }
 .shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); width: min(100%, 1600px); min-height: 100vh; margin: auto; }
 .topbar { min-width: 0; padding: 0 0 32px; }
@@ -66,12 +73,12 @@ img { max-width: 100%; }
 .result-copy { min-width: 0; padding: 0 0 32px; }
 .result-copy.has-art { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: 24px; }
 .journey-hero { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; max-width: 480px; justify-self: center; border-radius: 12px; order: 2; }
-.result-text { min-width: 0; max-width: 55ch; order: 1; }
+.result-text { min-width: 0; order: 1; }
 .result-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 24px; }
 .status { display: inline-block; color: var(--muted); font-size: var(--text-small); }
 .type-letters { display: inline-flex; gap: 6px; color: var(--accent); }
 .type-letters span { display: inline-grid; place-items: center; width: 28px; height: 32px; border: 1px solid var(--line); border-radius: 4px; font-size: 14px; font-weight: 700; }
-#description { font-size: 1rem; line-height: 1.9; margin-top: 20px; max-width: 38ch; }
+#description { font-size: 1rem; line-height: 1.9; margin-top: 20px; }
 .sample-strip { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--text-small); color: var(--muted); margin-top: 20px; font-variant-numeric: tabular-nums; }
 .sample-strip b { font-size: 14px; font-weight: 650; color: var(--ink); }
 .axis-section { padding: 24px 28px 12px; background: var(--soft); border-radius: var(--radius-panel); }
@@ -93,7 +100,7 @@ summary { cursor: pointer; width: fit-content; max-width: 100%; min-height: 36px
 summary:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 details { min-width: 0; }
 details[open] > summary { margin-bottom: 12px; }
-details p { font-size: 13px; max-width: 70ch; }
+details p { font-size: var(--text-body); }
 details p + p { margin-top: 10px; }
 .context-note { margin-top: 12px; font-size: 12px; color: var(--muted); }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin: 48px 0 24px; }
@@ -114,7 +121,7 @@ details p + p { margin-top: 10px; }
 .tone-track { height: 4px; background: #e6e2d5; border-radius: 3px; margin: 8px 0; }
 .tone-track span { display: block; height: 100%; background: #659082; border-radius: 3px; }
 .tone-row summary { font-size: 11px; color: var(--muted); font-weight: 400; }
-.panel-intro { max-width: 70ch; margin-bottom: 32px; }
+.panel-intro { margin-bottom: 32px; }
 .panel-intro p { margin-top: 12px; font-size: 14px; color: var(--muted); }
 .filterbar { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin: 24px 0; padding: 20px; background: var(--soft); border-radius: var(--radius-panel); }
 .filterbar label { min-width: 0; display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--muted); }
@@ -134,7 +141,7 @@ input[type=search] { width: 260px; }
 .lens-description { font-size: 13px; margin-bottom: 12px; }
 .example { padding: 12px; margin-top: 12px; border-radius: 5px; background: var(--paper); font-size: 13px; }
 .example-label { display: block; font-size: 11px; margin-bottom: 4px; color: var(--muted); }
-.support-details { margin: 20px 0; padding: 16px 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.support-details { margin: 20px 0; padding: 20px 0; border: 0; border-block: 1px solid var(--line); background: transparent; }
 .support-details > summary { font-size: 14px; }
 .support-details h3 { margin: 18px 0 9px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0; }
@@ -151,116 +158,301 @@ th, td { min-width: 140px; padding: 12px; text-align: left; border-bottom: 1px s
 thead { background: var(--soft); }
 .plain-list { padding-left: 20px; font-size: 13px; }
 .plain-list li { margin: 10px 0; }
-.type-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 24px 16px; }
-.type-button { min-width: 0; display: flex; flex-direction: column; align-items: stretch; text-align: left; padding: 10px; border: 1px solid transparent; border-radius: 12px; background: transparent; }
-.type-button[aria-pressed=true] { border-color: var(--accent); background: var(--soft); }
-.type-button:hover { border-color: var(--ochre); }
-.type-button:active { background: var(--hover); }
-/* The HTML dimension attributes provide a ratio; height must stay automatic as width shrinks. */
-.type-art { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; flex: none; border-radius: 6px; background: var(--paper); }
-.type-button .type-art { margin-bottom: 12px; }
-.type-button strong { display: block; font-family: var(--title-font); font-size: 18px; line-height: 1.55; margin: 4px 0 0; overflow-wrap: anywhere; }
-.type-button small { display: none; }
-.type-badge { display: block; min-height: 18px; margin-top: 6px; font-size: var(--text-small); color: var(--accent); }
-.type-detail { position: sticky; top: 24px; min-width: 0; margin: 0; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-.type-detail.with-art { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 16px; }
-.type-detail > div { min-width: 0; }
-.type-detail h3 { font-family: var(--title-font); font-weight: 600; font-size: 28px; line-height: 1.5; margin: 0 0 12px; }
-.type-detail p { font-size: 13px; }
+.type-grid { display: grid; gap: 64px; }
+.catalog-intro { margin-bottom: 24px; }
+.catalog-group { min-width: 0; padding-top: 20px; border-top: 1px solid var(--control-line); }
+.catalog-group-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 16px; }
+.catalog-group-heading h2 { font-family: var(--title-font); font-size: 26px; font-weight: 600; line-height: 1.5; }
+.catalog-common { font-size: 13px; color: var(--muted); }
+.catalog-travelers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 28px; }
+.catalog-traveler { min-width: 0; display: flex; flex-direction: column; }
+.catalog-traveler .type-art { width: 100%; max-width: 240px; margin: 0 auto 8px; }
+.catalog-traveler h3 { font-family: var(--title-font); font-size: 22px; font-weight: 600; line-height: 1.5; text-wrap: balance; }
+.catalog-traveler .type-summary { margin-top: 8px; }
+.catalog-traveler .type-meta { margin: 4px 0 0; padding: 0; min-height: 24px; }
+.catalog-traveler .type-badge { background: var(--accent); color: var(--surface); padding: 1px 8px; border-radius: 4px; }
+.catalog-differences { margin: auto 0 0; padding-top: 20px; }
+.catalog-differences .type-axis { display: block; padding: 6px 0; border-top: 1px solid var(--line); }
+.catalog-differences dd { font-size: 15px; font-weight: 600; }
+.catalog-footnote { margin-top: 40px; font-size: 13px; color: var(--muted); }
+.type-grid.legacy-catalog { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); align-items: start; gap: 16px 24px; }
+.type-entry { min-width: 0; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.type-entry.is-candidate { border-color: var(--accent); }
+.type-entry[open] { background: var(--soft); }
+.type-button { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: stretch; gap: 16px; width: 100%; min-height: 152px; padding: 16px; list-style: none; cursor: pointer; border-radius: 12px; }
+.type-button::-webkit-details-marker { display: none; }
+.type-button.no-art { grid-template-columns: minmax(0, 1fr); }
+.type-button:hover { background: var(--hover); text-decoration: none; }
+.type-entry[open] > .type-button { margin-bottom: 0; }
+.type-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.type-art { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; border-radius: 6px; align-self: center; }
+.type-copy { min-width: 0; display: flex; flex-direction: column; }
+.type-button strong { display: block; font-family: var(--title-font); font-size: 21px; font-weight: 600; line-height: 1.5; }
+.type-summary { display: block; margin-top: 6px; font-size: 15px; font-weight: 400; line-height: 1.7; color: var(--ink); }
+.type-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-top: auto; padding-top: 10px; font-size: 12px; font-weight: 400; color: var(--muted); }
+.type-badge { font-size: 12px; font-weight: 600; color: var(--accent); }
+.type-toggle { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; color: var(--accent); }
+.type-toggle::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); }
+.type-entry[open] .type-toggle::after { transform: rotate(225deg); }
+.type-close, .type-entry[open] .type-open { display: none; }
+.type-entry[open] .type-close { display: inline; }
+.type-detail { margin: 0 16px; padding: 16px 0; border-top: 1px solid var(--line); }
+.type-detail p { font-size: 15px; }
+.type-axes { margin: 0; display: grid; gap: 10px; }
+.type-axis { display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.type-axis dt { font-size: 13px; color: var(--muted); }
+.type-axis dd { margin: 0; font-size: 14px; }
 .axis-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .axis-chips span { padding: 3px 7px; background: var(--soft); border-radius: 4px; font-size: 11px; color: var(--accent); }
 .type-caption { margin-top: 12px; font-size: var(--text-small); color: var(--muted); }
 .evidence, .small, .context-note, .section-head p, .axis-labels, .axis-item summary, .tone-row summary, .filterbar label, .lens-summary small, .example-label, .type-badge, .axis-chips span, footer { font-size: var(--text-small); }
-.lens-grid, .support-details, .upload-box, .type-button, .type-detail { border-radius: var(--radius-panel); }
+.lens-grid, .upload-box, .type-button { border-radius: var(--radius-panel); }
 footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; border-top: 1px solid var(--line); padding: 24px 40px; font-size: var(--text-small); color: var(--muted); }
 .candidate { padding: 8px 0; font-size: 13px; }
 .candidate h3 { font-size: 14px; }
 #candidates:empty { display: none; }
 .noscript { padding: 20px; border: 1px solid var(--line); }
 
-.sidebar { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; padding: 24px 16px; background: var(--accent); color: var(--surface); }
-.sidebar a { color: var(--surface); }
-.sidebar .quiet-button { border-color: var(--soft); color: var(--surface); }
-.sidebar .quiet-button:hover { background: var(--action-hover); }
-.sidebar .quiet-button:active { background: var(--ink); }
-.sidebar :focus-visible { outline-color: var(--surface); }
-.sidebar .navigation button[aria-pressed=true]:hover { background: var(--hover); color: var(--ink); }
-#report-main { min-width: 0; padding: 40px; }
-.panel-intro h2 { font-size: 2.5rem; letter-spacing: -.02em; }
-.catalog-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); align-items: start; gap: 28px; }
-.type-detail .type-art { max-width: 260px; justify-self: center; }
+/* Desktop reading spread for the retained type and four-axis summary. */
+.shell { display: block; width: min(100%, 1600px); padding: 0 48px; }
+html { scroll-padding-top: 112px; }
+.sidebar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 12px 0; border-bottom: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+.topbar { padding: 0; flex: 0 0 208px; }
+.brand-logo { width: 208px; padding: 0; background: transparent; border-radius: 0; }
+.brand span { display: none; color: var(--muted); }
+.navigation { flex: 1; flex-direction: row; justify-content: center; gap: 8px; }
+.navigation button { color: var(--muted); min-height: 48px; padding: 10px 16px; border-radius: 0; font-size: 15px; border: 0; border-bottom: 2px solid transparent; }
+.navigation button[aria-pressed=true] { color: var(--accent); background: transparent; border-color: var(--accent); }
+.navigation button:hover, .navigation button[aria-pressed=true]:hover { color: var(--ink); background: var(--soft); }
+.navigation button:active { background: var(--hover); }
+.top-actions { margin: 0; padding: 0; flex-direction: row; align-items: center; gap: 16px; }
+.top-actions a { color: var(--muted); font-size: 12px; }
+.top-actions .quiet-button { padding: 8px 12px; }
+#report-main { min-width: 0; padding: 28px 0 64px; }
+footer { padding: 24px 0; }
+.result-board { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 64px; align-items: start; }
+.result-copy, .result-copy.has-art { display: flex; flex-direction: column; gap: 0; padding: 0; text-align: center; }
+.journey-hero { order: 0; width: min(100%, 320px); max-width: 320px; border-radius: 0; align-self: center; }
+.result-text { order: 1; width: 100%; }
+.result-board:has(.result-copy:not(.has-art)) { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+#description { font-size: 1rem; margin-top: 12px; line-height: 1.8; }
+.result-meta { justify-content: center; margin-top: 16px; gap: 8px 16px; }
+.type-letters { gap: 10px; }
+.type-letters span { width: auto; height: auto; border: 0; font-size: 16px; }
+.sample-strip { justify-content: center; margin-top: 12px; }
+.result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: center; margin: 20px 0 0; }
+.result-actions .quiet-button { border-color: var(--accent); color: var(--accent); padding-inline: 24px; }
+.axis-section { padding: 8px 0 0; background: transparent; border-radius: 0; }
+.axis-section > h2 { font-size: 2rem; margin-bottom: 16px; }
+.axis-list { display: block; }
+.axis-item { padding: 10px 0; border-top: 1px solid var(--line); }
+.axis-header { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 8px 20px; }
+.axis-header h3 { font-size: 14px; }
+.axis-header strong { font-family: var(--title-font); font-size: 22px; line-height: 1.4; color: var(--accent); font-weight: 600; text-align: right; }
+#portrait-axes .axis-labels { margin: 4px 0 0; font-size: 12px; line-height: 1.5; }
+#portrait-axes .axis-track { height: 6px; margin-block: 8px; }
+.axis-item details { margin-top: 4px; }
+.axis-item summary { min-height: 24px; padding: 0; font-size: 13px; color: var(--accent); }
+.axis-item details p { line-height: 1.85; }
+#view-result > .context-note { margin-top: 24px; text-align: center; }
+.section-head { margin-top: 64px; margin-bottom: 24px; align-items: start; }
+.section-head h2, .materials h2 { font-size: 2rem; }
+.section-head p { max-width: 36em; text-align: right; }
+.notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; }
+.discovery-card { border-top-color: var(--accent); padding-top: 24px; }
+.discovery-card h3 { font-size: 26px; line-height: 1.5; }
+.discovery-card .observation { font-size: 16px; color: var(--ink); }
+.discovery-card summary { font-size: 14px; }
+.tone-section { margin-top: 64px; }
+.tone-grid { gap: 0 48px; }
+.tone-row { padding: 20px 0; }
+.tone-top h3 { font-size: 18px; }
+.tone-track { margin-block: 12px; }
+.panel-intro { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.panel-intro h1 { font-size: var(--type-page); letter-spacing: -.02em; }
+.panel-intro p { font-size: 16px; }
+.filterbar { padding: 20px 0; background: transparent; border-radius: 0; border-block: 1px solid var(--line); gap: 24px; }
+.filterbar label { font-size: 14px; }
+.lens-group { font-size: var(--type-section); margin: 40px 0 16px; }
+.lens-grid { border-radius: 0; border-inline: 0; background: transparent; }
+.lens { padding: 0; }
+.lens > details > summary { padding: 18px 4px; }
+.lens-summary { font-size: 17px; }
+.lens-summary small { font-size: 14px; }
+.lens-body { padding: 8px 24px 28px; background: var(--surface); }
+.lens-description { font-size: 16px; }
+.catalog-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 24px; padding: 8px 0 24px; margin-bottom: 24px; }
+.catalog-intro p { margin: 0; }
+.type-grid { gap: 64px; }
+.catalog-group { padding-top: 16px; border-top-color: var(--accent); }
+.catalog-group-heading { margin-bottom: 16px; }
+.catalog-group-heading h2 { font-size: 32px; }
+.catalog-common { font-size: 14px; }
+.catalog-travelers { gap: 32px; }
+.catalog-traveler .type-art { max-width: 280px; margin-bottom: 20px; border-radius: 0; }
+.catalog-traveler h3 { font-size: var(--type-item); line-height: 1.45; }
+.catalog-traveler .type-summary { font-size: 16px; line-height: 1.8; }
+.catalog-traveler .type-meta { margin-top: 10px; }
+.catalog-traveler .type-badge { border-radius: 0; }
+.catalog-differences { padding-top: 24px; }
+.catalog-differences .type-axis { padding: 12px 0; }
+.catalog-differences dd { font-size: 16px; }
+.support-details > summary { font-size: 17px; }
+.upload-box { padding: 32px; background: var(--soft); border: 0; border-radius: 0; }
+#view-comparison .toolbar button { font-size: 15px; }
+#view-comparison .toolbar { gap: 16px; }
 
-@media (max-width: 1280px) {
-  .axis-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .notes-grid { grid-template-columns: 1fr; gap: 24px; }
-  .catalog-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 20px; }
-  .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  h1 { font-size: 2.5rem; }
+@media (max-width: 1200px) {
+  html { scroll-padding-top: 164px; }
+  .shell { padding-inline: 32px; }
+  .sidebar { flex-wrap: wrap; gap: 8px 24px; }
+  .topbar { flex-basis: 192px; }
+  .brand-logo { width: 192px; }
+  .navigation { order: 2; flex-basis: 100%; justify-content: start; }
+  .top-actions { margin-left: auto; }
+  .result-board { gap: 40px; }
+  .axis-header { flex-wrap: wrap; gap: 4px 16px; }
+  .axis-header strong { font-size: 20px; }
+}
+@media (min-width: 1201px) and (max-height: 800px) {
+  .journey-hero { width: 280px; }
+}
+@media (max-width: 850px) {
+  .shell { padding-inline: 24px; }
+  .result-board { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .result-copy.has-art { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr); align-items: center; gap: 24px; }
+  .journey-hero { width: 100%; }
+  .axis-header { flex-wrap: nowrap; }
+  .notes-grid { grid-template-columns: minmax(0, 1fr); }
+  .section-head p { text-align: left; }
+  .catalog-travelers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalog-intro { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
+@media (max-width: 550px) {
+  .shell { padding-inline: 20px; }
+  .topbar { flex-basis: 160px; }
+  .brand-logo { width: 160px; }
+  .top-actions { gap: 8px; flex-wrap: wrap; }
+  .top-actions a { display: none; }
+  .navigation { gap: 0; }
+  .navigation button { flex: 1; font-size: 13px; padding-inline: 4px; }
+  #report-main { padding-top: 28px; }
+  .result-copy.has-art { display: flex; gap: 16px; }
+  .journey-hero { width: 240px; }
+  .axis-section > h2, .section-head h2, .materials h2 { font-size: var(--type-section); }
+  .axis-header { flex-wrap: wrap; }
+  .axis-header strong { text-align: left; }
+  .tone-grid { grid-template-columns: minmax(0, 1fr); }
+  .panel-intro h1 { font-size: 2.25rem; }
+  .filterbar label, input[type=search] { width: 100%; }
+  .lens-summary { align-items: start; }
+  .lens-summary small { flex: 0 1 auto; }
+  .catalog-travelers { grid-template-columns: minmax(0, 1fr); }
+  .catalog-group-heading h2 { font-size: 26px; }
+  .type-button { grid-template-columns: 80px minmax(0, 1fr); gap: 12px; }
+  .type-axis { grid-template-columns: minmax(0, 1fr); }
+}
+
+.practice-intro { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+.result-text #name { font-size: 3rem; line-height: 1.35; letter-spacing: -.025em; }
+.practice-intro a { flex-shrink: 0; }
+.practice-overview { font-size: 16px; margin-bottom: 32px; }
+.practice { padding: 28px 0 40px; border-top: 1px solid var(--line); }
+.practice-heading { display: flex; gap: 16px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
+.practice-heading h3 { font-size: var(--type-item); font-weight: 700; color: var(--ink); }
+.practice-heading span { font-size: var(--type-meta); color: var(--muted); }
+.practice-flow { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 32px; margin-top: 20px; }
+.practice-flow h4, .practice-question strong { display: block; font-size: var(--type-label); color: var(--accent); margin-bottom: 6px; }
+.practice-flow p { font-size: var(--text-body); line-height: 1.85; }
+.practice-question { margin: 28px 0 24px; padding: 16px 20px; background: var(--soft); font-size: 17px; }
+.practice details { margin-top: 16px; }
+.practice details p { margin-top: 12px; }
+.practice .toolbar { margin-top: 16px; }
+.practice-other { margin-top: 16px; }
+.practice-other > h2 { font-size: var(--type-section); margin: 48px 0 24px; }
+#practice-draft { width: 100%; min-height: 340px; margin: 12px 0; padding: 16px; border: 1px solid var(--control-line); background: var(--surface); resize: vertical; }
+#practice-draft-panel { margin: 32px 0; }
+#practice-draft-panel label { font-size: 17px; font-weight: 600; }
+.materials { margin: 32px 0; padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.materials h2 { margin-bottom: 12px; }
+.materials details { margin-top: 16px; }
+.materials > p + p { margin-top: 12px; }
+.materials .toolbar { margin-top: 16px; }
+.axis-material { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.reflection { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.reflection h3 { font-size: 16px; margin-bottom: 6px; }
+/* One-screen overview; full evidence is progressively disclosed below. */
+.result-overview { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.7fr); align-items: center; gap: 48px; }
+.result-overview .journey-hero { width: 240px; max-width: 100%; }
+.result-overview .result-text #name { font-family: var(--title-font); font-size: 1.75rem; font-weight: 600; line-height: 1.45; }
+.result-overview #description { font-size: var(--text-body); margin-top: 12px; text-wrap: balance; }
+.result-overview .result-meta { margin-top: 14px; }
+.result-overview .sample-strip { margin-top: 12px; font-size: 13px; }
+.result-overview .result-actions { margin-top: 16px; }
+.result-overview .axis-section { padding-top: 0; }
+.result-overview .axis-section > h2 { margin-bottom: 12px; }
+.result-overview .axis-item { padding-block: 6px; }
+.result-page-title { margin-bottom: 20px; }
+.overview-lead { font-size: var(--text-body); margin: 8px 0 20px; }
+#practice-picks { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 24px; }
+.practice-pick { text-align: left; border: 0; background: transparent; border-radius: 0; padding: 8px 0; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.practice-pick strong { font-size: 14px; font-weight: 500; }
+.practice-pick:hover { background: var(--soft); }
+#result-details { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 32px; }
+.detail-board { display: block; }
+body:has(#view-result:not([hidden])) #report-main { padding-bottom: 16px; }
+body:has(#view-result:not([hidden])) footer { padding: 8px 0; }
+@media (min-width: 1001px) and (max-height: 800px) {
+ .result-overview .journey-hero { width: 210px; }
+ .practice-pick { padding-block: 14px; }
+ .result-overview { gap: 40px; }
 }
 @media (max-width: 1000px) {
-  .shell { grid-template-columns: minmax(0, 1fr); }
-  .sidebar { grid-column: auto; grid-row: auto; position: static; height: auto; overflow: visible; padding: 20px 28px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; }
-  .topbar { padding: 0; }
-  .brand-logo { width: min(100%, 244px); }
-  .brand span { display: none; }
-  .top-actions { grid-column: 2; grid-row: 1; flex-direction: row; align-items: center; margin: 0; padding: 0; gap: 16px; }
-  .navigation { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
-  .navigation button { text-align: center; border-radius: 6px 6px 0 0; padding: 12px 6px; }
-  #report-main { padding: 32px 28px; }
-  footer { grid-column: 1; padding: 24px 28px; }
-  .type-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (max-width: 700px) {
-  html { scroll-padding-top: 12px; }
-  .sidebar { padding: 16px 16px 0; gap: 12px; }
-  .brand-logo { width: min(100%, 224px); }
-  .top-actions { font-size: 12px; gap: 10px; }
-  .quiet-button { padding: 8px; }
-  .navigation button { min-height: 48px; font-size: 13px; padding: 10px 2px; }
-  #report-main { padding: 28px 20px; }
-  .result-copy.has-art { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .journey-hero { order: 1; max-width: 320px; }
-  .result-text { order: 2; max-width: none; text-align: center; }
-  h1 { font-size: 2.125rem; }
-  #description { margin: 16px auto 0; font-size: 15px; }
-  .result-meta, .sample-strip { justify-content: center; margin-top: 16px; }
-  .axis-section { padding: 24px 20px 12px; }
-  .axis-list { gap: 24px; }
-  .axis-header strong { font-size: 14px; }
-  .tone-grid { grid-template-columns: 1fr; }
-  .panel-intro h2 { font-size: 2rem; }
-  .catalog-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .type-detail { position: static; }
-  .type-detail.with-art { grid-template-columns: 140px minmax(0, 1fr); gap: 20px; }
-  .type-detail h3 { font-size: 23px; }
-  .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 10px; }
-  .filterbar label, input[type=search] { width: 100%; }
-  .lens { padding: 0 14px; }
-  .lens-summary { align-items: start; }
-  footer { padding: 20px; }
-}
-@media (max-width: 420px) {
-  .sidebar { grid-template-columns: minmax(0, 1fr); }
-  .top-actions { grid-column: 1; grid-row: 3; padding-bottom: 8px; }
-  .navigation { grid-row: 2; }
-  .top-actions { flex-wrap: wrap; justify-content: end; gap: 0 8px; }
-  .top-actions a { font-size: 11px; }
-  #report-main { padding-inline: 16px; }
-  .axis-list { grid-template-columns: minmax(0, 1fr); }
-  .axis-header { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
-  .type-detail.with-art { grid-template-columns: minmax(0, 1fr); }
-  .type-detail .type-art { max-width: 200px; }
-  .type-button { padding: 6px; }
-  .type-button strong { font-size: 16px; }
+ .result-overview { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+ .result-overview .result-copy.has-art { display: grid; grid-template-columns: minmax(0, .6fr) minmax(0, 1fr); gap: 24px; }
+ .result-overview .journey-hero { width: 210px; }
 }
 
+
+/* Typography roles: page / section / example / label / body / metadata. */
+.practice-intro h2, .section-head h2, .materials h2 { font-size: var(--type-section); }
+.practice-intro { margin-bottom: 12px; }
+.practice-context { display: grid; grid-template-columns: 10em minmax(0, 1fr); gap: 16px 24px; margin: 24px 0; font-size: var(--text-body); line-height: 1.85; }
+.practice-context dt { font-weight: 700; }
+.practice-context dd { margin: 0; }
+.practice-context dd .small { margin-top: 6px; color: var(--muted); }
+.steps-heading { margin-top: 28px; }
+.decision-steps { font-size: var(--text-body); line-height: 1.85; padding-left: 1.6em; margin: 8px 0 24px; }
+#type-summary { margin: 0; padding: 0; border: 0; min-width: 0; }
+#practice-section { margin-top: 0; }
+.practice-layout { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 40px; margin-top: 24px; }
+.practice-group-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+.practice-flow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 0; }
+.practice-flow > div { display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 16px; }
+.practice-flow h4 { color: var(--muted); font-weight: 500; margin: 0; }
+.practice-flow p, .practice-context { line-height: 1.75; }
+.practice-context { grid-template-columns: 8em minmax(0, 1fr); gap: 12px 16px; margin: 12px 0 0; }
+.practice-context dt { color: var(--muted); font-weight: 500; }
+.practice-reflect { border-left: 1px solid var(--line); padding-left: 32px; }
+.practice-question { margin: 0 0 24px; padding: 0; background: transparent; font-size: 16px; }
+.practice-question strong, .practice-trial strong { display: block; font-size: 14px; color: var(--accent); margin-bottom: 8px; }
+.practice-trial .small { margin-top: 12px; color: var(--muted); }
+.steps-heading { margin-top: 20px; font-size: 14px; }
+.decision-steps { margin-bottom: 0; }
+.observation-heading { margin: 48px 0 20px; font-size: var(--type-section); }
+@media (max-width: 850px) {
+ .practice-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+ .practice-reflect { border-left: 0; border-top: 1px solid var(--line); padding: 20px 0 0; }
+}
+@media (max-width: 550px) {
+ .practice-flow > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+@media (max-width: 850px) { .practice-flow { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+@media (max-width: 550px) { :root { --type-page: 2rem; --type-section: 1.75rem; --type-item: 1.375rem; } .practice-context { grid-template-columns: minmax(0, 1fr); gap: 6px; } .practice-context dd { margin-bottom: 16px; } }
+
 /* A screenshot composition inside the fixed report, not a separate export. */
-.result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 20px; }
-.result-actions span { font-size: 13px; color: var(--muted); }
 .summary-mode { min-height: 100vh; min-height: 100dvh; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .summary-toolbar { width: min(100%, 1280px); display: flex; align-items: center; gap: 16px; }
-.summary-toolbar p { color: var(--muted); font-size: 13px; }
-.summary-hint-narrow { display: none; }
 .summary-toolbar button { flex: none; }
 .summary-sheet { position: relative; container-type: inline-size; width: min(1280px, calc(100vw - 32px), calc((100dvh - 112px) * 16 / 9)); aspect-ratio: 16 / 9; background: var(--paper); border: 1px solid var(--line); }
 .summary-content { position: absolute; inset: 0; padding: 2.5cqw 3cqw; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.6cqw; }
@@ -274,11 +466,11 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 .summary-description { font-size: 1.35cqw; line-height: 1.6; margin-top: .8cqw; }
 .summary-status { color: var(--muted); font-size: 1.1cqw; margin-top: .8cqw; }
 .summary-axes { min-width: 0; }
-.summary-axes > h3 { font-family: var(--title-font); font-size: 1.65cqw; margin-bottom: 1cqw; }
+.summary-axes > h2 { font-family: var(--title-font); font-size: 1.65cqw; margin-bottom: 1cqw; }
 .summary-axis { padding: .65cqw 0; border-bottom: 1px solid var(--line); }
 .summary-axis:last-child { border: 0; }
 .summary-axis-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .3cqw 1cqw; }
-.summary-axis-header h4 { font-size: 1.1cqw; color: var(--muted); font-weight: 500; }
+.summary-axis-header h3 { font-size: 1.1cqw; color: var(--muted); font-weight: 500; }
 .summary-axis-header strong { font-size: 1.35cqw; color: var(--accent); }
 .summary-axis .axis-labels { font-size: 1cqw; margin: .4cqw 0; }
 .summary-axis .axis-track { height: .5cqw; margin: .6cqw .5cqw; }
@@ -286,25 +478,23 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 .summary-axis .axis-track:after { top: -.25cqw; height: 1cqw; }
 .summary-unassessed { font-size: 1.4cqw; color: var(--muted); }
 .summary-bottom { border-top: 1px solid var(--line); padding-top: 1cqw; }
-.summary-bottom h3 { font-size: 1.15cqw; font-weight: 500; color: var(--muted); }
+.summary-bottom h2 { font-size: 1.15cqw; font-weight: 500; color: var(--muted); }
 .summary-examples { display: flex; flex-wrap: wrap; gap: .5cqw 2.4cqw; margin-top: .5cqw; }
 .summary-examples span { font-size: 1.45cqw; font-weight: 600; color: var(--accent); }
 .summary-note { font-size: 1cqw; color: var(--muted); margin-top: 1cqw; }
 @media (max-width: 900px) {
-  .summary-hint-wide { display: none; }
-  .summary-hint-narrow { display: inline; }
   .summary-toolbar { align-items: start; }
   .summary-sheet { width: 100%; aspect-ratio: auto; }
   .summary-content { position: static; padding: 24px 20px; gap: 24px; }
   .summary-logo { width: 220px; max-width: 55%; }
-  .summary-brand span, .summary-status, .summary-axis-header h4, .summary-axis .axis-labels, .summary-bottom h3, .summary-note { font-size: 12px; }
+  .summary-brand span, .summary-status, .summary-axis-header h3, .summary-axis .axis-labels, .summary-bottom h2, .summary-note { font-size: 12px; }
   .summary-brand { padding-bottom: 12px; }
   .summary-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .summary-art { width: 180px; }
   .summary-name { font-size: 28px; }
   .summary-description, .summary-unassessed { font-size: 15px; }
   .summary-description, .summary-status { margin-top: 10px; }
-  .summary-axes > h3 { font-size: 20px; margin-bottom: 10px; }
+  .summary-axes > h2 { font-size: 20px; margin-bottom: 10px; }
   .summary-axis { padding: 10px 0; }
   .summary-axis-header strong { font-size: 14px; }
   .summary-axis .axis-labels { margin: 6px 0; }
@@ -326,66 +516,86 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
   .sidebar, .toolbar, .filterbar, .upload-box { display: none !important; }
   .shell { display: block; max-width: none; padding: 0; }
   #report-main { padding: 0; }
-  .catalog-layout { display: block; }
-  .type-detail { position: static; margin-bottom: 24px; }
   body { background: white; }
   .result-copy, .discovery-card, .tone-row, .type-button { break-inside: avoid; }
   .result-copy.has-art { grid-template-columns: minmax(0, 1fr) 180px; }
   .journey-hero { order: 2; }
   .result-text { order: 1; }
   .axis-list, .tone-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .type-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   footer { font-size: 9px; }
 }
 </style>
 </head>
-<body><a id="skip-content" class="skip-link" href="#report-main">本文へ移動</a><section id="summary-mode" class="summary-mode" aria-label="1画面サマリー" hidden>
-<div class="summary-toolbar"><button id="close-summary" class="quiet-button" type="button">通常表示に戻る</button><p><span class="summary-hint-wide">枠内が16:9の撮影範囲です。</span><span class="summary-hint-narrow">読みやすい縦表示です。16:9で撮影する場合は画面を横に広げてください。</span></p></div>
-<article id="summary-sheet" class="summary-sheet" tabindex="-1" aria-label="診断結果のサマリー"><div class="summary-content">
+<body><a id="skip-content" class="skip-link" href="#report-main">本文へ移動</a><section id="summary-mode" class="summary-mode" aria-label="結果を1枚で見る" hidden>
+<div class="summary-toolbar"><button id="close-summary" class="quiet-button" type="button">結果の詳細に戻る</button></div>
+<article id="summary-sheet" class="summary-sheet" tabindex="-1" aria-label="診断結果のまとめ"><div class="summary-content">
 <div class="summary-brand"><img class="summary-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div>
-<div class="summary-main"><div class="summary-identity"><div id="summary-image"></div><h2 id="summary-name" class="summary-name"></h2><p id="summary-description" class="summary-description"></p><p id="summary-status" class="summary-status"></p></div>
-<section class="summary-axes" aria-labelledby="summary-axes-title"><h3 id="summary-axes-title">4つの傾向</h3><div id="summary-axes"></div></section></div>
-<div class="summary-bottom"><h3>観測された使い方の一部</h3><div id="summary-examples" class="summary-examples"></div><p class="summary-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p></div>
+<div class="summary-main"><div class="summary-identity"><div id="summary-image"></div><h1 id="summary-name" class="summary-name"></h1><p id="summary-description" class="summary-description"></p><p id="summary-status" class="summary-status"></p></div>
+<section class="summary-axes" aria-labelledby="summary-axes-title"><h2 id="summary-axes-title">4つの傾向</h2><div id="summary-axes"></div></section></div>
+<div class="summary-bottom"><h2>会話に見られた使い方</h2><div id="summary-examples" class="summary-examples"></div><p class="summary-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p></div>
 </div></article></section>
 <div id="report-shell" class="shell">
-<aside class="sidebar"><header class="topbar"><div class="brand"><img class="brand-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="reload-report" class="quiet-button" type="button">再読み込み</button></div></aside>
+<aside class="sidebar"><header class="topbar"><div class="brand"><img class="brand-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="reload-report" class="quiet-button" type="button">表示を更新</button></div></aside>
 <main id="report-main" tabindex="-1">
+<p id="backup-status" class="context-note" role="status" hidden></p>
 <noscript><p class="noscript">診断結果の表示にはJavaScriptが必要です。有効にしてこのファイルを開き直してください。</p></noscript>
 <section id="view-result" aria-label="診断結果">
-<div class="result-actions"><button id="open-summary" class="quiet-button" type="button" aria-controls="summary-mode" aria-expanded="false">1画面サマリー</button><span>発表・スクリーンショット用</span></div>
-<div class="result-board">
+<h1 id="overview-heading" class="result-page-title">AIと、こんなふうに進めている。</h1>
+<div id="result-overview" class="result-overview">
   <div id="result-copy" class="result-copy">
     <img id="journey-hero" class="journey-hero" alt="" width="512" height="512" hidden>
     <div class="result-text">
-      <h1 id="name"></h1><p id="description"></p>
+      <p id="name"></p><p id="description"></p>
       <div class="result-meta"><span id="type-status" class="status"></span><div id="type-letters" class="type-letters" aria-hidden="true"></div></div>
       <div class="sample-strip"><span><b id="sessions"></b> 会話</span><span><b id="messages"></b> 発言</span><span>直近 <b id="days"></b> 日</span></div>
+      <div class="result-actions"><button id="open-summary" class="quiet-button" type="button" aria-controls="summary-mode" aria-expanded="false">タイプと4軸を1枚で見る</button></div>
     </div>
   </div>
+
+<div id="type-summary" class="result-board detail-board">
   <section class="axis-section" aria-labelledby="axis-heading"><h2 id="axis-heading">AIと進む、4つの傾向</h2><div id="portrait-axes" class="axis-list"></div></section>
 </div>
+</div>
 <p class="context-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p><div id="candidates"></div>
-<div class="section-head"><h2>使い方の発見メモ</h2><p>本人に聞いてみたい工夫。効果は未検証。</p></div><div id="portrait-discoveries" class="notes-grid"></div>
-<section class="tone-section"><div class="section-head"><h2>AIへの話しかけ方</h2><p>複数の口調が併存します。数字は観測した会話数。</p></div><div id="portrait-tones" class="tone-grid"></div><p class="context-note">未観測は「普段も使わない」の意味ではありません。口調と回答精度の関係は判定していません。</p></section>
+
+
+<div id="result-details">
+<section id="practice-section" aria-labelledby="practice-heading">
+<div class="practice-intro"><h2 id="practice-heading">会話で見えた、具体的な工夫</h2></div>
+<p class="overview-lead">会話で起きたことと、そこから考える問いをまとめました。</p>
+<nav id="practice-picks" aria-label="具体的な工夫の目次"></nav>
+<div id="practice-cases"></div><div class="toolbar"><button id="more-practices" type="button" hidden>ほかの場面を詳しい観察で読む</button></div>
+<p id="practice-scope" class="context-note"></p>
+</section>
+<section class="materials" aria-labelledby="materials-heading"><h2 id="materials-heading">今回の分析について</h2><p id="material-overview"></p><p><strong>参考にするのは、タイプ名より具体的な場面。</strong>「詳しい観察」で気になる観点を開くと、どんな頼み方や進め方が根拠になったかを読めます。</p><p><strong>しっくりこないときは、根拠と普段の使い方を見比べてください。</strong>仕事によって使い分けていたり、今回読んだ場面が偏っていたり、AIが読み違えている可能性があります。結果に自分を合わせる必要はありません。</p><div class="toolbar"><button id="material-evidence" type="button">詳しい観察で根拠を確認</button><a href="developer.html">抽出の内訳・計算方法</a></div><details><summary>自分の使い方を振り返る、4つの問い</summary><p>最近の具体例と、逆の進め方を選んだ場面を思い出すための問いです。思い当たるものだけで構いません。</p><div id="reflection-questions"></div><p class="small">回答の入力は不要です。タイプの再判定や共有データへの追加は行いません。</p></details></section>
+</div>
 </section>
 <section id="view-observations" aria-label="詳しい観察" hidden>
-<div class="panel-intro"><h2>38の観点を詳しく見る</h2><p id="coverage"></p></div>
+<div class="panel-intro"><h1>会話から見えたことを、詳しく。</h1><p id="coverage"></p></div>
+<h2 class="observation-heading">観点ごとの観察</h2>
 <div class="filterbar"><label>観点を検索<input id="observation-search" type="search" placeholder="例：スキル、任せ方"></label><label>表示する観点<select id="observation-filter"><option value="all">すべて</option><option value="observed">観測あり</option><option value="unknown">不明・未評価あり</option></select></label><label>依頼例の職種<select id="example-role"><option value="general">共通</option><option value="planner">ゲームプランナー</option><option value="designer">デザイナー</option></select></label><span id="observation-count" class="small" role="status"></span></div>
 <p id="observation-empty" class="small" hidden>一致する観点がありません。検索語や表示条件を変更してください。</p><div id="perspectives"></div>
+<section id="practice-other" class="practice-other" hidden aria-labelledby="practice-other-title"><h2 id="practice-other-title">ほかの場面</h2><div id="practice-more"></div></section><details class="support-details"><summary>ほかに気になった使い方</summary><p>従来の分析で残した発見メモです。効果を確かめたものではありません。</p><div id="portrait-discoveries" class="notes-grid"></div></details>
+<section class="tone-section"><div class="section-head"><h2>AIへの話しかけ方</h2><p>同じ会話に複数の話し方が見られることもあります。数字は、その話し方が見られた会話の数です。</p></div><div id="portrait-tones" class="tone-grid"></div><p class="context-note">ここにない話し方も、普段は使っているかもしれません。どの話し方がよい回答につながるかは、この分析では分かりません。</p></section>
+
 <details class="support-details"><summary>分析した範囲・日時</summary><p id="sampling"></p><div id="source-coverage"></div><p id="sources"></p><p id="diagnostics"></p><p id="type-evidence"></p><p class="small">各会話の連続した最大5発言から判断しています。省略や途中切れがあり、全履歴を網羅するものではありません。</p></details>
-<details class="support-details"><summary>実行ログに記録された機能</summary><div id="execution-facts"></div><p class="small">実行記録と本人の意図は別です。設定・対応形式の詳細は<a href="developer.html#execution">開発者向け詳細</a>へ。</p></details>
-<details class="support-details"><summary>診断の見方・データの扱い</summary><p>38観点は使い方の違いを記録します。4軸は同じ抜粋を根拠付きで要約し、中間・材料不足は保留します。口調と発見メモはタイプに使いません。</p><p>根拠は会話単位の匿名化した記述です。発見メモは新技法や効果の認定ではありません。</p><p>分析時の抜粋は利用中のエージェントの処理先に渡ります。手元のpending.json・manifest.jsonには原文が残るため共有しないでください。</p><p><a href="developer.html">指標・判断条件・計算式を確認する</a></p></details>
+<details class="support-details"><summary>履歴に残っているAIの機能</summary><div id="execution-facts"></div><p class="small">実行記録と本人の意図は別です。設定・対応形式の詳細は<a href="developer.html#execution">開発者向け詳細</a>へ。</p></details>
+<details class="support-details"><summary>診断の見方・データの扱い</summary><p>使い方を38の観点で観察し、4つの傾向にまとめています。どちらとも言える場合や材料が足りない場合は、タイプを1つに決めません。話し方や発見メモはタイプの判定に使いません。</p><p>根拠の説明は、名前などを伏せて会話の内容をまとめたものです。発見メモにある工夫の新しさや効果は、この分析では確かめていません。</p><p>分析時の抜粋は利用中のエージェントの処理先に渡ります。手元のpending.json・manifest.jsonには原文が残るため共有しないでください。</p><p><a href="developer.html">指標・判断条件・計算式を確認する</a></p></details>
 </section>
 <section id="view-comparison" aria-label="比較と共有" hidden>
-<div class="panel-intro"><h2>使い方を持ち寄る</h2><p>本人が選んで共有したプロフィールを並べます。読み込みはこの画面内で完結します。</p></div>
+<div class="panel-intro"><h1>使い方を持ち寄る</h1><p>自分のプロフィールを保存して渡したり、相手から受け取ったプロフィールと見比べたりできます。読み込んだファイルは送信されません。</p></div>
+<section id="practice-draft-panel" hidden aria-labelledby="practice-draft-label"><label id="practice-draft-label" for="practice-draft">この使い方について、話してみる</label><p>下の文章だけを保存します。仕事や人が特定できる箇所、解釈が違う箇所を直してから使ってください。編集はこの画面だけに反映し、診断や元の会話は変えません。</p><textarea id="practice-draft" maxlength="6000"></textarea><div class="toolbar"><button id="save-practice-text" type="button">確認した文章を保存</button><button id="discard-practice-text" type="button">下書きを破棄</button></div><p id="practice-draft-status" class="small" role="status"></p></section>
+<details class="support-details"><summary>自分の結果を保存・読み込む</summary><p>今の結果を後から開くための、本人用バックアップです。根拠の説明・話し方・発見メモが含まれます。他人に渡すときは「共有用プロフィール」を使ってください。</p><div class="toolbar"><button id="export-private" type="button">本人用バックアップを保存</button></div><label for="private-file">保存した本人用バックアップを選ぶ</label><input id="private-file" type="file" accept=".json,application/json"><p class="small">読み込むと、この画面の結果が切り替わります。元のファイルは上書きせず、送信もしません。次に開いたときも同じ結果にするには、AIに「このバックアップから結果ページを作って」と依頼してください。</p></details>
 <div class="toolbar"><button id="export" class="primary" type="button">共有用プロフィールを保存</button><button id="clear-peers" type="button">比較をリセット</button></div>
-<div class="upload-box"><label for="peer-files">相手の share-profile.json を読み込む（最大3人）</label><input id="peer-files" type="file" accept=".json,application/json" multiple><p id="peer-error" class="error" role="alert"></p></div><div id="comparison"></div>
-<details class="support-details"><summary>共有される情報</summary><p>評価済みの観点の割合、進め方の種類、タイプ候補、対象日数、材料の充足区分が入ります。</p><p>会話本文・氏名・日時・プロジェクト名・正確な件数・口調・発見メモの自由記述は含めません。自動送信はしません。仕事の記録は所属先のルールに従って扱ってください。</p><p>違う診断方式は比較できません。割合は能力差を表さず、仕事や抽出範囲によって変わります。</p></details>
+<div class="upload-box"><label for="peer-files">相手から受け取った共有用プロフィールを選ぶ（最大3人）</label><input id="peer-files" type="file" accept=".json,application/json" multiple><p id="peer-error" class="error" role="alert"></p></div><div id="comparison"></div>
+<details class="support-details"><summary>共有される情報</summary><p>観察できた使い方の割合、進め方の種類、タイプ候補、分析対象の日数、判定材料がどの程度あるかが入ります。</p><p>会話本文・氏名・日時・プロジェクト名・正確な件数・口調・発見メモの自由記述は含めません。自動送信はしません。仕事の記録は所属先のルールに従って扱ってください。</p><p>違う診断方式は比較できません。割合は能力差を表さず、仕事や抽出範囲によって変わります。</p></details>
 </section>
-<section id="view-catalog" aria-label="16タイプの一覧" hidden><div class="panel-intro"><h2>16の、旅のかたち。</h2><p id="catalog-description">保存済みの分類方式による呼び名です。</p><p>選択しても、あなたの診断結果は変わりません。</p></div><div class="catalog-layout"><div id="type-detail" class="type-detail" aria-live="polite">タイプを選ぶと説明を読めます。</div><div id="type-grid" class="type-grid"></div></div></section>
+<section id="view-catalog" aria-label="16タイプの一覧" hidden><div class="panel-intro catalog-intro"><h1>16の、旅のかたち。</h1><p id="catalog-guide">絵と説明で、AIとの進み方を見比べてみてください。</p></div><div id="type-grid" class="type-grid"></div><p id="catalog-description" class="catalog-footnote">保存済みの分類方式による呼び名です。</p></section>
 </main><footer><span id="generated"></span><span id="updated"></span></footer>
 </div><script id="report-data" type="application/json">__REPORT_DATA__</script><script>
-const r=JSON.parse(document.getElementById('report-data').textContent);
+__PRIVATE_BACKUP_JS__
+function mountReport(r){
 const portrait=r.portrait,style=portrait?portrait.classification:r,shareMethod=r.method+(portrait?'+'+portrait.schema:'');
 const journey=portrait&&portrait.schema==='portrait-v1'?Object.fromEntries((r.journey?.types||[]).map(t=>[t.code,t])):{};
 const displayName=t=>journey[t.code]?.name||t.name;
@@ -393,20 +603,86 @@ const currentJourney=style.profile?journey[style.profile.code]:null;
 const measured=r.perspectives.filter(p=>!p.not_assessed),measuredIds=new Set(measured.map(p=>p.id)),byId=Object.fromEntries(r.perspectives.map(p=>[p.id,p]));
 const put=(id,text)=>document.getElementById(id).textContent=text;
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
-const refText=f=>'会話 '+f.session.slice(0,6)+' / '+f.refs.join(', ');
 const views=['result','observations','comparison','catalog'];
 function revealPanel(panel){panel.setAttribute('tabindex','-1');panel.scrollIntoView?.({block:'start',behavior:'instant'});panel.focus?.({preventScroll:true});}
 function showView(id,reveal=false){for(const key of views){document.getElementById('view-'+key).hidden=key!==id;document.getElementById('nav-'+key).setAttribute('aria-pressed',String(key===id));}if(reveal)revealPanel(document.getElementById('view-'+id));}
 for(const key of views)document.getElementById('nav-'+key).onclick=()=>showView(key,true);showView('result');
-put('name',r.messages?(currentJourney?.name||style.type_name):'対話の記録を集めているところ');put('type-status',style.type_status);
+const practiceStages={request:'依頼する場面',adjustment:'やり取りの途中',review:'出てきたものを確かめる場面'};
+const responseLabels={not_visible:'その後は抜粋にない',assistant_report:'AIの返答・報告',user_report:'本人の発言で分かること'};
+const practices=r.practices,practiceItems=practices?.items||[],featuredItems=practiceItems.filter(i=>i.featured);
+const overviewPicks=document.getElementById('practice-picks');
+function openResultDetail(target){revealPanel(target);}
+
+function practiceDraft(item){
+ const c=item.case;
+ return [c.title,'','場面：'+c.situation.text,'本人がしたこと：'+c.human_action.text,'AIに担ってもらったこと：'+c.ai_role.text,
+ responseLabels[c.response.status]+'：'+c.response.text,'分からないこと：'+c.limitation,...(c.decision?['選択が出た条件：'+c.decision.condition.text,'見送った・切り替えた案：'+c.decision.alternative.text,...c.decision.steps.map((step,i)=>(i+1)+'. '+step.text)]:[]),'','話してみたいこと：'+c.question,
+ '','別の場面で試すなら（分析者が作った依頼例）：'+c.try_next,'','会話の一部をAIが要約した例です。効果や普段の傾向を確かめたものではありません。'].join('\n');
+}
+function openPracticeDraft(item){
+ const panel=document.getElementById('practice-draft-panel'),draft=document.getElementById('practice-draft');
+ panel.hidden=false;draft.value=practiceDraft(item);put('practice-draft-status','下書きはまだ保存されていません。');
+ showView('comparison');revealPanel(panel);draft.focus?.();
+}
+for(const item of practiceItems){
+ const c=item.case,article=el('article','practice'),head=el('div','practice-heading');
+ head.append(el('h3','',c.title),el('span','',practiceStages[c.stage]));article.append(head);
+ const layout=el('div','practice-layout'),record=el('div','practice-record'),reflection=el('aside','practice-reflect');
+ record.append(el('h4','practice-group-title','会話で起きたこと'));reflection.append(el('h4','practice-group-title','振り返る・試してみる'));
+ const flow=el('div','practice-flow');
+ const d=c.decision,decisionSpecific=d&&d.kind!=='generic';
+ const columns=decisionSpecific?[[d.condition.status==='stated'?'本人が述べた選択の条件':'この選択が出た場面',d.condition.text],['選んだ進め方',c.human_action.text],['見送った・切り替えた案',d.alternative.text]]:[['どんな場面？',c.situation.text],['本人はどう動いた？',c.human_action.text],[responseLabels[c.response.status],c.response.text]];
+ for(const [heading,body] of columns){
+  const step=el('div');step.append(el('h4','',heading),el('p','',body));flow.append(step);
+ }
+ record.append(flow);
+ const question=el('div','practice-question');question.append(el('strong','','振り返る問い'),el('p','',c.question));reflection.append(question);
+ const context=el('dl','practice-context');
+ for(const [label,body] of [['AIの役割',c.ai_role.text],...(decisionSpecific?[[responseLabels[c.response.status],c.response.text]]:[]),['まだ分からないこと',c.limitation]]){
+  context.append(el('dt','',label),el('dd','',body));
+ }
+ record.append(context);
+ const trial=el('div','practice-trial');trial.append(el('strong','','別の場面で試すなら'),el('p','',c.try_next),el('p','small','分析者が作った依頼例です。本人の発言や、効果を確認した方法ではありません。'));reflection.append(trial);
+ if(decisionSpecific){
+  if(d.steps.length){const sequence=el('ol','decision-steps');for(const step of d.steps)sequence.append(el('li','',step.text));record.append(el('h4','steps-heading','会話で見える手順'),sequence);}
+ }
+ const toolbar=el('div','toolbar'),button=el('button','','話題にする文章を作る');button.type='button';button.onclick=()=>openPracticeDraft(item);toolbar.append(button);reflection.append(toolbar);layout.append(record,reflection);article.append(layout);
+ document.getElementById(item.featured?'practice-cases':'practice-more').append(article);
+ if(item.featured){const pick=el('button','practice-pick');pick.type='button';pick.setAttribute('aria-label',c.title+'：場面と問いを見る');pick.append(el('strong','',c.title));pick.onclick=()=>openResultDetail(article);overviewPicks.append(pick);}
+
+}
+if(practices){
+ const more=practiceItems.filter(i=>!i.featured).length;
+ document.getElementById('practice-other').hidden=!more;document.getElementById('more-practices').hidden=!more;put('practice-other-title','ほかに見えた'+more+'場面');put('more-practices','ほかの'+more+'場面を詳しい観察で読む');
+ if(!practiceItems.length)put('practice-cases','今回の抜粋では、場面と本人の行動を結びつけられる材料が足りませんでした。使い方がないという意味ではありません。');
+ put('practice-scope',practices.reviewed_sessions+'会話から'+practiceItems.length+'場面を整理。ここでは'+featuredItems.length+'例を紹介しています。普段の頻度や効果の順位ではありません。具体例の分析：'+new Date(practices.generated_at).toLocaleString('ja-JP'));
+}else{
+ put('practice-cases','この保存結果では、具体的な場面の整理はまだ行っていません。AIに「今の分析範囲で使い方の具体例を追加して」と頼むと、材料が残っている場合に整理できます。');
+ put('practice-scope','タイプや観察の件数から、具体的な使い方を推測して埋めることはしません。');
+}
+if(!featuredItems.length)overviewPicks.append(el('p','',practices?'選び方や手順の組み合わせまで分かる例は、今回は選びませんでした。「詳しい観察」から、確認できた場面を読めます。':'この保存結果では、具体的な場面はまだ整理していません。「詳しい観察」から、保存済みの観察を読めます。'));
+document.getElementById('more-practices').onclick=()=>{showView('observations');revealPanel(document.getElementById('practice-other'));};
+document.getElementById('save-practice-text').onclick=()=>{
+ const draft=document.getElementById('practice-draft').value.trim();
+ if(!draft||draft.length>6000){put('practice-draft-status','保存する文章を1〜6,000文字で入力してください。');return;}
+ const url=URL.createObjectURL(new Blob([draft],{type:'text/plain;charset=utf-8'})),a=el('a');a.href=url;a.download='caravan-conversation-note.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ put('practice-draft-status','文章のダウンロードを開始しました。相手への送信はしていません。');
+};
+document.getElementById('discard-practice-text').onclick=()=>{document.getElementById('practice-draft').value='';document.getElementById('practice-draft-panel').hidden=true;document.getElementById('nav-result').focus?.();};
+const typeStatus={'4軸からの暫定タイプ':'今回のタイプ（暫定）','材料不足の軸あり':'まだ判断材料が足りません','中間・併用の軸あり':'複数の進め方が見られました'}[style.type_status]||style.type_status;
+put('name',r.messages?(currentJourney?.name||style.type_name):'対話の記録を集めているところ');put('type-status',typeStatus);
 put('description',currentJourney?.summary||(style.profile?style.profile.tagline:style.evidence_ready?'近い候補があります。4軸の根拠を確認してください。':'まだタイプを決める材料が足りません。観察できた使い方をご覧ください。'));
 const hero=document.getElementById('journey-hero');hero.hidden=true;
 if(currentJourney?.image&&r.messages){hero.setAttribute('src',currentJourney.image);hero.setAttribute('alt',currentJourney.alt);hero.hidden=false;document.getElementById('result-copy').className='result-copy has-art';}
 for(const letter of (portrait?style.type_code:''))document.getElementById('type-letters').append(el('span','',letter));
 for(const key of ['messages','sessions','days'])put(key,r[key].toLocaleString());
-put('sampling',r.sampling.total_sessions+'会話を検出し、条件に合う'+r.sampling.eligible_sessions+'会話から'+r.sessions+'会話を抽出。本文と実行情報 '+r.sampling.read_chars.toLocaleString()+'文字 / 上限 '+r.sampling.char_budget.toLocaleString()+'文字。新規読取 '+r.sampling.new_read_chars.toLocaleString()+'文字、再利用 '+r.sampling.cache_hits+'会話。');
+put('sampling','分析対象の'+r.days+'日間に見つかった'+r.sampling.total_sessions+'会話のうち、分析できる条件を満たした'+r.sampling.eligible_sessions+'会話から'+r.sessions+'会話を選びました。');
 put('coverage',measured.length+' / '+r.perspectives.length+'観点を評価済み。観点を開くと根拠と依頼例を確認できます。');
-put('type-evidence',portrait?'4軸・口調・発見メモの評価：'+new Date(portrait.generated_at).toLocaleString('ja-JP'):'旧18観点の照合方式。繰り返し観測した観点：'+r.repeated_dimensions+'個。');
+put('type-evidence',portrait?'4つの傾向・話し方・発見メモの分析日時：'+new Date(portrait.generated_at).toLocaleString('ja-JP'):'この結果は以前の診断方式で分析されています。4つの傾向・話し方・発見メモは含まれていません。');
+put('material-overview','分析時点の直近'+r.days+'日間を対象に、'+r.sessions+'会話の一部を読んだ結果です。履歴全体や、普段の使い方すべてを表すものではありません。');
+document.getElementById('material-evidence').onclick=()=>showView('observations',true);
+const reflectionQuestions={framing:'最近の依頼では、条件を先に固めましたか。それとも方向から相談しましたか。何がその選び方につながりましたか。',discretion:'手順や実行してよい範囲をどこまで決め、どこをAIに委ねましたか。仕事によって変わりますか。',iteration:'一度まとめて受け取った場面と、途中で修正した場面では、どんな違いがありましたか。',decision:'説明や比較と、実際に試した感触を、それぞれどの場面で判断材料にしましたか。'};
+for(const [key,question] of Object.entries(reflectionQuestions)){const item=el('div','reflection');item.append(el('h3','',({framing:'相談の入口',discretion:'進め方の裁量',iteration:'合わせるタイミング',decision:'選択の手がかり'})[key]),el('p','',question));document.getElementById('reflection-questions').append(item);}
 if(portrait){
  put('catalog-description','4軸の組み合わせを、16通りの旅になぞらえた愛称です。職種・能力・固定した性格を示すものではありません。');
  for(const a of portrait.axes){
@@ -414,41 +690,44 @@ if(portrait){
   const label={left:a.left.label+' 寄り',right:a.right.label+' 寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state];
   top.append(el('h3','',a.title),el('strong','',label));c.append(top);
   const labels=el('div','axis-labels');labels.append(el('span','',a.left.label),el('span','',a.right.label));c.append(labels);
-  if(a.left_percent!==null){const track=el('div','axis-track');track.setAttribute('aria-hidden','true');const marker=el('span','axis-marker');marker.style.left=(100-a.left_percent)+'%';track.append(marker);c.append(track);}
+  if(a.state!=='insufficient'&&a.left_percent!==null){const track=el('div','axis-track');track.setAttribute('aria-hidden','true');const marker=el('span','axis-marker');marker.style.left=(100-a.left_percent)+'%';track.append(marker);c.append(track);}
+  const check=r.material_checks?.[a.id];
   const d=el('details');d.append(el('summary','','根拠を見る · '+a.observed_sessions+'会話'),el('p','small',a.hint));
+  if(a.state==='insufficient')d.append(el('p','axis-material','左右を決めるだけの観察がまだありません。'));
+  else if(check?.changed)d.append(el('p','axis-material','根拠の会話が1件減るだけで判定が変わる場合があります。ここは決めつけず、具体的な場面を確認してください。'));
   d.append(el('p','evidence','左のみ '+(a.counts.left||0)+' / 右のみ '+(a.counts.right||0)+' / 両方 '+(a.counts.both||0)+'会話。未観測 '+(a.counts.not_observed||0)+' / 不明 '+(a.counts.uncertain||0)+'。'));
   if(a.left_percent!==null)d.append(el('p','evidence','左側への配分 '+a.left_percent+'%。両方は半分ずつ配分します。性格や能力の点数ではありません。'));
-  for(const f of a.evidence)d.append(el('p','',f.reason),el('p','evidence',refText(f)));c.append(d);document.getElementById('portrait-axes').append(c);
+  for(const f of a.evidence)d.append(el('p','',f.reason));c.append(d);document.getElementById('portrait-axes').append(c);
  }
  for(const tone of portrait.tones){
   const c=el('article','tone-row'),top=el('div','tone-top');top.append(el('h3','',tone.label),el('span','tone-number',tone.assessed_sessions?tone.sessions+' / '+tone.assessed_sessions+'会話':'判断材料不足'));c.append(top);
   const track=el('div','tone-track');track.setAttribute('aria-hidden','true');const fill=el('span');fill.style.width=(tone.assessed_sessions?100*tone.sessions/tone.assessed_sessions:0)+'%';track.append(fill);c.append(track);
   const d=el('details');d.append(el('summary','','観察した場面'),el('p','small',tone.hint),el('p','evidence','不明 '+tone.uncertain_sessions+'会話。'));
-  for(const f of tone.findings)d.append(el('p','',f.reason),el('p','evidence',refText(f)));
+  for(const f of tone.findings)d.append(el('p','',f.reason));
   if(!tone.findings.length)d.append(el('p','',tone.assessed_sessions?'この抜粋では未観測です。':'文脈が足りず判断できません。'));c.append(d);document.getElementById('portrait-tones').append(c);
  }
  for(const note of portrait.discoveries){
   const c=el('article','discovery-card');c.append(el('h3','',note.title));
   const first=note.findings[0];if(first)c.append(el('p','observation',first.observation));
-  const d=el('details');d.append(el('summary','','根拠と、本人に聞きたいこと'),el('p','question',note.question));
-  for(const f of note.findings)d.append(el('p','',f.observation),el('p','evidence',(f.relation==='uncovered'?'既存の指標では扱っていない候補':'既存の指標を具体化する使い方')+' / '+refText(f)));
+  const d=el('details');d.append(el('summary','','見つけた場面と、振り返りの問い'),el('p','question',note.question));
+  for(const f of note.findings)d.append(el('p','',f.observation),el('p','evidence',(f.relation==='uncovered'?'38の観点にはない使い方の候補':'38の観点で見られた具体的な使い方')));
   c.append(d);document.getElementById('portrait-discoveries').append(c);
  }
  if(!portrait.discoveries.length)put('portrait-discoveries','今回の抜粋では追加の発見メモはありません。');
  if(!style.profile&&style.evidence_ready)put('candidates','近い候補：'+style.type_catalog.filter(t=>style.candidate_codes.includes(t.code)).map(displayName).join(' / '));
 }else{
- for(const id of ['portrait-axes','portrait-tones','portrait-discoveries'])put(id,'この保存済み結果では未評価です。');
+ for(const id of ['portrait-axes','portrait-tones','portrait-discoveries'])put(id,'この結果では、まだ分析していません。');
  for(const a of style.alternatives){const c=el('article','candidate');c.append(el('h3','',a.name),el('p','small',a.reasons.map(id=>byId[id].title).join(' / ')));document.getElementById('candidates').append(c);}
 }
 const groups=new Map(),observationCards=[];
 for(const p of r.perspectives){
- if(!groups.has(p.group)){const heading=el('h3','lens-group',p.group),grid=el('div','lens-grid');document.getElementById('perspectives').append(heading,grid);groups.set(p.group,{heading,grid,cards:[]});}
+ if(!groups.has(p.group)){const heading=el('h2','lens-group',p.group),grid=el('div','lens-grid');document.getElementById('perspectives').append(heading,grid);groups.set(p.group,{heading,grid,cards:[]});}
  const c=el('article','lens'),details=el('details'),summary=el('summary'),row=el('span','lens-summary');
  const count=p.not_assessed?'未評価':p.session_rate===null?'判断材料なし':p.sessions+' / '+p.assessed_sessions+'会話';
  row.append(el('span','',p.title),el('small','',count));summary.append(row);details.append(summary);
  const body=el('div','lens-body');body.append(el('p','lens-description',p.description),el('p','evidence',p.status+(p.not_assessed?'':' ／ 不明 '+p.uncertain_sessions+'会話 ／ 該当場面なし '+(p.not_applicable_sessions||0)+'会話')));
  if(['process','tooling'].includes(p.kind)){const forms=(p.observed_forms||[]).filter(f=>f.sessions);if(forms.length)body.append(el('p','',forms.map(f=>f.label+' '+f.sessions+'会話').join(' / ')));}
- for(const f of p.findings)body.append(el('p','',f.reason),el('p','evidence',refText(f)));
+ for(const f of p.findings)body.append(el('p','',f.reason));
  const more=el('details');more.append(el('summary','','依頼例・読み取り条件'),el('p','',p.question),el('p','',p.experiment));if(p.assessment_hint)more.append(el('p','small',p.assessment_hint));
  const example=el('div','example');example.append(el('span','example-label','依頼例（本人の発言の引用ではありません）'));const text=el('span','example-text',p.examples.general);text.dataset.perspective=p.id;example.append(text);more.append(example);body.append(more);details.append(body);c.append(details);
  groups.get(p.group).grid.append(c);groups.get(p.group).cards.push(c);observationCards.push({card:c,p});
@@ -458,36 +737,60 @@ document.getElementById('observation-search').oninput=filterObservations;documen
 document.getElementById('example-role').onchange=function(){for(const p of r.perspectives)document.querySelector('[data-perspective="'+p.id+'"]').textContent=p.examples[this.value];};
 const typeGrid=document.getElementById('type-grid');
 function typeImage(t){const art=journey[t.code];if(!art?.image)return null;const img=el('img','type-art');img.setAttribute('src',art.image);img.setAttribute('alt',art.alt);img.setAttribute('width','512');img.setAttribute('height','512');img.setAttribute('loading','lazy');return img;}
-function showType(t,reveal=false){
- const panel=document.getElementById('type-detail'),art=journey[t.code],copy=el('div');
- panel.replaceChildren();const img=typeImage(t);panel.className=img?'type-detail with-art':'type-detail';
- if(img)panel.append(img);
- copy.append(el('h3','',displayName(t)),el('p','',art?.summary||t.description));
- if(portrait){const chips=el('div','axis-chips');for(const label of t.tagline.split(' / '))chips.append(el('span','',label));copy.append(chips);}
- else{copy.append(el('p','muted','手がかりにする観点：'+Object.keys(t.weights).map(id=>byId[id].title).join(' / ')),el('p','','試せる工夫：'+t.tip));}
- copy.append(el('p','type-caption',t.code+' · '+(style.candidate_codes.includes(t.code)?'今回の候補':'旅のスタイル')));
- panel.append(copy);panel.setAttribute('aria-label',displayName(t)+'の説明');
- typeGrid.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.code===t.code)));
- if(reveal)revealPanel(panel);
+// These shelves organize the existing four-axis catalog; they do not classify the user.
+if(portrait?.schema==='portrait-v1'){
+ put('catalog-guide','頼み方が近い4人ずつを並べました。横に見比べると、やり取りと選び方の違いが見えてきます。');
+ const shelves=[['SG','条件も、進め方も伝える。'],['SD','条件を伝え、進め方は任せる。'],['EG','方向から相談し、進め方は伝える。'],['ED','方向から相談し、進め方は任せる。']];
+ for(const [prefix,title] of shelves){
+  const types=style.type_catalog.filter(t=>t.code.startsWith(prefix));
+  if(!types.length)continue;
+  const group=el('section','catalog-group'),head=el('div','catalog-group-heading'),heading=el('h2','',title),row=el('div','catalog-travelers');
+  heading.id='catalog-group-'+prefix;group.setAttribute('aria-labelledby',heading.id);group.dataset.prefix=prefix;
+  head.append(heading,el('p','catalog-common',types[0].tagline.split(' / ').slice(0,2).join(' ／ ')));
+  for(const t of types){
+   const entry=el('article','catalog-traveler'),img=typeImage(t),meta=el('div','type-meta'),axes=el('dl','catalog-differences');entry.dataset.code=t.code;
+   meta.append(el('span','',t.code));
+   if(style.candidate_codes.includes(t.code))meta.append(el('span','type-badge','今回の候補'));
+   if(img)entry.append(img);
+   entry.append(el('h3','',displayName(t)),meta,el('p','type-summary',journey[t.code]?.summary||t.description));
+   for(const i of [2,3]){const axis=el('div','type-axis');axis.append(el('dt','',portrait.axes[i].title),el('dd','',t.tagline.split(' / ')[i]));axes.append(axis);}
+   entry.append(axes);row.append(entry);
+  }
+  group.append(head,row);typeGrid.append(group);
+ }
+}else{
+typeGrid.className+=' legacy-catalog';
+for(const t of style.type_catalog){
+ const entry=el('details','type-entry'+(style.candidate_codes.includes(t.code)?' is-candidate':''));entry.dataset.code=t.code;
+ const summary=el('summary','type-button'),copy=el('div','type-copy'),img=typeImage(t),meta=el('div','type-meta');
+ if(img)summary.append(img);else summary.className+=' no-art';
+ copy.append(el('strong','',displayName(t)),el('span','type-summary',journey[t.code]?.summary||t.description));
+ meta.append(el('span','',t.code));
+ if(style.candidate_codes.includes(t.code))meta.append(el('span','type-badge','今回の候補'));
+ const toggle=el('span','type-toggle');toggle.append(el('span','type-open',portrait?'4軸を開く':'説明を開く'),el('span','type-close','閉じる'));meta.append(toggle);
+ copy.append(meta);summary.append(copy);entry.append(summary);
+ const panel=el('div','type-detail');
+ if(portrait){const list=el('dl','type-axes');for(const [i,a] of portrait.axes.entries()){const row=el('div','type-axis');row.append(el('dt','',a.title),el('dd','',t.tagline.split(' / ')[i]));list.append(row);}panel.append(list);}
+ else panel.append(el('p','muted','手がかりにする観点：'+Object.keys(t.weights).map(id=>byId[id].title).join(' / ')),el('p','','試せる工夫：'+t.tip));
+ entry.append(panel);typeGrid.append(entry);
 }
-for(const t of style.type_catalog){const b=el('button','type-button');b.dataset.code=t.code;b.setAttribute('aria-pressed','false');b.setAttribute('aria-controls','type-detail');b.setAttribute('aria-label',displayName(t)+'の説明を見る');const img=typeImage(t);if(img)b.append(img);b.append(el('strong','',displayName(t)),el('small','',journey[t.code]?.summary||t.tagline),el('span','type-badge',style.candidate_codes.includes(t.code)?'今回の候補':t.code));b.onclick=()=>showType(t,true);typeGrid.append(b);}
-if(style.profile)showType(style.profile);
+}
 function share(){return {schema:'ai-sindan-share-v1',method:shareMethod,days:r.days,sample:style.evidence_ready?'比較の材料あり':'材料が少ない',type_name:style.type_name,candidate_codes:style.candidate_codes,metrics:measured.map(p=>({id:p.id,session_rate:p.session_rate,status:p.status,...(['process','tooling'].includes(p.kind)?{forms:(p.observed_forms||[]).filter(f=>f.sessions).map(f=>f.id)}:{})}))};}
 document.getElementById('export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(share(),null,2)],{type:'application/json'}));const a=el('a');a.href=url;a.download='share-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 let peers=[];
 function validShare(p){return p&&p.schema==='ai-sindan-share-v1'&&p.method===shareMethod&&Number.isInteger(p.days)&&p.days>0&&p.days<=36500&&['比較の材料あり','材料が少ない'].includes(p.sample)&&Array.isArray(p.metrics)&&p.metrics.length===measured.length&&p.metrics.every(m=>m&&typeof m==='object'&&measuredIds.has(m.id))&&new Set(p.metrics.map(m=>m.id)).size===measured.length&&p.metrics.every(m=>(m.session_rate===null||(typeof m.session_rate==='number'&&Number.isFinite(m.session_rate)&&m.session_rate>=0&&m.session_rate<=100))&&['複数の会話で観測','少数の表現を観測','未観測','評価可能な場面なし'].includes(m.status)&&(!['process','tooling'].includes(byId[m.id].kind)||(Array.isArray(m.forms)&&new Set(m.forms).size===m.forms.length&&m.forms.every(id=>byId[m.id].forms.some(f=>f.id===id))&&(!m.forms.length||['複数の会話で観測','少数の表現を観測'].includes(m.status)))));}
 function formLabels(metric){return (metric.forms||[]).map(id=>byId[metric.id].forms.find(f=>f.id===id).label).join('、');}
-function comparison(){const root=document.getElementById('comparison');root.replaceChildren();if(!peers.length){root.append(el('p','muted','相手の集計を読み込むと、ここに並びます。'));return;}
+function comparison(){const root=document.getElementById('comparison');root.replaceChildren();if(!peers.length){root.append(el('p','muted','相手から受け取った共有用プロフィールを選ぶと、ここで使い方を見比べられます。'));return;}
  const profiles=[share(),...peers],wrap=el('div','table-wrap'),table=el('table'),head=el('thead'),tr=el('tr');tr.append(el('th','','観点'));
  profiles.forEach((p,i)=>tr.append(el('th','',(i?'共有プロフィール '+i:'このレポート')+' / '+p.days+'日 / '+p.sample)));head.append(tr);table.append(head);const body=el('tbody');
  for(const p of measured){const row=el('tr');row.append(el('th','',p.title));for(const profile of profiles){const m=profile.metrics.find(m=>m.id===p.id);row.append(el('td','',(m.session_rate===null?'データなし':m.session_rate+'%の会話')+' · '+m.status+(['process','tooling'].includes(p.kind)?' ／ '+(formLabels(m)||'種類の観測なし'):'')));}body.append(row);}table.append(body);wrap.append(table);root.append(wrap);
- root.append(el('h3','lens-group','結果を見ながら、こんな話をしてみる'));
+ root.append(el('h2','lens-group','結果を見ながら、こんな話をしてみる'));
  const list=el('ul','plain-list');const topics=measured.filter(p=>peers.some(peer=>peer.metrics.find(m=>m.id===p.id).status==='複数の会話で観測')).slice(0,3);
  for(const p of topics)list.append(el('li','',p.title+'：「'+p.question+'」 実際に役立った場面も聞いてみる。'));
  if(!topics.length)list.append(el('li','','まだ観測が少ないので、普段AIに頼む仕事の種類から話してみる。'));root.append(list);}
 let importGeneration=0;
 document.getElementById('peer-files').onchange=async function(){const token=++importGeneration;put('peer-error','');const files=[...this.files];if(files.length>3){put('peer-error','一度に読み込めるのは3人までです。');return;}
- try{const loaded=[];for(const file of files){if(file.size>131072)throw Error('共有プロフィールとして大きすぎるファイルです。');const p=JSON.parse(await file.text());if(!validShare(p))throw Error('同じ診断方式の共有用JSONを選んでください。');loaded.push(p);}if(token===importGeneration){peers=loaded;comparison();}}catch(e){if(token===importGeneration)put('peer-error',e instanceof SyntaxError?'JSONとして読み取れませんでした。':e.message);}};
+ try{const loaded=[];for(const file of files){if(file.size>131072)throw Error('ファイルが大きすぎます。「共有用プロフィールを保存」で保存したファイルを選んでください。');const p=JSON.parse(await file.text());if(!validShare(p))throw Error('このファイルは比較できません。相手にも同じ診断方式で「共有用プロフィールを保存」してもらい、そのファイルを選んでください。');loaded.push(p);}if(token===importGeneration){peers=loaded;comparison();}}catch(e){if(token===importGeneration)put('peer-error',e instanceof SyntaxError?'ファイルを読み取れませんでした。「共有用プロフィールを保存」で保存したファイルを選び直してください。':e.message);}};
 document.getElementById('clear-peers').onclick=()=>{++importGeneration;peers=[];document.getElementById('peer-files').value='';put('peer-error','');comparison();};comparison();
 const coverageRoot=document.getElementById('source-coverage'), coverageRows=r.sampling.source_coverage;
 if(!coverageRows){coverageRoot.append(el('p','evidence','この保存済み結果には、エージェント別の抽出内訳がありません。'));}
@@ -496,7 +799,7 @@ else{
  for(const row of coverageRows){const name={codex:'Codex',claude:'Claude Code',antigravity:'Antigravity CLI'}[row.source]||row.source;coverageRoot.append(el('p','evidence',name+'：条件に合う '+row.eligible_sessions+'会話 → 分析 '+row.selected_sessions+'会話 ／ '+row.reason));}
 }
 const audit=r.execution_audit, facts=document.getElementById('execution-facts');
-if(!audit){facts.append(el('p','muted','実行記録は未収集です。未使用という意味ではありません。'));}
+if(!audit){facts.append(el('p','muted','機能の利用記録は、まだこの結果に含まれていません。使っていないという意味ではありません。'));}
 else{
  facts.append(el('p','evidence',audit.scope+' ／ '+audit.days+'日・'+audit.sessions+'会話 ／ 収集 '+new Date(audit.generated_at).toLocaleString('ja-JP')));
  facts.append(el('p','evidence','対象：'+Object.entries(audit.sources).map(([source,count])=>source+' '+count+'会話').join(' ／ ')));
@@ -508,12 +811,14 @@ else{
  facts.append(el('p','evidence','各ファイル最大'+audit.limit_per_file+'イベント。上限による省略 '+audit.omitted_events+'件。'));
 }
 put('sources','分析した会話：'+Object.entries(r.sources).map(([k,v])=>({'codex':'Codex','claude':'Claude Code','antigravity':'Antigravity CLI'}[k]||k)+' '+v+'件').join(' / '));
-put('diagnostics','走査ファイル '+(r.diagnostics.files_scanned||0)+' / 読取不可 '+(r.diagnostics.unreadable_files||0)+' / 不正な行 '+(r.diagnostics.malformed_lines||0));
+const unreadable=r.diagnostics.unreadable_files||0,malformed=r.diagnostics.malformed_lines||0;
+put('diagnostics',unreadable||malformed?'読み取れなかった履歴があります（ファイル '+unreadable+'件、行 '+malformed+'件）。該当する内容は分析に含まれていません。':'');
+document.getElementById('diagnostics').hidden=!(unreadable||malformed);
 
 // Screenshot mode uses saved structured observations only; no new AI diagnosis.
 put('summary-name',document.getElementById('name').textContent);
 put('summary-description',document.getElementById('description').textContent);
-put('summary-status',style.type_status);
+put('summary-status',typeStatus);
 if(currentJourney?.image){
  const img=el('img','summary-art');img.setAttribute('src',currentJourney.image);img.setAttribute('alt',currentJourney.alt);img.setAttribute('width','512');img.setAttribute('height','512');document.getElementById('summary-image').append(img);
 }
@@ -521,7 +826,7 @@ if(portrait){
  for(const a of portrait.axes){
   const row=el('article','summary-axis'),head=el('div','summary-axis-header');
   const state={left:a.left.label+' 寄り',right:a.right.label+' 寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state]||'材料不足';
-  head.append(el('h4','',a.title),el('strong','',state));row.append(head);
+  head.append(el('h3','',a.title),el('strong','',state));row.append(head);
   const labels=el('div','axis-labels');labels.append(el('span','',a.left.label),el('span','',a.right.label));row.append(labels);
   // A lack of evidence has no position on a scale, even when a partial estimate exists.
   if(a.state!=='insufficient'&&Number.isFinite(a.left_percent)){
@@ -544,9 +849,13 @@ function setSummaryMode(open){
 }
 document.getElementById('open-summary').onclick=()=>setSummaryMode(true);
 document.getElementById('close-summary').onclick=()=>setSummaryMode(false);
-document.addEventListener?.('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('summary-mode').hidden)setSummaryMode(false);});
+document.onkeydown=event=>{if(event.key==='Escape'&&!document.getElementById('summary-mode').hidden)setSummaryMode(false);};
 
-put('generated',(portrait?'38観点の評価：':'v'+r.version+' · ')+new Date(r.generated_at).toLocaleString('ja-JP'));
-put('updated','HTML更新：'+new Date(r.rendered_at||r.generated_at).toLocaleString('ja-JP'));
+put('generated','分析日時：'+new Date(r.generated_at).toLocaleString('ja-JP'));
+put('updated','表示の更新日時：'+new Date(r.rendered_at||r.generated_at).toLocaleString('ja-JP'));
 document.getElementById('reload-report').onclick=()=>location.reload();
+bindBackup(r);
+return {share,validShare};
+}
+let app=mountReport(initialView);
 </script></body></html>

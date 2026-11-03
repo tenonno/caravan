@@ -75,6 +75,24 @@ class PortraitTests(unittest.TestCase):
         self.assertTrue(all(a['state']=='mixed' for a in p.aggregate(packets,reviews)['axes']))
         with self.assertRaises(ValueError):p.aggregate(packets,reviews[:-1])
 
+    def test_structured_choice_does_not_prove_authored_tone(self):
+        packet=self.packet();packet['messages'][0]['origin']='structured_answer'
+        review=self.review(packet)
+        p.validate(review,packet)  # A human choice can still support an axis.
+        review['tones']['direct']=dict(status='observed',evidence=['m1'],reason='Copied wording')
+        with self.assertRaisesRegex(ValueError,'human-authored'):p.validate(review,packet)
+
+    def test_leave_one_out_uses_saved_rules_and_does_not_change_result(self):
+        packets=[self.packet(i) for i in range(5)]
+        result=p.aggregate(packets,[self.review(x,'left' if i<3 else 'right') for i,x in enumerate(packets)])
+        original=copy.deepcopy(result)
+        checks=p.material_checks(result)
+        self.assertTrue(all(v==dict(changed=2,tested=5,states=['left','mixed']) for v in checks.values()))
+        self.assertEqual(result,original)
+        result['rules']=dict(result['rules'],min_sessions=5)
+        self.assertTrue(all(v['changed']==5 and v['states']==['insufficient'] for v in p.material_checks(result).values()))
+        del result['rules'];self.assertEqual(p.material_checks(result),{})
+
     def test_discoveries_group_only_by_authored_key_and_keep_evidence(self):
         packets=[self.packet(i) for i in range(2)];reviews=[self.review(x) for x in packets]
         for r in reviews:r['discoveries']=[dict(key='same_pattern',title='Same',observation='Observed synthetic condition.',

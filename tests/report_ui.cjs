@@ -30,12 +30,51 @@ const context=vm.createContext({document:doc,Blob,URL,setTimeout,location:{reloa
 vm.runInContext(html.match(/<script>(.*?)<\/script>/s)[1],context);
 async function main(){
   if(ids['reload-report']){
-    assert.match(ids.updated.textContent,/HTML更新/);
+    assert.match(ids.updated.textContent,/表示の更新日時/);
     assert.ok(!ids.updated.textContent.includes('Invalid Date'));
     ids['reload-report'].click();assert.equal(reloads,1);
   }
-  assert.equal(ids['type-grid'].children.length,16);
   const rendered=JSON.parse(ids['report-data'].textContent);
+  const practices=rendered.practices?.items||[];
+  assert.equal(ids['practice-cases'].querySelectorAll('.practice').length,practices.filter(p=>p.featured).length);
+  assert.equal(ids['practice-more'].querySelectorAll('.practice').length,practices.filter(p=>!p.featured).length);
+  if(practices.some(p=>p.featured)){
+    assert.equal(ids['practice-picks'].querySelectorAll('button').length,practices.filter(p=>p.featured).length);
+    ids['practice-picks'].querySelector('button').click();
+    assert.ok(ids['practice-cases'].querySelector('.practice').lastScroll);
+    const sample=practices.find(p=>p.featured);
+    ids['practice-cases'].querySelector('button').click();
+    assert.equal(ids['view-comparison'].hidden,false);
+    assert.ok(ids['practice-draft'].value.includes(sample.case.question));
+    assert.ok(!ids['practice-draft'].value.includes(sample.session));
+    ids['discard-practice-text'].click();
+    assert.equal(ids['practice-draft'].value,'');
+    assert.equal(ids['practice-draft-panel'].hidden,true);
+    ids['nav-result'].click();
+  }
+  const grouped=rendered.portrait?.schema==='portrait-v1';
+  const catalogEntries=grouped?ids['type-grid'].querySelectorAll('.catalog-traveler'):ids['type-grid'].children;
+  assert.equal(catalogEntries.length,16);
+  if(grouped){
+    assert.equal(ids['type-grid'].children.length,4);
+    for(const group of ids['type-grid'].children){
+      const entries=group.querySelectorAll('.catalog-traveler');
+      assert.equal(entries.length,4);
+      assert.ok(entries.every(t=>t.dataset.code.startsWith(group.dataset.prefix)));
+      const types=rendered.portrait.classification.type_catalog.filter(t=>t.code.startsWith(group.dataset.prefix));
+      assert.equal(group.querySelector('.catalog-common').textContent,types[0].tagline.split(' / ').slice(0,2).join(' ／ '));
+      for(const entry of entries){
+        const type=types.find(t=>t.code===entry.dataset.code);
+        assert.deepEqual(entry.querySelectorAll('dd').map(e=>e.textContent),type.tagline.split(' / ').slice(2));
+      }
+    }
+  }
+  assert.equal(ids['reflection-questions'].children.length,4);
+  assert.ok(ids['material-overview'].textContent.includes('会話'));
+  assert.ok(ids['material-overview'].textContent.includes('普段の使い方すべてを表すものではありません'));
+  ids['material-evidence'].click();
+  assert.equal(ids['view-observations'].hidden,false);
+  ids['nav-result'].click();
   // Screenshot mode preserves the diagnosis and can be left by button or Escape.
   const summaryName=ids['summary-name'].textContent;
   ids['open-summary'].click();
@@ -44,7 +83,7 @@ async function main(){
   assert.equal(ids['skip-content'].getAttribute('href'),'#summary-sheet');
   assert.equal(ids['open-summary'].getAttribute('aria-expanded'),'true');
   assert.equal(ids['close-summary'].lastFocus.preventScroll,true);
-  events.keydown({key:'Escape'});
+  doc.onkeydown({key:'Escape'});
   assert.equal(ids['summary-mode'].hidden,true);
   assert.equal(ids['report-shell'].hidden,false);
   assert.equal(ids['skip-content'].getAttribute('href'),'#report-main');
@@ -120,13 +159,13 @@ async function main(){
     }
     if(rendered.journey){
       assert.equal(rendered.journey.types.length,16);
-      for(const button of ids['type-grid'].children){
+      for(const button of catalogEntries){
         const item=rendered.journey.types.find(t=>t.code===button.dataset.code);
-        assert.equal(button.querySelector('strong').textContent,item.name);
+        assert.equal(button.querySelector(grouped?'h3':'strong').textContent,item.name);
         assert.equal(button.querySelector('img').getAttribute('src'),item.image);
         assert.equal(button.querySelector('img').getAttribute('alt'),item.alt);
-        button.click();
-        assert.equal(ids['type-detail'].querySelector('img').getAttribute('src'),item.image);
+        assert.equal(button.querySelector('.type-summary').textContent,item.summary);
+        assert.equal(button.querySelectorAll('.type-axis').length,grouped?2:4);
       }
       // Missing evidence must not select a cute illustration as an implicit diagnosis.
       const mixed=structuredClone(rendered);
@@ -143,8 +182,8 @@ async function main(){
       assert.equal(alternateIds.name.textContent,'タイプは保留');
     }
     const mismatch=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));mismatch.method=rendered.method;
-    context.input=mismatch;assert.equal(vm.runInContext('validShare(input)',context),false);
-  }else{assert.ok(ids['portrait-axes'].textContent.includes('未評価'));assert.equal(ids['journey-hero'].hidden,true);assert.equal(ids['type-grid'].querySelectorAll('img').length,0);}
+    context.input=mismatch;assert.equal(vm.runInContext('app.validShare(input)',context),false);
+  }else{assert.ok(ids['portrait-axes'].textContent.includes('まだ分析していません'));assert.equal(ids['journey-hero'].hidden,true);assert.equal(ids['type-grid'].querySelectorAll('img').length,0);}
   const coverage=rendered.sampling.source_coverage;
   if(coverage){
     assert.equal(ids['source-coverage'].children.length,coverage.length+1);
@@ -153,13 +192,21 @@ async function main(){
     }
   }else{assert.ok(ids['source-coverage'].children[0].textContent.includes('内訳がありません'));}
   const original=ids.name.textContent;
-  for(const b of ids['type-grid'].children){b.click();assert.equal(b.getAttribute('aria-pressed'),'true');assert.equal(ids['type-detail'].querySelector('h3').textContent,b.querySelector('strong').textContent);assert.equal(ids['type-detail'].lastScroll.block,'start');assert.equal(ids['type-detail'].lastFocus.preventScroll,true);}
+  for(const entry of catalogEntries){
+    assert.ok(entry.querySelector('.type-summary').textContent);
+    if(grouped){assert.equal(entry.tag,'article');assert.ok(entry.querySelector('.catalog-differences'));}
+    else{
+      assert.equal(entry.tag,'details');assert.ok(entry.querySelector('summary'));
+      assert.ok(entry.querySelector('.type-detail'));
+      assert.equal(entry.open,undefined,'legacy explanations start collapsed');
+    }
+  }
   assert.equal(ids.name.textContent,original,'browsing does not alter the diagnosis');
   ids['example-role'].value='designer';ids['example-role'].onchange();
   const profile=JSON.parse(fs.readFileSync(process.argv[3] || 'output/share-profile.json','utf8'));
-  const exported=JSON.parse(vm.runInContext('JSON.stringify(share())',context));
+  const exported=JSON.parse(vm.runInContext('JSON.stringify(app.share())',context));
   assert.deepEqual(exported,profile,'HTML and file export must agree, including legacy omissions and process forms');
-  const runValid=p=>{context.input=p;return vm.runInContext('validShare(input)',context);};
+  const runValid=p=>{context.input=p;return vm.runInContext('app.validShare(input)',context);};
   assert.equal(runValid(profile),true);
   for(const edit of [p=>p.method='old',p=>p.metrics[0]=null,p=>p.metrics[0].id='__proto__',p=>p.metrics[0].session_rate=101,p=>p.metrics.push(p.metrics[0])]){
     const invalid=structuredClone(profile);edit(invalid);assert.equal(runValid(invalid),false);

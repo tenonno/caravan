@@ -188,6 +188,12 @@ def render(report):
     # No raw logs enter this HTML. Escaping also protects future schema extensions.
     import journey
     view = dict(report, rendered_at=datetime.now(timezone.utc).isoformat())
+    if name == 'semantic-report.html':
+        import backup, rubric
+        if 'private_backup' not in view: view['private_backup'] = dict(schema=backup.SCHEMA,report=report,execution_audit=None)
+        view['viewer_assets'] = journey.presentation({'portrait':{'schema':'portrait-v1'}})
+        view['viewer_definitions'] = [{k:v for k,v in p.items() if k!='pattern'} for p in rubric.PERSPECTIVES]
+        template = template.replace('__PRIVATE_BACKUP_JS__', (Path(__file__).parent.parent/'assets/private-backup.js').read_text(encoding='utf-8'))
     artwork = journey.presentation(report)
     if artwork is not None:
         view['journey'] = artwork

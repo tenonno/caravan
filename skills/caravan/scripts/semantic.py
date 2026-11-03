@@ -1,7 +1,7 @@
 """Bounded conversation packets -> agent-authored reviews -> private HTML. No API calls."""
 from __future__ import annotations
 import argparse
-from collections import Counter, defaultdict
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -13,10 +13,11 @@ import developer_report
 import rubric
 import execution
 import portrait
+import sampling
 
 RUBRIC = 'semantic-38-v3'
-EXTRACTOR = 'dialogue-events-v3'
-SAMPLER = 'source-balanced-v1'
+EXTRACTOR = sampling.WINDOW_VERSION
+SAMPLER = sampling.VERSION
 SOURCES = ('codex', 'claude', 'antigravity')
 MODES = {'light': (6, 12000), 'standard': (12, 24000), 'deep': (24, 48000)}
 PERSPECTIVES = rubric.PERSPECTIVES
@@ -38,12 +39,38 @@ def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
 
 def redact(text):
+    # Make omissions visible; a blank after "see this code" is not full context.
+    text = re.sub(r'```.*?```', '[code omitted]', text, flags=re.S)
+    text = re.sub(r'(?m)^\s*>[^\n]*', '[quoted text omitted]', text)
+    text = re.sub(r'<image\b[^>]*>.*?</image>', '[image omitted]', text, flags=re.S)
     text = base.clean_text(text)
     text = re.sub(r'(?i)(?:api[_-]?key|password|token|secret)\s*[:=]\s*\S+', '[credential omitted]', text)
     text = re.sub(r'\b(?:sk-|ghp_|github_pat_)[A-Za-z0-9_-]{15,}', '[credential omitted]', text)
     text = re.sub(r'[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}', '[email]', text)
-    text = re.sub(r'[A-Za-z]:[\\/][^\s<>"\n]+', '[local path]', text)
+    text = re.sub(r'(?<![A-Za-z0-9])[A-Za-z]:[\\/][^\s<>"\n]+', '[local path]', text)
     return text
+
+
+def attributed_messages(role, text):
+    """Separate the known question-answer envelope, never assign AI wording to a user.
+
+    A selected answer is human choice evidence, not evidence of authored tone.
+    Other JSON remains ordinary text; do not guess ownership of arbitrary objects.
+    """
+    if role == 'user':
+        envelope=re.fullmatch(r'\s*<send_user_message_question_reply>\s*(.*?)\s*</send_user_message_question_reply>\s*',text,re.S)
+        payload=envelope.group(1) if envelope else text
+        try:
+            values = json.loads(payload)
+        except (ValueError, TypeError):
+            values = None
+        if isinstance(values, list) and values and all(
+            isinstance(v, dict) and set(v) == {'questionItemId', 'question', 'answer'}
+            and all(isinstance(v[k], str) for k in v) for v in values
+        ):
+            return [(r, v[k], origin) for v in values for r, k, origin in
+                    [('assistant', 'question', 'structured_question'), ('user', 'answer', 'structured_answer')]]
+    return [(role, text, 'message')]
 
 def project_key(value):
     # Treat Windows paths and file URIs consistently without changing POSIX case.
@@ -117,37 +144,21 @@ def transcript(path, source, cutoff, now, stats, metadata=None, metadata_only=Fa
         date = base.parse_time(timestamp)
         if not date or not cutoff <= date <= now:
             continue
-        text = redact(text)
-        key = (timestamp,role,text)
-        if not text or key in seen:
-            continue
-        seen.add(key)
-        cleaned.append(dict(id='m'+str(len(cleaned)+1),role=role,text=text,date=date.isoformat()))
+        for attributed_role, content, origin in attributed_messages(role, text):
+            content = redact(content)
+            key = (timestamp, attributed_role, content, origin)
+            if not content or key in seen:
+                continue
+            seen.add(key)
+            cleaned.append(dict(id='m'+str(len(cleaned)+1),role=attributed_role,text=content,
+                                origin=origin,date=date.isoformat()))
     if not any(m['role']=='user' for m in cleaned):
         return None
     return dict(key=digest([source,sid])[:20],source=source,project=project_key(project),messages=cleaned,
                 date=cleaned[0]['date'],fingerprint=digest([cleaned,record]),execution=record)
 
 def window(session, char_limit=2000):
-    msgs=session['messages']
-    starts=[i for i,m in enumerate(msgs) if m['role']=='user' and any(x['role']=='assistant' for x in msgs[i+1:i+3])]
-    start=starts[len(starts)//2] if starts else next(i for i,m in enumerate(msgs) if m['role']=='user')
-    event_budget=min(600,char_limit//3)
-    chosen=[]; remaining=char_limit-event_budget
-    # One contiguous window; never silently stitch unrelated exchanges together.
-    for m in msgs[start:start+5]:
-        if remaining < 80:
-            break
-        limit=min(500 if m['role']=='user' else 600,remaining)
-        if not chosen and m['role']=='user':limit=min(limit,(char_limit-event_budget)//2)
-        excerpt=m['text'][:limit]
-        chosen.append(dict(id=m['id'],role=m['role'],text=excerpt,truncated=len(excerpt)<len(m['text'])))
-        remaining-=len(excerpt)
-    facts=execution.excerpt(session.get('execution'),msgs[start]['date'],msgs[start+len(chosen)-1]['date'],event_budget)
-    return dict(session=session['key'],source=session['source'],messages=chosen,
-                execution=facts,
-                omitted_messages=len(msgs)-len(chosen),fingerprint=session['fingerprint'],
-                cache_key=digest([RUBRIC,EXTRACTOR,char_limit,session['fingerprint'],chosen,facts]))
+    return sampling.window(session, char_limit, RUBRIC)
 
 
 def packet_size(packet):
@@ -159,8 +170,9 @@ def exclusions(output, extra=None):
     saved=json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
     if not isinstance(saved,list):raise ValueError('excluded-sessions.json must be a list')
     values=saved+list(extra or [])
-    if not all(isinstance(x,str) and x.startswith('antigravity:') and len(x)>12 for x in values):
-        raise ValueError('Excluded sessions must use antigravity:<session-id>')
+    if not all(isinstance(x,str) and ((x.startswith('antigravity:') and len(x)>12)
+               or re.fullmatch(r'sample:[0-9a-f]{20}',x)) for x in values):
+        raise ValueError('Excluded sessions must use antigravity:<session-id> or sample:<20-hex packet session key>')
     return set(values)
 
 
@@ -180,7 +192,7 @@ def scan_execution(home, output, days=90, consent=False, exclude_project=None, e
     for source,path,metadata in source_files(home,stats,excluded):
         stats['files_scanned']+=1
         session=transcript(path,source,cutoff,now,stats,metadata,metadata_only=True)
-        if not session or session['project']==project:continue
+        if not session or session['project']==project or 'sample:'+session['key'] in excluded:continue
         old=unique.get(session['key'])
         if old is None or len(session['execution']['events'])>len(old['events']):unique[session['key']]=session['execution']
     audit=execution.aggregate(unique.values())
@@ -190,10 +202,14 @@ def scan_execution(home, output, days=90, consent=False, exclude_project=None, e
     print(json.dumps(audit,ensure_ascii=True))
     return audit
 
-def prepare(home, output, mode='standard', days=90, max_chars=None, consent=False, exclude_project=None, exclude_sessions=None):
+def prepare(home, output, mode='standard', days=90, max_chars=None, consent=False, exclude_project=None, exclude_sessions=None, sample_count=None, sample_seed='caravan-v2'):
     if not consent:
         raise ValueError('Consent required. Local logs may contain confidential material. Reading packets in a cloud agent sends them to its model provider. Confirm organization rules and execution route first. This script does not route to Bedrock or guarantee redaction. Use --allow-agent-read only after explicit user consent.')
     max_sessions,budget=MODES[mode]
+    if sample_count is not None:
+        if not 1 <= sample_count <= 24:
+            raise ValueError('sample-count must be between 1 and 24')
+        max_sessions=sample_count
     if max_chars is not None:
         if max_chars < 1000: raise ValueError('max-chars must be at least 1000')
         budget=min(budget,max_chars)
@@ -204,47 +220,44 @@ def prepare(home, output, mode='standard', days=90, max_chars=None, consent=Fals
         if 'subagents' in path.parts: continue
         stats['files_scanned']+=1
         session=transcript(path,source,cutoff,now,stats,metadata)
+        if session and 'sample:'+session['key'] in excluded:
+            stats['excluded_sessions'] += 1
+            continue
         if session:
             session['message_count']=len(session['messages'])
             session['user_count']=sum(m['role']=='user' for m in session['messages'])
             session['has_assistant']=any(m['role']=='assistant' for m in session['messages'])
             session['user_chars']=sum(len(m['text']) for m in session['messages'] if m['role']=='user')
-            session['packet']=window(session,min(2000,budget//max_sessions))
+            session['_location']=(source,path,metadata)
             del session['messages']  # Do not retain the full archive in memory.
             if session['key'] not in unique or session['message_count']>unique[session['key']]['message_count']:
                 unique[session['key']]=session
     # Allocate one slot per source per round, then rotate month/project within it.
     # A source with many projects must not exhaust the slots before another source.
-    groups=defaultdict(lambda: defaultdict(list))
     excluded_project=project_key(exclude_project) if exclude_project else None
     eligible=[s for s in unique.values() if s['project']!=excluded_project and s['user_count']>=2
               and s['has_assistant'] and s['user_chars']>=80]
     if len({s['source'] for s in eligible})>max_sessions:
-        raise ValueError('Budget too small to include every eligible agent source; increase --max-chars '
-                         f'to at least {600*len({s["source"] for s in eligible})}. No source was silently omitted.')
-    for session in eligible: groups[session['source']][(session['date'][:7],session['project'])].append(session)
-    queues={}
-    for source,strata in sorted(groups.items()):
-        for group in strata.values():group.sort(key=lambda s:s['key'])
-        queue=[]
-        while any(strata.values()):
-            for key in sorted(strata):
-                if strata[key]:queue.append(strata[key].pop(0))
-        queues[source]=queue
-    selected=[];pending=[];cache_hits=0;chars=0
-    while any(queues.values()) and len(selected)<max_sessions:
-        for source in sorted(queues):
-            if not queues[source] or len(selected)>=max_sessions: continue
-            session=queues[source].pop(0)
-            packet=session['packet']
-            cost=packet_size(packet)
-            if chars+cost>budget: raise ValueError('Packet size exceeded reserved budget; no partial source sample written')
-            chars+=cost;selected.append(packet)
-            cached=output/'cache'/f"{packet['cache_key']}.json"
-            if cached.exists():
-                try: validate_review(json.loads(cached.read_text(encoding='utf-8')),packet);cache_hits+=1;continue
-                except (ValueError,KeyError,TypeError): pass
-            pending.append(packet)
+        raise ValueError('Budget too small to include every eligible agent source; increase the mode or --sample-count, '
+                         f'and ensure --max-chars is at least {600*len({s["source"] for s in eligible})}. No source was silently omitted.')
+    chosen=sampling.ordered_sessions(eligible,sample_seed)[:max_sessions]
+    # Re-read only the selected sessions locally, and reject a changing corpus.
+    contexts=[]
+    for session in chosen:
+        source,path,metadata=session['_location']
+        context=transcript(path,source,cutoff,now,Counter(),metadata)
+        if context is None or context['fingerprint'] != session['fingerprint']:
+            raise ValueError('History changed during sampling; retry preparation')
+        contexts.append(context)
+    selected=sampling.pack(contexts,budget,RUBRIC,sample_seed)
+    chars=sum(map(packet_size,selected));pending=[];cache_hits=0
+    for packet in selected:
+        cached=output/'cache'/f"{packet['cache_key']}.json"
+        if cached.exists():
+            try: validate_review(json.loads(cached.read_text(encoding='utf-8')),packet);cache_hits+=1;continue
+            except (ValueError,KeyError,TypeError): pass
+        pending.append(packet)
+    coverage=sampling.coverage(eligible,chosen,selected,budget)
     source_coverage=[]
     for source in SOURCES:
         available=sum(s['source']==source for s in unique.values())
@@ -256,7 +269,7 @@ def prepare(home, output, mode='standard', days=90, max_chars=None, consent=Fals
                 else '会話量の条件を満たさない（人2発言・計80文字以上とAI応答が必要）')
         source_coverage.append(dict(source=source,available_sessions=available,excluded_project_sessions=excluded_count,
                                     eligible_sessions=eligible_count,selected_sessions=chosen_count,reason=reason))
-    manifest=dict(schema=RUBRIC,extractor=EXTRACTOR,sampler=SAMPLER,source_coverage=source_coverage,mode=mode,days=days,generated_at=now.isoformat(),
+    manifest=dict(schema=RUBRIC,extractor=EXTRACTOR,sampler=SAMPLER,sample_seed=sample_seed,coverage=coverage,source_coverage=source_coverage,mode=mode,days=days,generated_at=now.isoformat(),
                   total_sessions=len(unique),eligible_sessions=len(eligible),selected=selected,cache_hits=cache_hits,read_chars=chars,
                   consent=dict(route='current-agent',explicit=True,at=now.isoformat()),
                   excluded_project=excluded_project,
@@ -313,8 +326,12 @@ def render_pages(output, report=None):
     if not report.get('method','').startswith('semantic-'):
         raise ValueError('A semantic report is required')
     view=rubric.display_report(report)
+    if report.get('portrait'):
+        view['material_checks']=portrait.material_checks(report['portrait'])
     if (output/'execution-audit.json').exists():
         view['execution_audit']=json.loads((output/'execution-audit.json').read_text(encoding='utf-8'))
+    import backup
+    view['private_backup']=backup.bundle(report,view.get('execution_audit'))
     markup=base.render(view)
     details=developer_report.render(view,RUBRIC,EXTRACTOR,MODES)
     (output/'index.html').write_text(markup,encoding='utf-8')
@@ -361,7 +378,7 @@ def finalize(output, reviews_path=None):
                 sample_key=portrait.sample_key(manifest['selected']),
                 messages=user_messages,sessions=len(reviews),sources=dict(Counter(p['source'] for p in manifest['selected'])),
                 perspectives=perspectives,diagnostics=manifest['diagnostics'],**classification,
-                sampling={k:manifest[k] for k in ('mode','total_sessions','eligible_sessions','cache_hits','read_chars','new_read_chars','char_budget','session_budget','sampler','source_coverage') if k in manifest},
+                sampling={k:manifest[k] for k in ('mode','total_sessions','eligible_sessions','cache_hits','read_chars','new_read_chars','char_budget','session_budget','sampler','extractor','source_coverage','coverage','sample_seed') if k in manifest},
                 analysis_note='38観点で使い方を観察。頻度や選択肢は能力や優劣を表さない。分類は従来18観点のみ。実行記録は本人の意図と別に扱い、不明は推測しない。')
     write(output/'report.json',report);write(output/'share-profile.json',base.make_share(report))
     render_pages(output,report)
@@ -369,23 +386,36 @@ def finalize(output, reviews_path=None):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command',choices=['notice','prepare','finalize','render','scan-execution','prepare-portrait','finalize-portrait']);parser.add_argument('--home',type=Path,default=Path.home())
+    parser.add_argument('command',choices=['notice','prepare','finalize','render','scan-execution','prepare-portrait','finalize-portrait','prepare-practices','finalize-practices','export-backup','restore-backup']);parser.add_argument('--home',type=Path,default=Path.home())
+    parser.add_argument('--backup',type=Path,help='Private backup file to save or restore')
+    parser.add_argument('--replace',action='store_true',help='Replace existing result files, keeping before-restore.backup.json')
     parser.add_argument('--output',type=Path,default=Path('output/semantic'));parser.add_argument('--mode',choices=MODES,default='standard')
+    parser.add_argument('--sample-count',type=int,help='Experimental breadth cap 1–24, within the selected character budget; review output cost also grows.')
+    parser.add_argument('--sample-seed',default='caravan-v2',help='Reproducible coverage sample seed; changing it requires new reviews.')
     parser.add_argument('--days',type=int,default=90);parser.add_argument('--max-chars',type=int);parser.add_argument('--reviews',type=Path)
     parser.add_argument('--allow-agent-read',action='store_true',help='Only after the user consents to reading private excerpts through the current agent provider; not a Bedrock connector.')
     parser.add_argument('--exclude-project',type=Path,help='Exclude this exact working directory from analysis, e.g. the diagnosis project itself.')
-    parser.add_argument('--exclude-session',action='append',default=[],help='Exclude an Antigravity session: antigravity:<session-id>. Repeatable; also reads <output>/excluded-sessions.json.')
+    parser.add_argument('--exclude-session',action='append',default=[],help='Exclude antigravity:<session-id> or sample:<packet session key> for any source. Repeatable; also reads <output>/excluded-sessions.json.')
     args=parser.parse_args()
     if args.days<1: parser.error('days must be positive')
-    if args.command in ('prepare','scan-execution','prepare-portrait') and not args.allow_agent_read:
+    if args.command in ('prepare','scan-execution','prepare-portrait','prepare-practices') and not args.allow_agent_read:
         print(NOTICE)
         parser.error('Explicit consent to the current agent route is required before preparing excerpts.')
-    if args.command=='notice': print(NOTICE)
+    if args.command in ('export-backup','restore-backup'):
+        import backup
+        if not args.backup: parser.error('--backup is required')
+        if args.command=='export-backup':backup.export(args.output,args.backup)
+        else:backup.restore(args.backup,args.output,args.replace)
+    elif args.command in ('prepare-practices','finalize-practices'):
+        import practices
+        if args.command=='prepare-practices':practices.prepare(args.output,args.allow_agent_read)
+        else:practices.finalize(args.output,args.reviews)
+    elif args.command=='notice': print(NOTICE)
     elif args.command=='prepare-portrait':portrait.prepare(args.output,args.allow_agent_read)
     elif args.command=='finalize-portrait':portrait.finalize(args.output,args.reviews)
     elif args.command=='render': render_pages(args.output)
     elif args.command=='scan-execution':scan_execution(args.home,args.output,args.days,args.allow_agent_read,args.exclude_project,args.exclude_session)
-    elif args.command=='prepare': prepare(args.home,args.output,args.mode,args.days,args.max_chars,args.allow_agent_read,args.exclude_project,args.exclude_session)
+    elif args.command=='prepare': prepare(args.home,args.output,args.mode,args.days,args.max_chars,args.allow_agent_read,args.exclude_project,args.exclude_session,args.sample_count,args.sample_seed)
     else: finalize(args.output,args.reviews)
 
 if __name__=='__main__': main()

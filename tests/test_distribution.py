@@ -1,3 +1,4 @@
+import ast
 import importlib.util
 from contextlib import contextmanager
 import os
@@ -28,6 +29,19 @@ def temporary_workspace():
 
 
 class DistributionTests(unittest.TestCase):
+    def test_runtime_imports_are_stdlib_or_bundled(self):
+        scripts = ROOT / 'skills/caravan/scripts'
+        bundled = {p.stem for p in scripts.glob('*.py')}
+        for path in scripts.glob('*.py'):
+            tree = ast.parse(path.read_text(encoding='utf-8'))
+            for node in ast.walk(tree):
+                names = ([a.name for a in node.names] if isinstance(node, ast.Import)
+                         else [node.module] if isinstance(node, ast.ImportFrom) and node.module
+                         else [])
+                for name in names:
+                    with self.subTest(file=path.name, module=name):
+                        self.assertIn(name.split('.')[0], sys.stdlib_module_names | bundled)
+
     def test_installed_skill_works_from_another_workspace(self):
         # Synthetic, empty history only; never inspect the real user's home.
         for host in ('.codex', '.claude'):
@@ -51,7 +65,7 @@ class DistributionTests(unittest.TestCase):
 
                 def run(*args):
                     return subprocess.run(
-                        [sys.executable, '-B', str(script), *map(str, args)],
+                        [sys.executable, '-S', '-B', str(script), *map(str, args)],
                         cwd=workspace, capture_output=True, encoding='utf-8',
                         env={**os.environ, 'PYTHONIOENCODING': 'utf-8'})
 
@@ -68,7 +82,7 @@ class DistributionTests(unittest.TestCase):
                 self.assertTrue((output / 'index.html').is_file())
                 self.assertTrue((output / 'developer.html').is_file())
                 art = subprocess.run(
-                    [sys.executable, '-B', '-c',
+                    [sys.executable, '-S', '-B', '-c',
                      'import sys; sys.path.insert(0, sys.argv[1]); import journey; '
                      'items=journey.presentation({"portrait":{"schema":"portrait-v1"}})["types"]; '
                      'assert len(items)==16; assert all(x["image"].startswith("data:image/jpeg;base64,") for x in items)',
@@ -131,7 +145,7 @@ class DistributionTests(unittest.TestCase):
                 archive.extractall(Path(directory) / 'unpacked')
             unpacked = Path(directory) / 'unpacked/caravan'
             result = subprocess.run(
-                [sys.executable, 'skills/caravan/scripts/semantic.py', 'notice'],
+                [sys.executable, '-S', 'skills/caravan/scripts/semantic.py', 'notice'],
                 cwd=unpacked, capture_output=True, encoding='utf-8',
                 env={**os.environ, 'PYTHONIOENCODING': 'utf-8'})
             self.assertEqual(result.returncode, 0, result.stderr)

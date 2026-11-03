@@ -97,7 +97,7 @@ python skills/caravan/scripts/semantic.py finalize --output output/semantic --re
 
 標準の閲覧先は常に `output/semantic/index.html` です。日時付きHTMLは新規生成しません。画面下部の「HTML更新」で表示内容の更新日時を確認できます。古い表示が残るときは上部の「再読み込み」またはアプリ側で同じファイルを開き直してください。以前作られた日時付きファイルは更新対象ではありません。
 
-結果ページは「結果」「詳しい観察」「比較・共有」「16タイプ」を切り替える構成です。最初の画面にはタイプ・4軸・発見メモ・口調をまとめ、根拠は折りたたんでいます。38観点は「詳しい観察」で検索・絞り込みでき、各観点を開くと説明と根拠を読めます。表示を切り替えても診断データは変わりません。
+結果ページは「結果」「詳しい観察」「比較・共有」「16タイプ」を切り替える構成です。冒頭は旅人・タイプと4軸を並べて全体像を示し、その下へスクロールすると具体的な工夫の要点・場面・問い・手順・口調を読めます。説明全体は折りたたまず、根拠の発言番号などの補足だけを開閉します。38観点は「詳しい観察」で検索・絞り込みでき、各観点を開くと説明と根拠を読めます。表示を切り替えても診断データは変わりません。
 
 4軸の16タイプには、旅をテーマにした愛称と共通の旅人・AIの相棒のイラストがあります。`skills/caravan/assets/journey-types.json` がコードと表示名・短い説明の対応表です。保存済みの判定コードから表示名を選ぶため、再描画で診断結果や評価日時は変わりません。材料不足・中間の結果には、単独タイプの画像を当てはめません。旧分類には適用しません。共有JSONは評価時の名前を保持し、画像や制作プロンプトを含めません。
 
@@ -112,6 +112,21 @@ python skills/caravan/scripts/semantic.py finalize --output output/semantic --re
 ```powershell
 python skills/caravan/scripts/semantic.py render --output output/semantic
 ```
+
+## 見た目の更新に備えて本人用データを保存する
+
+「比較・共有」→「本人用データを保存・復元」で `caravan-private.backup.json` を保存できます。根拠の説明・口調・発見メモ・実行集計を含む本人用であり、他人への共有用ではありません。元の抜粋や評価キャッシュは含みません。
+
+新しい結果画面からこのファイルを読み込むと、再分析せず表示を復元します。ブラウザー内だけの復元なので、閉じると消え、元のHTMLやJSONは上書きしません。再保存すると、読み込んだ分析をそのまま保存します。元の開発者詳細ページは別の結果を指すため、読込後はリンクを隠します。
+
+ファイルとして両画面を再生成する場合は、AIに「この本人用バックアップからレポートを復元して」と依頼できます。実際のスキルの場所に合わせて以下を実行します。
+
+```text
+python skills/caravan/scripts/semantic.py export-backup --output output/semantic --backup output/semantic/caravan-private.backup.json
+python skills/caravan/scripts/semantic.py restore-backup --output output/semantic --backup <本人用バックアップのパス> --replace
+```
+
+既存結果のない保存先では `--replace` は不要です。置換前の結果は `before-restore.backup.json` に残します。不正なデータは反映前に拒否し、診断日時を変更しません。共有用JSONから根拠・口調を復元することはできません。将来の未対応形式は推測して読み込まず拒否します。新しい観点の分析には元の抜粋または履歴が別途必要です。
 
 ## 次回は差分だけ読む
 
