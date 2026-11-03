@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>AI SINDAN — AIとの働き方</title>
+<style>
+:root {
+  --paper: #f7f4eb;
+  --surface: #fffcf6;
+  --ink: #263f39;
+  --muted: #5d695f;
+  --accent: #21675f;
+  --ochre: #b46b28;
+  --soft: #e5ede3;
+  --line: #dcd8c9;
+  --focus: #21675f;
+  --hover: #eeecdf;
+  --action-hover: #19544d;
+  --control-line: #7c8674;
+  --text-small: .8125rem;
+  --text-body: .9375rem;
+  --radius-panel: 12px;
+  --title-font: "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 24px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: var(--text-body)/1.75 "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; }
+::selection { background: #cbded0; color: var(--ink); }
+input, select { caret-color: var(--accent); accent-color: var(--accent); }
+input::placeholder { color: var(--muted); opacity: 1; }
+button:disabled, input:disabled, select:disabled { cursor: default; opacity: .6; }
+.skip-link { position: absolute; top: 8px; left: 16px; z-index: 10; transform: translateY(-180%); padding: 10px 16px; background: var(--surface); border: 1px solid var(--accent); }
+.skip-link:focus { transform: none; }
+button, input, select { font: inherit; color: inherit; }
+button, a, summary { touch-action: manipulation; }
+button { cursor: pointer; }
+a { color: var(--accent); text-underline-offset: 4px; }
+button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+[hidden] { display: none !important; }
+p, h1, h2, h3, h4 { margin: 0; overflow-wrap: anywhere; }
+p + p { margin-top: 8px; }
+h1, h2 { font-family: var(--title-font); font-weight: 600; }
+h1 { font-size: 3rem; line-height: 1.35; letter-spacing: -.025em; text-wrap: balance; }
+h2 { font-size: 1.75rem; line-height: 1.5; }
+h3 { font-size: 16px; }
+h4 { font-size: 15px; }
+img { max-width: 100%; }
+.shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); width: min(100%, 1600px); min-height: 100vh; margin: auto; }
+.topbar { padding: 0 8px 40px; }
+.brand { font-size: 25px; font-weight: 750; letter-spacing: .02em; }
+.brand span { display: block; font-size: 13px; color: var(--soft); margin-top: 8px; font-weight: 400; }
+.top-actions { display: flex; flex-direction: column; align-items: start; gap: 8px; font-size: 13px; margin-top: auto; padding: 28px 8px 0; }
+.quiet-button { min-height: 44px; border: 1px solid var(--control-line); border-radius: 6px; background: transparent; padding: 8px 12px; }
+.quiet-button:hover, .toolbar button:hover { background: var(--hover); }
+.quiet-button:active, .toolbar button:active { background: var(--soft); }
+.top-actions a { display: inline-flex; align-items: center; min-height: 44px; }
+.navigation { display: flex; flex-direction: column; gap: 8px; padding: 0; }
+.navigation button { min-height: 52px; min-width: 0; border: 1px solid transparent; border-radius: 6px; background: transparent; padding: 12px 18px; text-align: left; color: var(--surface); font-size: 15px; font-weight: 600; }
+.navigation button[aria-pressed=true] { border-color: var(--paper); background: var(--paper); color: var(--ink); }
+.navigation button:hover { background: var(--action-hover); }
+.navigation button:active { background: var(--ink); }
+.muted, .evidence, .small { color: var(--muted); }
+.evidence, .small { font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+.result-board { min-width: 0; }
+.result-copy { min-width: 0; padding: 0 0 32px; }
+.result-copy.has-art { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: 24px; }
+.journey-hero { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; max-width: 480px; justify-self: center; border-radius: 12px; order: 2; }
+.result-text { min-width: 0; max-width: 55ch; order: 1; }
+.result-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 24px; }
+.status { display: inline-block; color: var(--muted); font-size: var(--text-small); }
+.type-letters { display: inline-flex; gap: 6px; color: var(--accent); }
+.type-letters span { display: inline-grid; place-items: center; width: 28px; height: 32px; border: 1px solid var(--line); border-radius: 4px; font-size: 14px; font-weight: 700; }
+#description { font-size: 1rem; line-height: 1.9; margin-top: 20px; max-width: 38ch; }
+.sample-strip { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--text-small); color: var(--muted); margin-top: 20px; font-variant-numeric: tabular-nums; }
+.sample-strip b { font-size: 14px; font-weight: 650; color: var(--ink); }
+.axis-section { padding: 24px 28px 12px; background: var(--soft); border-radius: var(--radius-panel); }
+.axis-section > h2 { font-size: 1.375rem; margin-bottom: 24px; }
+.axis-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px 28px; align-items: start; }
+.axis-item { min-width: 0; padding: 0 0 8px; }
+.axis-header { display: flex; flex-direction: column; align-items: start; gap: 4px; }
+.axis-header h3 { font-size: 13px; font-weight: 500; color: var(--muted); }
+.axis-header strong { font-size: 15px; font-weight: 650; }
+.axis-labels { display: flex; justify-content: space-between; gap: 20px; margin: 8px 0; color: var(--muted); font-size: 11px; }
+.axis-labels span { max-width: 48%; }
+.axis-labels span:last-child { text-align: right; }
+.axis-track { height: 7px; margin: 12px 7px; border-radius: 4px; position: relative; background: linear-gradient(90deg, #ccdcd0 0 50%, #e7d8b9 50% 100%); }
+.axis-track:after { content: ""; position: absolute; left: 50%; top: -3px; height: 13px; border-left: 1px solid #8d9985; }
+.axis-marker { position: absolute; top: -3px; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent); transform: translateX(-50%); z-index: 1; }
+.axis-item details { margin-top: 8px; }
+.axis-item summary { color: var(--muted); font-size: 11px; }
+summary { cursor: pointer; width: fit-content; max-width: 100%; min-height: 36px; padding: 6px 0; font-weight: 600; overflow-wrap: anywhere; }
+summary:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+details { min-width: 0; }
+details[open] > summary { margin-bottom: 12px; }
+details p { font-size: 13px; max-width: 70ch; }
+details p + p { margin-top: 10px; }
+.context-note { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin: 48px 0 24px; }
+.section-head p { font-size: 12px; color: var(--muted); }
+.notes-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.discovery-card { min-width: 0; border-top: 1px solid var(--ochre); padding: 20px 0 0; }
+.discovery-card h3 { font-family: var(--title-font); font-size: 20px; line-height: 1.6; margin-bottom: 12px; }
+.discovery-card .observation { font-size: 14px; color: var(--muted); }
+.discovery-card details { padding-top: 12px; margin-top: 4px; }
+.discovery-card summary { font-size: 12px; color: var(--accent); }
+.discovery-card .question { font-weight: 600; }
+.tone-section { margin-top: 40px; padding-top: 4px; border-top: 1px solid var(--line); }
+.tone-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.tone-row { min-width: 0; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.tone-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.tone-top h3 { font-size: 15px; font-weight: 600; }
+.tone-number { flex: none; font-size: var(--text-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tone-track { height: 4px; background: #e6e2d5; border-radius: 3px; margin: 8px 0; }
+.tone-track span { display: block; height: 100%; background: #659082; border-radius: 3px; }
+.tone-row summary { font-size: 11px; color: var(--muted); font-weight: 400; }
+.panel-intro { max-width: 70ch; margin-bottom: 32px; }
+.panel-intro p { margin-top: 12px; font-size: 14px; color: var(--muted); }
+.filterbar { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin: 24px 0; padding: 20px; background: var(--soft); border-radius: var(--radius-panel); }
+.filterbar label { min-width: 0; display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--muted); }
+input[type=search], select { min-height: 44px; max-width: 100%; border: 1px solid var(--control-line); border-radius: 6px; background: var(--surface); padding: 9px 11px; }
+input[type=search] { width: 260px; }
+.lens-group { font-family: var(--title-font); font-size: 23px; margin: 36px 0 16px; }
+.lens-grid { min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.lens { padding: 0 18px; border-bottom: 1px solid var(--line); }
+.lens:last-child { border: 0; }
+.lens > details > summary { list-style: none; width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px 0; }
+.lens > details > summary::-webkit-details-marker { display: none; }
+.lens > details > summary:after { content: ''; flex: none; width: 8px; height: 8px; margin: 0 4px; border: solid var(--accent); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.lens > details[open] > summary:after { transform: rotate(225deg); }
+.lens-summary { min-width: 0; flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 15px; font-weight: 600; }
+.lens-summary small { flex: none; font-size: 11px; text-align: right; font-weight: 400; color: var(--muted); }
+.lens-body { padding: 0 0 18px; }
+.lens-description { font-size: 13px; margin-bottom: 12px; }
+.example { padding: 12px; margin-top: 12px; border-radius: 5px; background: var(--paper); font-size: 13px; }
+.example-label { display: block; font-size: 11px; margin-bottom: 4px; color: var(--muted); }
+.support-details { margin: 20px 0; padding: 16px 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.support-details > summary { font-size: 14px; }
+.support-details h3 { margin: 18px 0 9px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0; }
+.toolbar button { min-height: 44px; padding: 9px 14px; border: 1px solid var(--control-line); border-radius: 6px; background: var(--surface); font-size: var(--text-small); }
+.toolbar button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.toolbar button.primary:hover { background: var(--action-hover); }
+.toolbar button.primary:active { background: var(--ink); }
+.upload-box { padding: 24px; margin: 20px 0; border: 1px dashed #a2ab96; border-radius: 8px; background: var(--surface); font-size: 14px; }
+input[type=file] { display: block; width: 100%; max-width: 100%; margin-top: 14px; font-size: 13px; }
+.error { color: #9a3428; overflow-wrap: anywhere; }
+.table-wrap { max-width: 100%; overflow: auto; }
+table { border-collapse: collapse; width: 100%; background: var(--surface); font-size: 13px; }
+th, td { min-width: 140px; padding: 12px; text-align: left; border-bottom: 1px solid var(--line); }
+thead { background: var(--soft); }
+.plain-list { padding-left: 20px; font-size: 13px; }
+.plain-list li { margin: 10px 0; }
+.type-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 24px 16px; }
+.type-button { min-width: 0; display: flex; flex-direction: column; align-items: stretch; text-align: left; padding: 10px; border: 1px solid transparent; border-radius: 12px; background: transparent; }
+.type-button[aria-pressed=true] { border-color: var(--accent); background: var(--soft); }
+.type-button:hover { border-color: var(--ochre); }
+.type-button:active { background: var(--hover); }
+/* The HTML dimension attributes provide a ratio; height must stay automatic as width shrinks. */
+.type-art { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; flex: none; border-radius: 6px; background: var(--paper); }
+.type-button .type-art { margin-bottom: 12px; }
+.type-button strong { display: block; font-family: var(--title-font); font-size: 18px; line-height: 1.55; margin: 4px 0 0; overflow-wrap: anywhere; }
+.type-button small { display: none; }
+.type-badge { display: block; min-height: 18px; margin-top: 6px; font-size: var(--text-small); color: var(--accent); }
+.type-detail { position: sticky; top: 24px; min-width: 0; margin: 0; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.type-detail.with-art { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 16px; }
+.type-detail > div { min-width: 0; }
+.type-detail h3 { font-family: var(--title-font); font-weight: 600; font-size: 28px; line-height: 1.5; margin: 0 0 12px; }
+.type-detail p { font-size: 13px; }
+.axis-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.axis-chips span { padding: 3px 7px; background: var(--soft); border-radius: 4px; font-size: 11px; color: var(--accent); }
+.type-caption { margin-top: 12px; font-size: var(--text-small); color: var(--muted); }
+.evidence, .small, .context-note, .section-head p, .axis-labels, .axis-item summary, .tone-row summary, .filterbar label, .lens-summary small, .example-label, .type-badge, .axis-chips span, footer { font-size: var(--text-small); }
+.lens-grid, .support-details, .upload-box, .type-button, .type-detail { border-radius: var(--radius-panel); }
+footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; border-top: 1px solid var(--line); padding: 24px 40px; font-size: var(--text-small); color: var(--muted); }
+.candidate { padding: 8px 0; font-size: 13px; }
+.candidate h3 { font-size: 14px; }
+#candidates:empty { display: none; }
+.noscript { padding: 20px; border: 1px solid var(--line); }
+
+.sidebar { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; padding: 36px 16px 24px; background: var(--accent); color: var(--surface); }
+.sidebar a { color: var(--surface); }
+.sidebar .quiet-button { border-color: var(--soft); color: var(--surface); }
+.sidebar .quiet-button:hover { background: var(--action-hover); }
+.sidebar .quiet-button:active { background: var(--ink); }
+.sidebar :focus-visible { outline-color: var(--surface); }
+.sidebar .navigation button[aria-pressed=true]:hover { background: var(--hover); color: var(--ink); }
+#report-main { min-width: 0; padding: 40px; }
+.panel-intro h2 { font-size: 2.5rem; letter-spacing: -.02em; }
+.catalog-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); align-items: start; gap: 28px; }
+.type-detail .type-art { max-width: 260px; justify-self: center; }
+
+@media (max-width: 1280px) {
+  .axis-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .notes-grid { grid-template-columns: 1fr; gap: 24px; }
+  .catalog-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 20px; }
+  .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  h1 { font-size: 2.5rem; }
+}
+@media (max-width: 1000px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { grid-column: auto; grid-row: auto; position: static; height: auto; overflow: visible; padding: 20px 28px 0; display: grid; grid-template-columns: 1fr auto; gap: 16px; }
+  .topbar { padding: 0; }
+  .brand { font-size: 22px; }
+  .brand span { display: none; }
+  .top-actions { grid-column: 2; grid-row: 1; flex-direction: row; align-items: center; margin: 0; padding: 0; gap: 16px; }
+  .navigation { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .navigation button { text-align: center; border-radius: 6px 6px 0 0; padding: 12px 6px; }
+  #report-main { padding: 32px 28px; }
+  footer { grid-column: 1; padding: 24px 28px; }
+  .type-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  html { scroll-padding-top: 12px; }
+  .sidebar { padding: 16px 16px 0; gap: 12px; }
+  .brand { font-size: 19px; }
+  .top-actions { font-size: 12px; gap: 10px; }
+  .quiet-button { padding: 8px; }
+  .navigation button { min-height: 48px; font-size: 13px; padding: 10px 2px; }
+  #report-main { padding: 28px 20px; }
+  .result-copy.has-art { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .journey-hero { order: 1; max-width: 320px; }
+  .result-text { order: 2; max-width: none; text-align: center; }
+  h1 { font-size: 2.125rem; }
+  #description { margin: 16px auto 0; font-size: 15px; }
+  .result-meta, .sample-strip { justify-content: center; margin-top: 16px; }
+  .axis-section { padding: 24px 20px 12px; }
+  .axis-list { gap: 24px; }
+  .axis-header strong { font-size: 14px; }
+  .tone-grid { grid-template-columns: 1fr; }
+  .panel-intro h2 { font-size: 2rem; }
+  .catalog-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .type-detail { position: static; }
+  .type-detail.with-art { grid-template-columns: 140px minmax(0, 1fr); gap: 20px; }
+  .type-detail h3 { font-size: 23px; }
+  .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 10px; }
+  .filterbar label, input[type=search] { width: 100%; }
+  .lens { padding: 0 14px; }
+  .lens-summary { align-items: start; }
+  footer { padding: 20px; }
+}
+@media (max-width: 420px) {
+  .sidebar { grid-template-columns: minmax(0, 1fr); }
+  .top-actions { grid-column: 1; grid-row: 3; padding-bottom: 8px; }
+  .navigation { grid-row: 2; }
+  .top-actions { flex-wrap: wrap; justify-content: end; gap: 0 8px; }
+  .top-actions a { font-size: 11px; }
+  #report-main { padding-inline: 16px; }
+  .axis-list { grid-template-columns: minmax(0, 1fr); }
+  .axis-header { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
+  .type-detail.with-art { grid-template-columns: minmax(0, 1fr); }
+  .type-detail .type-art { max-width: 200px; }
+  .type-button { padding: 6px; }
+  .type-button strong { font-size: 16px; }
+}
+
+/* A screenshot composition inside the fixed report, not a separate export. */
+.result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 20px; }
+.result-actions span { font-size: 13px; color: var(--muted); }
+.summary-mode { min-height: 100vh; min-height: 100dvh; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.summary-toolbar { width: min(100%, 1280px); display: flex; align-items: center; gap: 16px; }
+.summary-toolbar p { color: var(--muted); font-size: 13px; }
+.summary-toolbar button { flex: none; }
+.summary-sheet { position: relative; container-type: inline-size; width: min(1280px, calc(100vw - 32px), calc((100dvh - 112px) * 16 / 9)); aspect-ratio: 16 / 9; background: var(--paper); border: 1px solid var(--line); }
+.summary-content { position: absolute; inset: 0; padding: 2.5cqw 3cqw; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.6cqw; }
+.summary-brand { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqw; padding-bottom: 1cqw; border-bottom: 1px solid var(--line); }
+.summary-brand b { font-size: 1.6cqw; color: var(--accent); }
+.summary-brand span { font-size: 1.15cqw; color: var(--muted); }
+.summary-main { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 4cqw; min-height: 0; }
+.summary-identity { min-width: 0; text-align: center; }
+.summary-art { display: block; width: 18cqw; height: auto; aspect-ratio: 1; object-fit: contain; margin: 0 auto .5cqw; }
+.summary-name { font-family: var(--title-font); font-size: 2.7cqw; font-weight: 600; line-height: 1.35; text-wrap: balance; }
+.summary-description { font-size: 1.35cqw; line-height: 1.6; margin-top: .8cqw; }
+.summary-status { color: var(--muted); font-size: 1.1cqw; margin-top: .8cqw; }
+.summary-axes { min-width: 0; }
+.summary-axes > h3 { font-family: var(--title-font); font-size: 1.65cqw; margin-bottom: 1cqw; }
+.summary-axis { padding: .65cqw 0; border-bottom: 1px solid var(--line); }
+.summary-axis:last-child { border: 0; }
+.summary-axis-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .3cqw 1cqw; }
+.summary-axis-header h4 { font-size: 1.1cqw; color: var(--muted); font-weight: 500; }
+.summary-axis-header strong { font-size: 1.35cqw; color: var(--accent); }
+.summary-axis .axis-labels { font-size: 1cqw; margin: .4cqw 0; }
+.summary-axis .axis-track { height: .5cqw; margin: .6cqw .5cqw; }
+.summary-axis .axis-marker { width: 1cqw; height: 1cqw; top: -.25cqw; }
+.summary-axis .axis-track:after { top: -.25cqw; height: 1cqw; }
+.summary-unassessed { font-size: 1.4cqw; color: var(--muted); }
+.summary-bottom { border-top: 1px solid var(--line); padding-top: 1cqw; }
+.summary-bottom h3 { font-size: 1.15cqw; font-weight: 500; color: var(--muted); }
+.summary-examples { display: flex; flex-wrap: wrap; gap: .5cqw 2.4cqw; margin-top: .5cqw; }
+.summary-examples span { font-size: 1.45cqw; font-weight: 600; color: var(--accent); }
+.summary-note { font-size: 1cqw; color: var(--muted); margin-top: 1cqw; }
+@media (max-width: 700px) {
+  .summary-toolbar { align-items: start; }
+  .summary-sheet { width: 100%; aspect-ratio: auto; }
+  .summary-content { position: static; padding: 24px 20px; gap: 24px; }
+  .summary-brand b { font-size: 18px; }
+  .summary-brand span, .summary-status, .summary-axis-header h4, .summary-axis .axis-labels, .summary-bottom h3, .summary-note { font-size: 12px; }
+  .summary-brand { padding-bottom: 12px; }
+  .summary-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .summary-art { width: 180px; }
+  .summary-name { font-size: 28px; }
+  .summary-description, .summary-unassessed { font-size: 15px; }
+  .summary-description, .summary-status { margin-top: 10px; }
+  .summary-axes > h3 { font-size: 20px; margin-bottom: 10px; }
+  .summary-axis { padding: 10px 0; }
+  .summary-axis-header strong { font-size: 14px; }
+  .summary-axis .axis-labels { margin: 6px 0; }
+  .summary-axis .axis-track { height: 6px; margin: 9px 6px; }
+  .summary-axis .axis-marker { width: 12px; height: 12px; top: -3px; }
+  .summary-axis .axis-track:after { top: -3px; height: 12px; }
+  .summary-bottom { padding-top: 14px; }
+  .summary-examples { gap: 8px 20px; margin-top: 8px; }
+  .summary-examples span { font-size: 16px; }
+  .summary-note { margin-top: 12px; }
+}
+
+@media (pointer: coarse) { summary { min-height: 44px; padding-block: 10px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+@media print {
+  .summary-toolbar { display: none; }
+  .summary-mode { min-height: 0; padding: 0; }
+  .summary-sheet { width: 100%; }
+  .sidebar, .toolbar, .filterbar, .upload-box { display: none !important; }
+  .shell { display: block; max-width: none; padding: 0; }
+  #report-main { padding: 0; }
+  .catalog-layout { display: block; }
+  .type-detail { position: static; margin-bottom: 24px; }
+  body { background: white; }
+  .result-copy, .discovery-card, .tone-row, .type-button { break-inside: avoid; }
+  .result-copy.has-art { grid-template-columns: minmax(0, 1fr) 180px; }
+  .journey-hero { order: 2; }
+  .result-text { order: 1; }
+  .axis-list, .tone-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .type-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  footer { font-size: 9px; }
+}
+</style>
+</head>
+<body><a id="skip-content" class="skip-link" href="#report-main">本文へ移動</a><section id="summary-mode" class="summary-mode" aria-label="1画面サマリー" hidden>
+<div class="summary-toolbar"><button id="close-summary" class="quiet-button" type="button">通常表示に戻る</button><p>枠内が16:9の撮影範囲です。狭い画面では読みやすい縦表示になります。</p></div>
+<article id="summary-sheet" class="summary-sheet" tabindex="-1" aria-label="診断結果のサマリー"><div class="summary-content">
+<div class="summary-brand"><b>AI SINDAN</b><span>AIとの進め方</span></div>
+<div class="summary-main"><div class="summary-identity"><div id="summary-image"></div><h2 id="summary-name" class="summary-name"></h2><p id="summary-description" class="summary-description"></p><p id="summary-status" class="summary-status"></p></div>
+<section class="summary-axes" aria-labelledby="summary-axes-title"><h3 id="summary-axes-title">4つの傾向</h3><div id="summary-axes"></div></section></div>
+<div class="summary-bottom"><h3>観測された使い方の一部</h3><div id="summary-examples" class="summary-examples"></div><p class="summary-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p></div>
+</div></article></section>
+<div id="report-shell" class="shell">
+<aside class="sidebar"><header class="topbar"><div class="brand">AI SINDAN<span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="reload-report" class="quiet-button" type="button">再読み込み</button></div></aside>
+<main id="report-main" tabindex="-1">
+<noscript><p class="noscript">診断結果の表示にはJavaScriptが必要です。有効にしてこのファイルを開き直してください。</p></noscript>
+<section id="view-result" aria-label="診断結果">
+<div class="result-actions"><button id="open-summary" class="quiet-button" type="button" aria-controls="summary-mode" aria-expanded="false">1画面サマリー</button><span>発表・スクリーンショット用</span></div>
+<div class="result-board">
+  <div id="result-copy" class="result-copy">
+    <img id="journey-hero" class="journey-hero" alt="" width="512" height="512" hidden>
+    <div class="result-text">
+      <h1 id="name"></h1><p id="description"></p>
+      <div class="result-meta"><span id="type-status" class="status"></span><div id="type-letters" class="type-letters" aria-hidden="true"></div></div>
+      <div class="sample-strip"><span><b id="sessions"></b> 会話</span><span><b id="messages"></b> 発言</span><span>直近 <b id="days"></b> 日</span></div>
+    </div>
+  </div>
+  <section class="axis-section" aria-labelledby="axis-heading"><h2 id="axis-heading">AIと進む、4つの傾向</h2><div id="portrait-axes" class="axis-list"></div></section>
+</div>
+<p class="context-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p><div id="candidates"></div>
+<div class="section-head"><h2>使い方の発見メモ</h2><p>本人に聞いてみたい工夫。効果は未検証。</p></div><div id="portrait-discoveries" class="notes-grid"></div>
+<section class="tone-section"><div class="section-head"><h2>AIへの話しかけ方</h2><p>複数の口調が併存します。数字は観測した会話数。</p></div><div id="portrait-tones" class="tone-grid"></div><p class="context-note">未観測は「普段も使わない」の意味ではありません。口調と回答精度の関係は判定していません。</p></section>
+</section>
+<section id="view-observations" aria-label="詳しい観察" hidden>
+<div class="panel-intro"><h2>38の観点を詳しく見る</h2><p id="coverage"></p></div>
+<div class="filterbar"><label>観点を検索<input id="observation-search" type="search" placeholder="例：スキル、任せ方"></label><label>表示する観点<select id="observation-filter"><option value="all">すべて</option><option value="observed">観測あり</option><option value="unknown">不明・未評価あり</option></select></label><label>依頼例の職種<select id="example-role"><option value="general">共通</option><option value="planner">ゲームプランナー</option><option value="designer">デザイナー</option></select></label><span id="observation-count" class="small" role="status"></span></div>
+<p id="observation-empty" class="small" hidden>一致する観点がありません。検索語や表示条件を変更してください。</p><div id="perspectives"></div>
+<details class="support-details"><summary>分析した範囲・日時</summary><p id="sampling"></p><div id="source-coverage"></div><p id="sources"></p><p id="diagnostics"></p><p id="type-evidence"></p><p class="small">各会話の連続した最大5発言から判断しています。省略や途中切れがあり、全履歴を網羅するものではありません。</p></details>
+<details class="support-details"><summary>実行ログに記録された機能</summary><div id="execution-facts"></div><p class="small">実行記録と本人の意図は別です。設定・対応形式の詳細は<a href="developer.html#execution">開発者向け詳細</a>へ。</p></details>
+<details class="support-details"><summary>診断の見方・データの扱い</summary><p>38観点は使い方の違いを記録します。4軸は同じ抜粋を根拠付きで要約し、中間・材料不足は保留します。口調と発見メモはタイプに使いません。</p><p>根拠は会話単位の匿名化した記述です。発見メモは新技法や効果の認定ではありません。</p><p>分析時の抜粋は利用中のエージェントの処理先に渡ります。手元のpending.json・manifest.jsonには原文が残るため共有しないでください。</p><p><a href="developer.html">指標・判断条件・計算式を確認する</a></p></details>
+</section>
+<section id="view-comparison" aria-label="比較と共有" hidden>
+<div class="panel-intro"><h2>使い方を持ち寄る</h2><p>本人が選んで共有したプロフィールを並べます。読み込みはこの画面内で完結します。</p></div>
+<div class="toolbar"><button id="export" class="primary" type="button">共有用プロフィールを保存</button><button id="clear-peers" type="button">比較をリセット</button></div>
+<div class="upload-box"><label for="peer-files">相手の share-profile.json を読み込む（最大3人）</label><input id="peer-files" type="file" accept=".json,application/json" multiple><p id="peer-error" class="error" role="alert"></p></div><div id="comparison"></div>
+<details class="support-details"><summary>共有される情報</summary><p>評価済みの観点の割合、進め方の種類、タイプ候補、対象日数、材料の充足区分が入ります。</p><p>会話本文・氏名・日時・プロジェクト名・正確な件数・口調・発見メモの自由記述は含めません。自動送信はしません。仕事の記録は所属先のルールに従って扱ってください。</p><p>違う診断方式は比較できません。割合は能力差を表さず、仕事や抽出範囲によって変わります。</p></details>
+</section>
+<section id="view-catalog" aria-label="16タイプの一覧" hidden><div class="panel-intro"><h2>16の、旅のかたち。</h2><p id="catalog-description">保存済みの分類方式による呼び名です。</p><p>選択しても、あなたの診断結果は変わりません。</p></div><div class="catalog-layout"><div id="type-detail" class="type-detail" aria-live="polite">タイプを選ぶと説明を読めます。</div><div id="type-grid" class="type-grid"></div></div></section>
+</main><footer><span id="generated"></span><span id="updated"></span></footer>
+</div><script id="report-data" type="application/json">__REPORT_DATA__</script><script>
+const r=JSON.parse(document.getElementById('report-data').textContent);
+const portrait=r.portrait,style=portrait?portrait.classification:r,shareMethod=r.method+(portrait?'+'+portrait.schema:'');
+const journey=portrait&&portrait.schema==='portrait-v1'?Object.fromEntries((r.journey?.types||[]).map(t=>[t.code,t])):{};
+const displayName=t=>journey[t.code]?.name||t.name;
+const currentJourney=style.profile?journey[style.profile.code]:null;
+const measured=r.perspectives.filter(p=>!p.not_assessed),measuredIds=new Set(measured.map(p=>p.id)),byId=Object.fromEntries(r.perspectives.map(p=>[p.id,p]));
+const put=(id,text)=>document.getElementById(id).textContent=text;
+const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
+const refText=f=>'会話 '+f.session.slice(0,6)+' / '+f.refs.join(', ');
+const views=['result','observations','comparison','catalog'];
+function revealPanel(panel){panel.setAttribute('tabindex','-1');panel.scrollIntoView?.({block:'start',behavior:'instant'});panel.focus?.({preventScroll:true});}
+function showView(id,reveal=false){for(const key of views){document.getElementById('view-'+key).hidden=key!==id;document.getElementById('nav-'+key).setAttribute('aria-pressed',String(key===id));}if(reveal)revealPanel(document.getElementById('view-'+id));}
+for(const key of views)document.getElementById('nav-'+key).onclick=()=>showView(key,true);showView('result');
+put('name',r.messages?(currentJourney?.name||style.type_name):'対話の記録を集めているところ');put('type-status',style.type_status);
+put('description',currentJourney?.summary||(style.profile?style.profile.tagline:style.evidence_ready?'近い候補があります。4軸の根拠を確認してください。':'まだタイプを決める材料が足りません。観察できた使い方をご覧ください。'));
+const hero=document.getElementById('journey-hero');hero.hidden=true;
+if(currentJourney?.image&&r.messages){hero.setAttribute('src',currentJourney.image);hero.setAttribute('alt',currentJourney.alt);hero.hidden=false;document.getElementById('result-copy').className='result-copy has-art';}
+for(const letter of (portrait?style.type_code:''))document.getElementById('type-letters').append(el('span','',letter));
+for(const key of ['messages','sessions','days'])put(key,r[key].toLocaleString());
+put('sampling',r.sampling.total_sessions+'会話を検出し、条件に合う'+r.sampling.eligible_sessions+'会話から'+r.sessions+'会話を抽出。本文と実行情報 '+r.sampling.read_chars.toLocaleString()+'文字 / 上限 '+r.sampling.char_budget.toLocaleString()+'文字。新規読取 '+r.sampling.new_read_chars.toLocaleString()+'文字、再利用 '+r.sampling.cache_hits+'会話。');
+put('coverage',measured.length+' / '+r.perspectives.length+'観点を評価済み。観点を開くと根拠と依頼例を確認できます。');
+put('type-evidence',portrait?'4軸・口調・発見メモの評価：'+new Date(portrait.generated_at).toLocaleString('ja-JP'):'旧18観点の照合方式。繰り返し観測した観点：'+r.repeated_dimensions+'個。');
+if(portrait){
+ put('catalog-description','4軸の組み合わせを、16通りの旅になぞらえた愛称です。職種・能力・固定した性格を示すものではありません。');
+ for(const a of portrait.axes){
+  const c=el('article','axis-item'),top=el('div','axis-header');
+  const label={left:a.left.label+' 寄り',right:a.right.label+' 寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state];
+  top.append(el('h3','',a.title),el('strong','',label));c.append(top);
+  const labels=el('div','axis-labels');labels.append(el('span','',a.left.label),el('span','',a.right.label));c.append(labels);
+  if(a.left_percent!==null){const track=el('div','axis-track');track.setAttribute('aria-hidden','true');const marker=el('span','axis-marker');marker.style.left=(100-a.left_percent)+'%';track.append(marker);c.append(track);}
+  const d=el('details');d.append(el('summary','','根拠を見る · '+a.observed_sessions+'会話'),el('p','small',a.hint));
+  d.append(el('p','evidence','左のみ '+(a.counts.left||0)+' / 右のみ '+(a.counts.right||0)+' / 両方 '+(a.counts.both||0)+'会話。未観測 '+(a.counts.not_observed||0)+' / 不明 '+(a.counts.uncertain||0)+'。'));
+  if(a.left_percent!==null)d.append(el('p','evidence','左側への配分 '+a.left_percent+'%。両方は半分ずつ配分します。性格や能力の点数ではありません。'));
+  for(const f of a.evidence)d.append(el('p','',f.reason),el('p','evidence',refText(f)));c.append(d);document.getElementById('portrait-axes').append(c);
+ }
+ for(const tone of portrait.tones){
+  const c=el('article','tone-row'),top=el('div','tone-top');top.append(el('h3','',tone.label),el('span','tone-number',tone.assessed_sessions?tone.sessions+' / '+tone.assessed_sessions+'会話':'判断材料不足'));c.append(top);
+  const track=el('div','tone-track');track.setAttribute('aria-hidden','true');const fill=el('span');fill.style.width=(tone.assessed_sessions?100*tone.sessions/tone.assessed_sessions:0)+'%';track.append(fill);c.append(track);
+  const d=el('details');d.append(el('summary','','観察した場面'),el('p','small',tone.hint),el('p','evidence','不明 '+tone.uncertain_sessions+'会話。'));
+  for(const f of tone.findings)d.append(el('p','',f.reason),el('p','evidence',refText(f)));
+  if(!tone.findings.length)d.append(el('p','',tone.assessed_sessions?'この抜粋では未観測です。':'文脈が足りず判断できません。'));c.append(d);document.getElementById('portrait-tones').append(c);
+ }
+ for(const note of portrait.discoveries){
+  const c=el('article','discovery-card');c.append(el('h3','',note.title));
+  const first=note.findings[0];if(first)c.append(el('p','observation',first.observation));
+  const d=el('details');d.append(el('summary','','根拠と、本人に聞きたいこと'),el('p','question',note.question));
+  for(const f of note.findings)d.append(el('p','',f.observation),el('p','evidence',(f.relation==='uncovered'?'既存の指標では扱っていない候補':'既存の指標を具体化する使い方')+' / '+refText(f)));
+  c.append(d);document.getElementById('portrait-discoveries').append(c);
+ }
+ if(!portrait.discoveries.length)put('portrait-discoveries','今回の抜粋では追加の発見メモはありません。');
+ if(!style.profile&&style.evidence_ready)put('candidates','近い候補：'+style.type_catalog.filter(t=>style.candidate_codes.includes(t.code)).map(displayName).join(' / '));
+}else{
+ for(const id of ['portrait-axes','portrait-tones','portrait-discoveries'])put(id,'この保存済み結果では未評価です。');
+ for(const a of style.alternatives){const c=el('article','candidate');c.append(el('h3','',a.name),el('p','small',a.reasons.map(id=>byId[id].title).join(' / ')));document.getElementById('candidates').append(c);}
+}
+const groups=new Map(),observationCards=[];
+for(const p of r.perspectives){
+ if(!groups.has(p.group)){const heading=el('h3','lens-group',p.group),grid=el('div','lens-grid');document.getElementById('perspectives').append(heading,grid);groups.set(p.group,{heading,grid,cards:[]});}
+ const c=el('article','lens'),details=el('details'),summary=el('summary'),row=el('span','lens-summary');
+ const count=p.not_assessed?'未評価':p.session_rate===null?'判断材料なし':p.sessions+' / '+p.assessed_sessions+'会話';
+ row.append(el('span','',p.title),el('small','',count));summary.append(row);details.append(summary);
+ const body=el('div','lens-body');body.append(el('p','lens-description',p.description),el('p','evidence',p.status+(p.not_assessed?'':' ／ 不明 '+p.uncertain_sessions+'会話 ／ 該当場面なし '+(p.not_applicable_sessions||0)+'会話')));
+ if(['process','tooling'].includes(p.kind)){const forms=(p.observed_forms||[]).filter(f=>f.sessions);if(forms.length)body.append(el('p','',forms.map(f=>f.label+' '+f.sessions+'会話').join(' / ')));}
+ for(const f of p.findings)body.append(el('p','',f.reason),el('p','evidence',refText(f)));
+ const more=el('details');more.append(el('summary','','依頼例・読み取り条件'),el('p','',p.question),el('p','',p.experiment));if(p.assessment_hint)more.append(el('p','small',p.assessment_hint));
+ const example=el('div','example');example.append(el('span','example-label','依頼例（本人の発言の引用ではありません）'));const text=el('span','example-text',p.examples.general);text.dataset.perspective=p.id;example.append(text);more.append(example);body.append(more);details.append(body);c.append(details);
+ groups.get(p.group).grid.append(c);groups.get(p.group).cards.push(c);observationCards.push({card:c,p});
+}
+function filterObservations(){const query=document.getElementById('observation-search').value?.trim().toLocaleLowerCase()||'',mode=document.getElementById('observation-filter').value||'all';let count=0;for(const {card,p} of observationCards){const search=[p.title,p.id,p.description,p.group].join(' ').toLocaleLowerCase();const match=(!query||search.includes(query))&&(mode==='all'||mode==='observed'&&p.sessions>0||mode==='unknown'&&(p.not_assessed||p.uncertain_sessions>0));card.hidden=!match;if(match)count++;}for(const g of groups.values()){const empty=g.cards.every(c=>c.hidden);g.heading.hidden=empty;g.grid.hidden=empty;}put('observation-count',count+' / '+r.perspectives.length+'観点');document.getElementById('observation-empty').hidden=count!==0;}
+document.getElementById('observation-search').oninput=filterObservations;document.getElementById('observation-filter').onchange=filterObservations;filterObservations();
+document.getElementById('example-role').onchange=function(){for(const p of r.perspectives)document.querySelector('[data-perspective="'+p.id+'"]').textContent=p.examples[this.value];};
+const typeGrid=document.getElementById('type-grid');
+function typeImage(t){const art=journey[t.code];if(!art?.image)return null;const img=el('img','type-art');img.setAttribute('src',art.image);img.setAttribute('alt',art.alt);img.setAttribute('width','512');img.setAttribute('height','512');img.setAttribute('loading','lazy');return img;}
+function showType(t,reveal=false){
+ const panel=document.getElementById('type-detail'),art=journey[t.code],copy=el('div');
+ panel.replaceChildren();const img=typeImage(t);panel.className=img?'type-detail with-art':'type-detail';
+ if(img)panel.append(img);
+ copy.append(el('h3','',displayName(t)),el('p','',art?.summary||t.description));
+ if(portrait){const chips=el('div','axis-chips');for(const label of t.tagline.split(' / '))chips.append(el('span','',label));copy.append(chips);}
+ else{copy.append(el('p','muted','手がかりにする観点：'+Object.keys(t.weights).map(id=>byId[id].title).join(' / ')),el('p','','試せる工夫：'+t.tip));}
+ copy.append(el('p','type-caption',t.code+' · '+(style.candidate_codes.includes(t.code)?'今回の候補':'旅のスタイル')));
+ panel.append(copy);panel.setAttribute('aria-label',displayName(t)+'の説明');
+ typeGrid.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.code===t.code)));
+ if(reveal)revealPanel(panel);
+}
+for(const t of style.type_catalog){const b=el('button','type-button');b.dataset.code=t.code;b.setAttribute('aria-pressed','false');b.setAttribute('aria-controls','type-detail');b.setAttribute('aria-label',displayName(t)+'の説明を見る');const img=typeImage(t);if(img)b.append(img);b.append(el('strong','',displayName(t)),el('small','',journey[t.code]?.summary||t.tagline),el('span','type-badge',style.candidate_codes.includes(t.code)?'今回の候補':t.code));b.onclick=()=>showType(t,true);typeGrid.append(b);}
+if(style.profile)showType(style.profile);
+function share(){return {schema:'ai-sindan-share-v1',method:shareMethod,days:r.days,sample:style.evidence_ready?'比較の材料あり':'材料が少ない',type_name:style.type_name,candidate_codes:style.candidate_codes,metrics:measured.map(p=>({id:p.id,session_rate:p.session_rate,status:p.status,...(['process','tooling'].includes(p.kind)?{forms:(p.observed_forms||[]).filter(f=>f.sessions).map(f=>f.id)}:{})}))};}
+document.getElementById('export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(share(),null,2)],{type:'application/json'}));const a=el('a');a.href=url;a.download='share-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+let peers=[];
+function validShare(p){return p&&p.schema==='ai-sindan-share-v1'&&p.method===shareMethod&&Number.isInteger(p.days)&&p.days>0&&p.days<=36500&&['比較の材料あり','材料が少ない'].includes(p.sample)&&Array.isArray(p.metrics)&&p.metrics.length===measured.length&&p.metrics.every(m=>m&&typeof m==='object'&&measuredIds.has(m.id))&&new Set(p.metrics.map(m=>m.id)).size===measured.length&&p.metrics.every(m=>(m.session_rate===null||(typeof m.session_rate==='number'&&Number.isFinite(m.session_rate)&&m.session_rate>=0&&m.session_rate<=100))&&['複数の会話で観測','少数の表現を観測','未観測','評価可能な場面なし'].includes(m.status)&&(!['process','tooling'].includes(byId[m.id].kind)||(Array.isArray(m.forms)&&new Set(m.forms).size===m.forms.length&&m.forms.every(id=>byId[m.id].forms.some(f=>f.id===id))&&(!m.forms.length||['複数の会話で観測','少数の表現を観測'].includes(m.status)))));}
+function formLabels(metric){return (metric.forms||[]).map(id=>byId[metric.id].forms.find(f=>f.id===id).label).join('、');}
+function comparison(){const root=document.getElementById('comparison');root.replaceChildren();if(!peers.length){root.append(el('p','muted','相手の集計を読み込むと、ここに並びます。'));return;}
+ const profiles=[share(),...peers],wrap=el('div','table-wrap'),table=el('table'),head=el('thead'),tr=el('tr');tr.append(el('th','','観点'));
+ profiles.forEach((p,i)=>tr.append(el('th','',(i?'共有プロフィール '+i:'このレポート')+' / '+p.days+'日 / '+p.sample)));head.append(tr);table.append(head);const body=el('tbody');
+ for(const p of measured){const row=el('tr');row.append(el('th','',p.title));for(const profile of profiles){const m=profile.metrics.find(m=>m.id===p.id);row.append(el('td','',(m.session_rate===null?'データなし':m.session_rate+'%の会話')+' · '+m.status+(['process','tooling'].includes(p.kind)?' ／ '+(formLabels(m)||'種類の観測なし'):'')));}body.append(row);}table.append(body);wrap.append(table);root.append(wrap);
+ root.append(el('h3','lens-group','結果を見ながら、こんな話をしてみる'));
+ const list=el('ul','plain-list');const topics=measured.filter(p=>peers.some(peer=>peer.metrics.find(m=>m.id===p.id).status==='複数の会話で観測')).slice(0,3);
+ for(const p of topics)list.append(el('li','',p.title+'：「'+p.question+'」 実際に役立った場面も聞いてみる。'));
+ if(!topics.length)list.append(el('li','','まだ観測が少ないので、普段AIに頼む仕事の種類から話してみる。'));root.append(list);}
+let importGeneration=0;
+document.getElementById('peer-files').onchange=async function(){const token=++importGeneration;put('peer-error','');const files=[...this.files];if(files.length>3){put('peer-error','一度に読み込めるのは3人までです。');return;}
+ try{const loaded=[];for(const file of files){if(file.size>131072)throw Error('共有プロフィールとして大きすぎるファイルです。');const p=JSON.parse(await file.text());if(!validShare(p))throw Error('同じ診断方式の共有用JSONを選んでください。');loaded.push(p);}if(token===importGeneration){peers=loaded;comparison();}}catch(e){if(token===importGeneration)put('peer-error',e instanceof SyntaxError?'JSONとして読み取れませんでした。':e.message);}};
+document.getElementById('clear-peers').onclick=()=>{++importGeneration;peers=[];document.getElementById('peer-files').value='';put('peer-error','');comparison();};comparison();
+const coverageRoot=document.getElementById('source-coverage'), coverageRows=r.sampling.source_coverage;
+if(!coverageRows){coverageRoot.append(el('p','evidence','この保存済み結果には、エージェント別の抽出内訳がありません。'));}
+else{
+ coverageRoot.append(el('p','evidence','条件に合う履歴がある各エージェントから最低1会話ずつ選び、残りも順番に割り当てます。普段の利用比率を再現する集計ではありません。'));
+ for(const row of coverageRows){const name={codex:'Codex',claude:'Claude Code',antigravity:'Antigravity CLI'}[row.source]||row.source;coverageRoot.append(el('p','evidence',name+'：条件に合う '+row.eligible_sessions+'会話 → 分析 '+row.selected_sessions+'会話 ／ '+row.reason));}
+}
+const audit=r.execution_audit, facts=document.getElementById('execution-facts');
+if(!audit){facts.append(el('p','muted','実行記録は未収集です。未使用という意味ではありません。'));}
+else{
+ facts.append(el('p','evidence',audit.scope+' ／ '+audit.days+'日・'+audit.sessions+'会話 ／ 収集 '+new Date(audit.generated_at).toLocaleString('ja-JP')));
+ facts.append(el('p','evidence','対象：'+Object.entries(audit.sources).map(([source,count])=>source+' '+count+'会話').join(' ／ ')));
+ facts.append(el('p','','モデルの記録：'+(audit.models.join('、')||'確認できず')));
+ facts.append(el('p','','推論設定の記録：'+(audit.efforts.join('、')||'確認できず')));
+ for(const f of audit.features){facts.append(el('p','evidence',f.label+'：要求 '+(f.requested||0)+' ／ 応答あり '+(f.returned||0)+' ／ エラー応答 '+(f.error||0)+' ／ 設定等の記録 '+(f.recorded||0)));}
+ facts.append(el('p','evidence','応答ありは成功・成果の採用を意味しません。0件は一致記録なしで、利用していない証明ではありません。選択の主体・理由はこの集計では不明です。'));
+ for(const [source,note] of Object.entries(audit.limitations))facts.append(el('p','evidence',source+'：'+note));
+ facts.append(el('p','evidence','各ファイル最大'+audit.limit_per_file+'イベント。上限による省略 '+audit.omitted_events+'件。'));
+}
+put('sources','分析した会話：'+Object.entries(r.sources).map(([k,v])=>({'codex':'Codex','claude':'Claude Code','antigravity':'Antigravity CLI'}[k]||k)+' '+v+'件').join(' / '));
+put('diagnostics','走査ファイル '+(r.diagnostics.files_scanned||0)+' / 読取不可 '+(r.diagnostics.unreadable_files||0)+' / 不正な行 '+(r.diagnostics.malformed_lines||0));
+
+// Screenshot mode uses saved structured observations only; no new AI diagnosis.
+put('summary-name',document.getElementById('name').textContent);
+put('summary-description',document.getElementById('description').textContent);
+put('summary-status',style.type_status);
+if(currentJourney?.image){
+ const img=el('img','summary-art');img.setAttribute('src',currentJourney.image);img.setAttribute('alt',currentJourney.alt);img.setAttribute('width','512');img.setAttribute('height','512');document.getElementById('summary-image').append(img);
+}
+if(portrait){
+ for(const a of portrait.axes){
+  const row=el('article','summary-axis'),head=el('div','summary-axis-header');
+  const state={left:a.left.label+' 寄り',right:a.right.label+' 寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state]||'材料不足';
+  head.append(el('h4','',a.title),el('strong','',state));row.append(head);
+  const labels=el('div','axis-labels');labels.append(el('span','',a.left.label),el('span','',a.right.label));row.append(labels);
+  // A lack of evidence has no position on a scale, even when a partial estimate exists.
+  if(a.state!=='insufficient'&&Number.isFinite(a.left_percent)){
+   const track=el('div','axis-track'),marker=el('span','axis-marker');track.setAttribute('aria-hidden','true');marker.style.left=(100-a.left_percent)+'%';track.append(marker);row.append(track);
+  }
+  document.getElementById('summary-axes').append(row);
+ }
+}else{document.getElementById('summary-axes').append(el('p','summary-unassessed','この保存済み結果では4軸は未評価です。'));}
+// Use definition order, not a ranking of quality or competence.
+const summaryExamples=measured.filter(p=>p.sessions>0).slice(0,3);
+for(const p of summaryExamples)document.getElementById('summary-examples').append(el('span','',p.title));
+if(!summaryExamples.length)put('summary-examples','今回の抜粋では観測例を表示できません。');
+function setSummaryMode(open){
+ document.getElementById('summary-mode').hidden=!open;
+ document.getElementById('report-shell').hidden=open;
+ document.getElementById('skip-content').setAttribute('href',open?'#summary-sheet':'#report-main');
+ document.getElementById('open-summary').setAttribute('aria-expanded',String(open));
+ if(open)revealPanel(document.getElementById('summary-mode'));
+ document.getElementById(open?'close-summary':'open-summary').focus?.({preventScroll:true});
+}
+document.getElementById('open-summary').onclick=()=>setSummaryMode(true);
+document.getElementById('close-summary').onclick=()=>setSummaryMode(false);
+document.addEventListener?.('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('summary-mode').hidden)setSummaryMode(false);});
+
+put('generated',(portrait?'38観点の評価：':'v'+r.version+' · ')+new Date(r.generated_at).toLocaleString('ja-JP'));
+put('updated','HTML更新：'+new Date(r.rendered_at||r.generated_at).toLocaleString('ja-JP'));
+document.getElementById('reload-report').onclick=()=>location.reload();
+</script></body></html>

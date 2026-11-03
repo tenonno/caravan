@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI SINDAN 旅のイラスト"
+  short_description: "AI SINDANの16タイプを共通の旅人と絵柄で描く画像制作スキル"
+  default_prompt: "Use $ai-sindan-art to create or update the AI SINDAN travel type illustrations with a consistent visual style."

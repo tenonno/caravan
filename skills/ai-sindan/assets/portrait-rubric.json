@@ -1,0 +1,127 @@
+{
+  "schema": "portrait-v1",
+  "axes": [
+    {
+      "id": "framing",
+      "title": "相談の入口",
+      "left": {
+        "code": "S",
+        "label": "条件を置いて頼む"
+      },
+      "right": {
+        "code": "E",
+        "label": "方向から相談する"
+      },
+      "hint": "具体的な目的・条件を人が先に示すか、目的や方向の検討からAIに相談するか。依頼の短さだけでは判断しない。",
+      "dimensions": [
+        "context",
+        "criteria",
+        "ownership",
+        "exploration",
+        "problem_framing"
+      ]
+    },
+    {
+      "id": "discretion",
+      "title": "進め方の裁量",
+      "left": {
+        "code": "G",
+        "label": "進め方・境界を指定"
+      },
+      "right": {
+        "code": "D",
+        "label": "進め方も委ねる"
+      },
+      "hint": "人が手順や実行境界を明示するか、進め方の判断もAIに委ねるか。具体的な成果物の指定だけでは左側にしない。",
+      "dimensions": [
+        "boundaries",
+        "delegation",
+        "delegation_adjustment",
+        "external_actions"
+      ]
+    },
+    {
+      "id": "iteration",
+      "title": "合わせるタイミング",
+      "left": {
+        "code": "B",
+        "label": "まとめて受け取る"
+      },
+      "right": {
+        "code": "I",
+        "label": "途中で合わせる"
+      },
+      "hint": "一括で任せて受け取る方針か、途中の成果に反応して方向や内容を合わせるか。返答回数や無返信だけでは判断しない。",
+      "dimensions": [
+        "task_partitioning",
+        "feedback",
+        "refinement",
+        "experiments",
+        "stopping_decision"
+      ]
+    },
+    {
+      "id": "decision",
+      "title": "選択の手がかり",
+      "left": {
+        "code": "C",
+        "label": "比較・理由で選ぶ"
+      },
+      "right": {
+        "code": "T",
+        "label": "試してから選ぶ"
+      },
+      "hint": "説明・比較・理由を判断材料にするか、試用・試作の経験を判断材料にするか。AIのテスト報告だけでは右側にしない。",
+      "dimensions": [
+        "criteria",
+        "learning",
+        "verification",
+        "experiments",
+        "option_resolution",
+        "uncertainty_handling"
+      ]
+    }
+  ],
+  "tones": [
+    {
+      "id": "direct",
+      "label": "直接的な指示",
+      "hint": "実行して、直して、など行動を直接求める表現。攻撃性・怒りとは区別。"
+    },
+    {
+      "id": "polite",
+      "label": "丁寧な依頼・質問",
+      "hint": "お願いします、ですか、など丁寧な依頼・質問。性格や立場は推定しない。"
+    },
+    {
+      "id": "collaborative",
+      "label": "相談・一緒に考える呼びかけ",
+      "hint": "どう思う、相談したい、一緒に考えよう等。単なる情報質問とは区別。"
+    },
+    {
+      "id": "gratitude",
+      "label": "感謝",
+      "hint": "ありがとう、助かった等の感謝。「いいね」だけは肯定に分類。"
+    },
+    {
+      "id": "affirmation",
+      "label": "肯定・ねぎらい",
+      "hint": "いいね、よくできた等の肯定。短い承認だけから感謝を推定しない。"
+    },
+    {
+      "id": "candid_correction",
+      "label": "率直な違和感・訂正",
+      "hint": "違う、過剰、違和感等、ズレを直接伝える表現。人格・感情の強さ・非礼を判定しない。"
+    },
+    {
+      "id": "playful",
+      "label": "くだけた表現・冗談",
+      "hint": "遊びのある言い回しや笑いの表現。親密さ、実際の感情は推定しない。"
+    }
+  ],
+  "rules": {
+    "min_sessions": 3,
+    "dominance": 0.65
+  },
+  "principle": "両側の共存を許す。未観測を反対側にしない。口調と発見メモはタイプに使わず、効果・能力・性格を推定しない。"
+}

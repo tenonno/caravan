@@ -1,0 +1,15 @@
+# Working on AI SINDAN
+
+- For UI work, use the installed Impeccable skill and choose the workflow from the requested degree of change: polish for finishing details, bolder for a stronger expression of the travel world, and redesign when a new world is explicitly requested. Do not interpret a request for a visible transformation as polish alone. Read `docs/design/impeccable.md`; preserve the travel illustrations and established palette unless the user directs otherwise. Report automated checks and actual browser verification separately. If the skill is unavailable, report that limitation rather than claiming it was applied.
+
+- Record durable design decisions in `docs/adr/`. Before relevant design changes, read `docs/adr/README.md` and related accepted ADRs. Add or supersede an ADR with changes to diagnosis semantics, data/consent boundaries, sampling, compatibility, output architecture, or reusable production workflows. Follow the template and update the index in the same change. Routine fixes and cosmetic adjustments do not require an ADR. Never mark an unresolved proposal accepted, rewrite an old decision to hide its rationale, or include private histories/results. ADRs document already-authorized decisions; they do not add a new approval gate.
+
+- Keep the standard report at `output/semantic/index.html`. Overwrite it; never create timestamped HTML copies to work around preview caching.
+- Link only the fixed report after verifying it is current. Do not link earlier `ai-sindan-v*.html` snapshots. The user wants a single stable viewing location.
+- Developer details live separately at `output/semantic/developer.html`, linked from the result page. Keep both paths fixed and both pages standalone for separate exports.
+- Template-only updates should run `python skills/ai-sindan/scripts/semantic.py render --output output/semantic` to refresh both pages from the existing `report.json`. Keep the original analysis date; do not claim a new diagnosis. HTML rendering has its own visible update time.
+- Preserve the consent and bounded semantic-reading workflow in `skills/ai-sindan/SKILL.md`. Never treat agent-created test conversations as the user's behavior.
+- Observe differences in usage, never quality, competence, maturity, or superiority. More frequent behaviors are not better. The eight process and twelve tooling dimensions describe unordered choices; absent situations and unclear context are excluded from their denominators. They do not affect the original 18-dimension type classifier. Unreviewed new dimensions stay explicitly unassessed.
+- Track code, templates, documentation, and tests in local Git. Keep private logs, excerpts, caches, and generated reports under ignored `output/`; do not add them to Git. Do not publish or push without a request.
+
+- Four-axis summaries use separate evidence-based portrait reviews of the same bounded sample. Keep legacy classification intact for old results. Never force missing evidence into a side. Tone and open discovery notes do not influence type, and do not establish personality, effectiveness, or global novelty. Free discovery text and tone stay out of the share JSON.
