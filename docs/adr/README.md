@@ -30,6 +30,13 @@
 | [0022](0022-specific-choices-without-quota.md) | Accepted | 条件・別案・つながった手順を根拠付きで整理し、冒頭の件数を埋めない |
 | [0023](0023-overview-before-practices.md) | Accepted | 冒頭は旅人と4軸で全体像を示し、具体的な工夫を直後に続ける |
 | [0024](0024-result-reading-structure.md) | Accepted | 結果の具体例を役割別に整理し、追加の観察と内部参照表示を分ける |
+| [0025](0025-japanese-prose-review.md) | Accepted | 表示と生成手順の日本語を推敲し、保存済みの分析は維持する |
+| [0026](0026-restored-result-html.md) | Accepted | 詳細JSONから復元した結果を単独HTMLとして保存できるようにする |
+
+| [0027](0027-current-result-backup.md) | Accepted | 詳細JSONから旧分類を除き、現在の旅人名で保存する |
+| [0028](0028-portable-distinctive-practices.md) | Accepted | プロジェクトを知らなくても伝わる、特徴的なAIへの任せ方と選択の組み合わせを選ぶ |
+| [0029](0029-private-presentations-outside-repository.md) | Accepted | 個人の発表資料は開発履歴を含むリポジトリ外で管理する |
+| [0030](0030-explicit-publication-remote.md) | Accepted | originと公開用ブランチ・worktreeを同じGit管理下に置く |
 
 0002〜0008は、この会話と実装を照合した**事後記録**です。記録日は実際の決定日を意味しません。記載した比較対象は判断を説明するため今回整理したもので、過去にすべてを実験したという意味ではありません。
 

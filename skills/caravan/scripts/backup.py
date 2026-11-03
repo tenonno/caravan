@@ -59,8 +59,31 @@ def validate(value):
     return value
 
 
+LEGACY_FIELDS = ('type_code', 'type_name', 'profile', 'type_status', 'candidate_codes',
+                 'alternatives', 'type_catalog', 'repeated_dimensions', 'evidence_ready')
+
+
+def current_report(report):
+    """Keep evidence intact; export only the active classification and current labels."""
+    report = copy.deepcopy(report)
+    if report.get('portrait', {}).get('schema') == 'portrait-v1':
+        import journey
+        for key in LEGACY_FIELDS:
+            report.pop(key, None)
+        names = {t['code']: t for t in journey.catalog()}
+        style = report['portrait']['classification']
+        for item in style.get('type_catalog', []) + style.get('alternatives', []) + ([style['profile']] if style.get('profile') else []):
+            if item.get('code') in names:
+                entry = names[item['code']]
+                item['name'] = entry['name']
+                if 'description' in item: item['description'] = entry['summary']
+        if style.get('profile') and style['profile']['code'] in names:
+            style['type_name'] = names[style['profile']['code']]['name']
+    return report
+
+
 def bundle(report, audit=None):
-    return validate(dict(schema=SCHEMA, report=copy.deepcopy(report), execution_audit=copy.deepcopy(audit)))
+    return validate(dict(schema=SCHEMA, report=current_report(report), execution_audit=copy.deepcopy(audit)))
 
 
 def read(path):

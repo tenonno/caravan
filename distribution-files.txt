@@ -116,3 +116,10 @@ docs/adr/0021-grounded-use-cases.md
 docs/adr/0022-specific-choices-without-quota.md
 docs/adr/0023-overview-before-practices.md
 docs/adr/0024-result-reading-structure.md
+docs/adr/0025-japanese-prose-review.md
+docs/adr/0026-restored-result-html.md
+docs/adr/0027-current-result-backup.md
+docs/adr/0028-portable-distinctive-practices.md
+docs/adr/0029-private-presentations-outside-repository.md
+docs/adr/0030-explicit-publication-remote.md
+docs/design/japanese-copy.md

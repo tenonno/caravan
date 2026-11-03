@@ -1,5 +1,7 @@
 // Local file import only. Never restore scripts, assets, or browser storage.
 const initialView=JSON.parse(document.getElementById('report-data').textContent);
+// Capture the trusted, unmounted page; never serialize imported HTML or live drafts.
+const reportTemplate=document.documentElement?.cloneNode?.(true);
 const pristineRoots=['report-shell','summary-mode'].map(id=>[id,document.getElementById(id).cloneNode?.(true)]);
 let restoreGeneration=0;
 function validateBackup(value){
@@ -13,7 +15,7 @@ function validateBackup(value){
   }
  }
  walk(value);
- const fail=()=>{throw Error('このファイルからは結果を復元できません。「本人用バックアップを保存」で保存したファイルを選んでください。共有用プロフィールは比較用のため、復元には使えません。');};
+ const fail=()=>{throw Error('このファイルからは結果を復元できません。「詳しい結果をJSONで保存」（旧版では「本人用バックアップを保存」）で保存したファイルを選んでください。共有用プロフィールは比較用のため、復元には使えません。');};
  if(!value||value.schema!=='caravan-private-backup-v1'||Object.keys(value).sort().join(',')!=='execution_audit,report,schema')fail();
  const r=value.report;
  if(!r||!['semantic-18-v1','semantic-26-v2','semantic-38-v3'].includes(r.method))fail();
@@ -53,11 +55,24 @@ function validatePractices(value,report,fail){
  }
  if(featured>3||(value.schema==='practice-v1'&&featured!==Math.min(3,value.items.length)))fail();
 }
+function currentBackup(value){
+ const result=JSON.parse(JSON.stringify(value)),r=result.report;
+ if(r.portrait?.schema==='portrait-v1'){
+  for(const key of ['type_code','type_name','profile','type_status','candidate_codes','alternatives','type_catalog','repeated_dimensions','evidence_ready'])delete r[key];
+  const names=Object.fromEntries(initialView.viewer_assets.types.map(t=>[t.code,t])),style=r.portrait.classification;
+  for(const item of [...(style.type_catalog||[]),...(style.alternatives||[]),...(style.profile?[style.profile]:[])]){
+   const entry=names[item.code];if(!entry)continue;
+   item.name=entry.name;if('description' in item)item.description=entry.summary;
+  }
+  if(style.profile&&names[style.profile.code])style.type_name=names[style.profile.code].name;
+ }
+ return result;
+}
 function backupView(value){
  validateBackup(value);
  const view=JSON.parse(JSON.stringify(value.report)),present=new Set(view.perspectives.map(p=>p.id));
  for(const p of initialView.viewer_definitions)if(!present.has(p.id))view.perspectives.push({...p,not_assessed:true,count:null,sessions:null,assessed_sessions:null,uncertain_sessions:null,not_applicable_sessions:null,session_rate:null,status:'未評価',findings:[],observed_forms:[]});
- view.private_backup=value;view.execution_audit=value.execution_audit;view.rendered_at=initialView.rendered_at;
+ view.private_backup=currentBackup(value);view.execution_audit=value.execution_audit;view.rendered_at=initialView.rendered_at;
  view.journey=initialView.viewer_assets;view.material_checks={};
  if(view.portrait?.rules){
   const rules=view.portrait.rules;
@@ -78,8 +93,21 @@ function resetReport(){
 function bindBackup(view){
  if(view!==initialView)for(const link of document.querySelectorAll('a[href^="developer.html"]'))link.hidden=true;
  document.getElementById('export-private').onclick=()=>{
-  const url=URL.createObjectURL(new Blob([JSON.stringify(view.private_backup,null,2)],{type:'application/json'}));
+  const url=URL.createObjectURL(new Blob([JSON.stringify(currentBackup(view.private_backup),null,2)],{type:'application/json'}));
   const a=document.createElement('a');a.href=url;a.download='caravan-private.backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ };
+ document.getElementById('export-result-html').onclick=()=>{
+  const saved=reportTemplate.cloneNode(true);
+  const data={...view,viewer_definitions:initialView.viewer_definitions,viewer_assets:initialView.viewer_assets};
+  // JSON is inside a script element. Escape '<' so imported prose cannot close it.
+  saved.querySelector('#report-data').textContent=JSON.stringify(data).replace(/</g,'\\u003c');
+  // A downloaded result has no corresponding developer.html beside it.
+  for(const link of saved.querySelectorAll('a[href^="developer.html"]'))link.remove();
+  const notice=saved.querySelector('#backup-status');notice.hidden=false;
+  notice.textContent='保存した詳しい結果を表示しています。根拠の説明や具体例を含むため、他の人に渡す前に内容を確認してください。';
+  const url=URL.createObjectURL(new Blob(['<!DOCTYPE html>\n'+saved.outerHTML],{type:'text/html;charset=utf-8'}));
+  const a=document.createElement('a');a.href=url;a.download='index.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  document.getElementById('result-save-status').textContent='結果画面のダウンロードを開始しました。保存したHTMLを開くと、同じ詳しい結果を表示できます。';
  };
  document.getElementById('private-file').onchange=async function(){
   const generation=++restoreGeneration,file=this.files[0];if(!file)return;
@@ -90,12 +118,12 @@ function bindBackup(view){
    resetReport();
    try{app=mountReport(restored);}catch(error){resetReport();app=mountReport(view);throw Error('必要な分析項目が欠けています。元の表示を保持しました。');}
    const status=document.getElementById('backup-status');status.hidden=false;
-   status.textContent='本人用バックアップを読み込みました。この画面だけに反映し、元のファイルは変更していません。閉じた後はもう一度読み込むか、AIに「このバックアップから結果ページを作って」と依頼してください。';
+   status.textContent='詳しい結果を読み込みました。元のファイルは変更していません。「結果の保存・復元」から「結果画面をHTMLで保存」を選ぶと、後からそのまま開けます。';
    document.getElementById('view-result').scrollIntoView?.({block:'start'});
   }catch(error){
    if(generation!==restoreGeneration)return;
    const status=document.getElementById('backup-status');status.hidden=false;
-   status.textContent=error instanceof SyntaxError?'ファイルを読み取れませんでした。元の表示は変わりません。「本人用バックアップを保存」で保存したファイルを選び直してください。':error.message;
+   status.textContent=error instanceof SyntaxError?'ファイルを読み取れませんでした。元の表示は変わりません。「詳しい結果をJSONで保存」（旧版では「本人用バックアップを保存」）で保存したファイルを選び直してください。':error.message;
   }
  };
 }

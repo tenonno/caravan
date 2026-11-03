@@ -1,7 +1,11 @@
 {
   "schema": "practice-v2",
-  "stages": {"request": "依頼する場面", "adjustment": "やり取りの途中", "review": "出てきたものを確かめる場面"},
-  "purpose": "Learn concrete ways people use AI and ask them about the conditions of those choices. Never score competence, infer stable personality, or certify a best practice.",
+  "stages": {
+    "request": "依頼する場面",
+    "adjustment": "やり取りの途中",
+    "review": "出てきたものを確かめる場面"
+  },
+  "purpose": "Identify distinctive, evidence-backed combinations of human choices in AI collaboration that a reader can understand without knowing the project. Distinctive means a specific choice structure in this sample, not rarity among people, superiority, a stable trait or a proven reusable technique.",
   "rules": [
     "Review every selected excerpt. One case at most per excerpt; insufficient context is a valid result. Do not fill a quota.",
     "Ground situation, human_action and ai_role independently with message refs. human_action references must be human messages. Describe a request as a request, never as completed execution.",
@@ -12,8 +16,11 @@
     "Review for connected sequences, explicit tradeoffs and conditions that change a choice. decision.kind is generic, sequence, tradeoff or conditional. Generic means a useful observable action without enough concrete choice structure for the overview; it is not a judgment about the person.",
     "decision.condition has status stated (human explicitly says why/when), context (visible surrounding situation, not inferred motivation), or unknown. decision.alternative is observed only when human evidence explicitly describes a rejected, deferred or different choice; otherwise unknown. Both have text and refs; unknown has no refs. Never invent the obvious opposite to make a case interesting.",
     "decision.steps contains zero to four connected human choices/planned actions, in visible order, each with text and human refs. Sequence requires at least two connected steps and a visible condition. Tradeoff and conditional require a human-stated condition and observed alternative. Do not confuse a sequence of unrelated chores with a coherent way of working.",
-    "Feature zero to three cases. Never feature generic cases or fill empty slots. Prefer cases that retain the actual task condition, chosen/deferred option, and combination of actions. Name the operational choice, not a virtue such as clarify goals or verify quality. Preserve specificity while anonymizing identifiers. This does not prove uniqueness among people.",
+    "Feature zero to three cases only after the project-independent specificity check. Retain the condition, division of work with AI, connected choices and observed alternative. A named tool, unusual task, complex implementation, ordinary correction or two-step chronology alone is not a distinctive use. Do not fill slots or certify uniqueness among people.",
+    "Before featuring, remove project-specific nouns mentally: can a reader still explain what this person asked AI to do, what they kept or deferred, and under what condition? If only a virtue such as clarify goals, try first, or reduce scope remains, keep the scene unfeatured. If the choice needs unseen project context, mark the gap rather than inventing it. Write the review reason explaining the specific combination and why it survives this check; this is a semantic review, not a keyword score.",
+    "Write the title as the distinctive combination of choices, not a project task log or generic advice. human_action explains that combination in everyday words. condition supplies the minimum background; alternative is only the actually observed option. Steps retain concrete operations as supporting evidence. Explain technical terms by their role; do not strip away constraints, infer a motive, or replace an observed alternative with what most people supposedly do.",
     "Look for counterexamples and different choices across the whole bounded sample before calling something a habit. Without evidence of a switch under different conditions, ask a question rather than asserting consistent use or a universal rule. Avoid featuring several versions of the same correction.",
     "Keep the existing classifiers, dates and share JSON unchanged. Cases are private. Only a user's explicit editing/saving action can create a separate text for sharing. Validators check structure and authorship, not the truth or confidentiality of prose."
-  ]
+  ],
+  "selection_revision": "portable-distinctive-v1"
 }

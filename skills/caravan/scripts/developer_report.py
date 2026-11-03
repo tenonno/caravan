@@ -23,7 +23,7 @@ def render(report, rubric, extractor, modes):
     rules = base.CLASSIFICATION_RULES
     definitions = [{k: v for k, v in p.items() if k != 'pattern'} for p in definitions_source.PERSPECTIVES]
     observed = {p['id']: p for p in report['perspectives']}
-    catalog = report['type_catalog']
+    catalog = report.get('type_catalog', []) if report.get('portrait') else report['type_catalog']
     vector, repeated, ranked = base.score_styles(report['perspectives'], report['sessions'], catalog)
     adequate = (report['messages'] >= rules['min_messages'] and report['sessions'] >= rules['min_sessions']
                 and len(repeated) >= rules['min_repeated_dimensions'])
@@ -58,6 +58,7 @@ def render(report, rubric, extractor, modes):
         parts['PORTRAIT']+=f'<p>発見メモ：{len(summary["discoveries"])}種類。個別の内容と根拠は結果画面で確認できます。</p>'
     else:parts['PORTRAIT']+='<p>この保存済み結果では4軸・口調・発見メモは未評価です。旧分類を自動変換しません。</p>'
     parts['PORTRAIT']+='<h3>具体的な利用場面（practice-v1 / v2）</h3><p>同じ上限付き抜粋を別途読み、場面・本人の行動・AIの役割・その後を個別の発言参照で支えます。1会話最大1例、材料不足は掲載しません。v2では、つながった手順・トレードオフ・条件付きの選択を0〜3例選び、残りも展開できます。一般的な訂正だけで枠を埋めません。条件は本人の明言・周囲の状況・不明を区別し、別の案と手順にも本人の根拠を求めます。旧v1の保存結果は変換せず表示します。頻度順・優劣順ではありません。</p><p>本人の行動には本人の発言を必須とし、その後は未確認・AIの報告・本人の報告を区別します。効果の検証は行いません。問いと仮の依頼例を観察から分離し、分類・従来の分析日時は維持。全選択会話のレビューを検証し、抜粋と定義が一致した場合だけキャッシュを再利用します。形式検査は意味の正しさを保証しません。</p><p>自由記述は集計の共有JSONに含めません。利用者が例を選択し、文章を編集・確認して保存する独立したテキスト下書きだけを用意します。送信はせず、下書きの編集も診断に反映しません。</p>'
+    parts['PORTRAIT']+='<p>現在の選定では、プロジェクト固有の用語を外しても、AIへの任せ方・条件・残すものや見送る案の組み合わせが伝わるかを確認します。作業の珍しさや専門用語だけでは選びません。一般的な助言にしかならない例も選出しません。他人との希少性や優劣を測る基準ではありません。保存済みの旧結果に、この選定確認を自動適用することはありません。</p>'
     practices=report.get('practices')
     parts['PORTRAIT']+=(f'<p>具体例の評価日時：{h(practices["generated_at"])} ／ 確認した会話 {practices["reviewed_sessions"]} ／ 掲載した場面 {len(practices["items"])}。個別の内容は結果画面にのみ表示。</p>' if practices else '<p>この保存済み結果では具体例は未評価です。</p>')
     parts['META'] = (f'<span>現在の評価基準 <code>{h(rubric)}</code></span><span>保存済み結果 <code>{h(report["method"])}</code></span><span>現在の抽出器 <code>{h(extractor)}</code></span>'

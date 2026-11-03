@@ -50,6 +50,21 @@ class PracticeTests(unittest.TestCase):
         review['cache_key']=p.cache_key(packet);review['case']['response'].update(status='user_report',refs=['m3'])
         p.validate(review,packet)
 
+    def test_selection_revision_invalidates_cache_but_preserves_saved_results(self):
+        packet=test_portrait.PortraitTests().packet(); review=example(packet)
+        # A change in editorial/selection rules cannot silently reuse an old review.
+        old_definition=copy.deepcopy(p.DEFINITION)
+        old_definition.pop('selection_revision')
+        review['cache_key']=portrait.digest([old_definition,packet])
+        with self.assertRaisesRegex(ValueError,'Stale'):p.validate(review,packet)
+        # Saved results are observations, not a claim of review under the newest rules.
+        report=dict(sessions=1,sample_key='synthetic')
+        saved=dict(schema='practice-v2',sample_key='synthetic',generated_at='2026-11-03',
+            reviewed_sessions=1,items=[dict(session='saved',featured=True,case=review['case'])])
+        before=copy.deepcopy(saved)
+        p.validate_saved(saved,report)
+        self.assertEqual(saved,before)
+
     def test_missing_context_can_produce_no_case(self):
         packet=test_portrait.PortraitTests().packet();review=example(packet)
         review.update(status='insufficient',case=None,featured=False,reason='Triggering image is not present.')

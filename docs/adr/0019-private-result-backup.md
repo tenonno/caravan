@@ -35,3 +35,7 @@ Pythonでは新しいテンプレートで結果・詳細・共有JSONを再生�
 ## 根拠・関連実装
 
 [backup.py](../../skills/caravan/scripts/backup.py)、[ブラウザー処理](../../skills/caravan/assets/private-backup.js)、[往復・失敗時の検査](../../tests/test_backup.py)、[実ブラウザー検査](../../dev/browser/layout.spec.cjs)。
+
+## 2026-11-04 追記
+
+[0027](0027-current-result-backup.md)により、詳細JSONの旧分類と表示名の保存方針を変更。その他の決定は継続する。

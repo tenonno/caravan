@@ -1,6 +1,6 @@
 # Grounded use cases (practice-v2)
 
-The first result section helps readers learn what the person actually did with AI in a concrete situation, and what to ask them. This supplement does not reclassify the person or add a performance score.
+The section after the type overview helps readers recognize distinctive combinations of choices in how this person works with AI, without prior knowledge of their project. This supplement does not reclassify the person or add a performance score.
 
 After the standard reviews and portrait, run:
 
@@ -46,12 +46,13 @@ Write a JSON array, one review for every pending packet. Cache identity includes
 - `response.status`: `not_visible` with no refs, `assistant_report` with later assistant refs, or `user_report` with later human refs. An assistant's implementation/testing report is not human verification. Self-report is not independently verified effectiveness. Cite an actual result statement for `user_report`, not an instruction to commit or continue.
 - Independent refs for each claim. `human_action` cites human messages only. Do not infer a rationale, attachment content, adoption, success, or causation. State requests and plans as requests and plans.
 - Keep all prose anonymized and in Japanese. No raw quotations, product/person/project names, URLs, paths or credentials. Do not anonymize so aggressively that the actual choice disappears.
+- Follow the Japanese prose guidance in SKILL.md. Name the actual operation in titles and use everyday verbs in explanations. Keep requests, proposed plans, observed actions and reported outcomes distinct. Do not turn a concrete request into praise of a person's abilities, or add a cause to make an explanation more fluent. Check the revised wording against the same bounded evidence before finalizing.
 - Mark **zero to three** cases `featured: true`; never fill slots. Generic instructions, clarifications and corrections can remain in the full case list but cannot be featured. Do not rank intelligence, sophistication, novelty, frequency or effectiveness. Record selection/rejection reasons. More technical wording is not more distinctive.
 - `decision.kind`: `generic`, `sequence`, `tradeoff`, `conditional`. Feature only concrete connected choices. A sequence needs at least two connected human choices/plans and visible context. A list of unrelated requests is not a sequence. A tradeoff or conditional choice needs an explicitly human-stated condition and an observed alternative.
 - `decision.condition`: `{status, text, refs}`, with status `stated` (the person explicitly says why/when), `context` (surrounding situation, not an inferred rationale), or `unknown` (empty refs). Context does not establish cause. `decision.alternative` has status `observed` with human refs, or `unknown` with empty refs. Do not invent the opposite choice to make the case more interesting.
 - `decision.steps`: zero to four `{text, refs}` items, each grounded in human messages in visible order. Several steps may be planned in the same message. Preserve the distinction between requesting, trying, reporting and completing. Decision text is at most 240 characters per claim.
 - Read all selected excerpts before selecting features. Look for another choice or a counterexample by the same person. A single correction does not establish a stable preference. If different conditions or the person's reason are missing, ask about them in `question`; do not invent a cross-conversation pattern or portray a hypothetical contrast as observed.
-- Titles should retain an actual operation or tradeoff: where work happens, when it switches, what is preserved or deferred. Avoid virtue labels such as clarify the goal, verify quality or use AI effectively. Anonymize identifying details while retaining this operational specificity.
+- Titles should express a project-independent but specific combination: what AI is asked to do, what is preserved or deferred, and how the person changes or limits the work. Keep task-specific operations in the supporting explanation. Avoid virtue labels such as clarify the goal, verify quality or use AI effectively. Anonymize identifying details while retaining this operational specificity.
 - `question` asks about this case's conditions, tradeoffs, or an opposite choice. `try_next` is an analyst-authored hypothetical request, visibly labeled as such; no guaranteed outcomes or claim that the person used this exact wording.
 - Limits: reviewer 160 characters; reason, limitation, question, try_next 300 each; title 80; grounded claim 400. References must be unique and exist. The validator checks format, roles and temporal order, not semantic truth or confidentiality.
 
@@ -67,3 +68,23 @@ First collect candidate scenes from the entire selected sample. Then inspect the
 If a missing trigger or later response would materially change interpretation, record that precise gap before considering more reading. Do not search freely to produce an interesting story. Any separately authorized deeper analysis needs a declared combined character budget (including rereads), a bounded extraction and a review that identifies the new scope. This version does not automatically expand the saved sample or merge outside references into it. If no such bounded additional review is performed, leave the gap explicit. The current selection improvement does not depend on more histories.
 
 Old `practice-v1` backups remain displayable/exportable unchanged, including their old selection rule. Never auto-convert their prose into v2 decisions. New reviews require v2 cache identity and evidence; classification and aggregate sharing stay independent.
+
+
+## Project-independent specificity review (portable-distinctive-v1)
+
+“Distinctive” describes a combination of observable choices worth asking this person about. It does not assert population rarity or superiority. This section is not a collection of generally recommended AI tips or a project activity log.
+
+For every candidate, perform both checks and explain the selection/rejection in the private review `reason`:
+
+1. **Without project knowledge:** Replace project nouns with their functional roles. Can a reader follow the condition, what the person delegates to AI, and the chosen/deferred options? Explain indispensable terms in ordinary words. Missing context is a limit, not permission to invent a reason.
+2. **Without generic advice:** Does the account still contain a particular combination or boundary after removing those nouns? “Compare options”, “try first”, “check the result”, “reduce scope”, and a sequence of two routine requests do not qualify on their own. Identify what is compared or retained, when the person switches, or where they set the boundary. Do not invent a conventional alternative or use “most people” as a comparison.
+
+Use existing case fields: `title` names the combination; `human_action` explains the person's observable requests/choices; `decision.condition` supplies the minimum context; `decision.alternative` preserves only an evidenced alternative; `steps` gives the concrete supporting sequence. `ai_role` must connect the choice to AI collaboration. Keep stated reasons separate from context. A single scene remains a scene, not proof of a habit. Do not imply a technique works in another project just because its explanation is understandable there.
+
+Synthetic boundary examples (never user evidence):
+
+- “Ask AI to revise a budget table” is a task log; “make comparisons clear” is generic. If the person explicitly fixes a spending ceiling, asks AI to retain unmet requirements, then chooses an option while carrying those requirements forward, that combination may qualify. Without those connected choices in the excerpt, do not fill them in.
+- “Use a specialized tool” is not distinctive by name alone. If the person assigns it a defined part of the work and explicitly keeps another part outside its scope under a visible condition, explain that boundary and assess its evidence.
+- A request to fix an incorrect answer stays an ordinary correction unless an additional evidenced choice structure survives both checks. Do not reinterpret the AI's mistake as the person's characteristic.
+
+The rubric's selection revision changes cache identity. Old saved v1/v2 results remain valid and are not silently reselected or certified against these checks on render. A new selection requires complete reviews of the same authorized bounded sample. A user-requested editorial rewrite of an existing result may use its saved observations alone: preserve selected cases, references, uncertainty, choices and analysis dates, keep a private pre-edit backup, and say that this is a wording update rather than a new evidence review. Do not fabricate missing choices from saved summaries. Future finalization may replace that wording with a newly reviewed result.

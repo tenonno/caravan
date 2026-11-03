@@ -425,30 +425,39 @@ body:has(#view-result:not([hidden])) footer { padding: 8px 0; }
 .decision-steps { font-size: var(--text-body); line-height: 1.85; padding-left: 1.6em; margin: 8px 0 24px; }
 #type-summary { margin: 0; padding: 0; border: 0; min-width: 0; }
 #practice-section { margin-top: 0; }
-.practice-layout { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 40px; margin-top: 24px; }
-.practice-group-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-.practice-flow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 0; }
-.practice-flow > div { display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 16px; }
-.practice-flow h4 { color: var(--muted); font-weight: 500; margin: 0; }
-.practice-flow p, .practice-context { line-height: 1.75; }
-.practice-context { grid-template-columns: 8em minmax(0, 1fr); gap: 12px 16px; margin: 12px 0 0; }
-.practice-context dt { color: var(--muted); font-weight: 500; }
-.practice-reflect { border-left: 1px solid var(--line); padding-left: 32px; }
-.practice-question { margin: 0 0 24px; padding: 0; background: transparent; font-size: 16px; }
-.practice-question strong, .practice-trial strong { display: block; font-size: 14px; color: var(--accent); margin-bottom: 8px; }
-.practice-trial .small { margin-top: 12px; color: var(--muted); }
-.steps-heading { margin-top: 20px; font-size: 14px; }
+/* Keep the record readable as prose; the tinted aside contains reflection only. */
+.practice-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 48px; margin-top: 28px; align-items: start; }
+.practice-group-title { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+.practice-flow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin: 0; }
+.practice-flow > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.practice-flow h4 { color: var(--accent); font-weight: 700; margin: 0; }
+.practice-flow p, .practice-context { line-height: 1.85; }
+.practice-context { grid-template-columns: minmax(0, 1fr); gap: 6px; margin: 28px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+.practice-context dt { color: var(--ink); font-weight: 700; }
+.practice-context dd + dt { margin-top: 16px; }
+.practice-reflect { padding: 24px; background: var(--soft); border-radius: var(--radius-panel); }
+.practice-question { margin: 0 0 28px; padding: 0; background: transparent; font-size: var(--text-body); }
+.practice-question strong, .practice-trial strong { display: block; font-size: var(--type-label); color: var(--accent); margin-bottom: 8px; }
+.practice-trial { border-top: 1px solid var(--control-line); padding-top: 24px; }
+.practice-trial .small { margin-top: 16px; color: var(--muted); }
+.steps-heading { margin-top: 28px; font-size: var(--type-label); }
 .decision-steps { margin-bottom: 0; }
+.decision-steps li + li { margin-top: 8px; }
+.practice { padding: 32px 0 48px; }
+.practice-heading { display: block; }
+.practice-heading h3 { max-width: 36em; text-wrap: pretty; }
+.practice-heading span { display: block; margin-top: 8px; }
+#practice-picks { display: grid; justify-items: start; gap: 4px; margin: 20px 0 32px; }
+.practice-pick strong { font-size: var(--text-body); }
 .observation-heading { margin: 48px 0 20px; font-size: var(--type-section); }
 @media (max-width: 850px) {
- .practice-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
- .practice-reflect { border-left: 0; border-top: 1px solid var(--line); padding: 20px 0 0; }
+ .practice-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
 }
 @media (max-width: 550px) {
- .practice-flow > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+ :root { --type-page: 2rem; --type-section: 1.75rem; --type-item: 1.375rem; }
+ .practice-reflect { padding: 20px; }
+ .practice { padding-bottom: 36px; }
 }
-@media (max-width: 850px) { .practice-flow { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
-@media (max-width: 550px) { :root { --type-page: 2rem; --type-section: 1.75rem; --type-item: 1.375rem; } .practice-context { grid-template-columns: minmax(0, 1fr); gap: 6px; } .practice-context dd { margin-bottom: 16px; } }
 
 /* A screenshot composition inside the fixed report, not a separate export. */
 .summary-mode { min-height: 100vh; min-height: 100dvh; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -533,15 +542,15 @@ body:has(#view-result:not([hidden])) footer { padding: 8px 0; }
 <div class="summary-brand"><img class="summary-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div>
 <div class="summary-main"><div class="summary-identity"><div id="summary-image"></div><h1 id="summary-name" class="summary-name"></h1><p id="summary-description" class="summary-description"></p><p id="summary-status" class="summary-status"></p></div>
 <section class="summary-axes" aria-labelledby="summary-axes-title"><h2 id="summary-axes-title">4つの傾向</h2><div id="summary-axes"></div></section></div>
-<div class="summary-bottom"><h2>会話に見られた使い方</h2><div id="summary-examples" class="summary-examples"></div><p class="summary-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p></div>
+<div class="summary-bottom"><h2>会話に見られた使い方</h2><div id="summary-examples" class="summary-examples"></div><p class="summary-note">今回読んだ会話に見られた傾向です。能力や性格、使い方の良し悪しを判定するものではありません。</p></div>
 </div></article></section>
 <div id="report-shell" class="shell">
-<aside class="sidebar"><header class="topbar"><div class="brand"><img class="brand-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="reload-report" class="quiet-button" type="button">表示を更新</button></div></aside>
+<aside class="sidebar"><header class="topbar"><div class="brand"><img class="brand-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="open-result-storage" class="quiet-button" type="button">結果の保存・復元</button><button id="reload-report" class="quiet-button" type="button">表示を更新</button></div></aside>
 <main id="report-main" tabindex="-1">
 <p id="backup-status" class="context-note" role="status" hidden></p>
 <noscript><p class="noscript">診断結果の表示にはJavaScriptが必要です。有効にしてこのファイルを開き直してください。</p></noscript>
 <section id="view-result" aria-label="診断結果">
-<h1 id="overview-heading" class="result-page-title">AIと、こんなふうに進めている。</h1>
+<h1 id="overview-heading" class="result-page-title">あなたのAIの使い方</h1>
 <div id="result-overview" class="result-overview">
   <div id="result-copy" class="result-copy">
     <img id="journey-hero" class="journey-hero" alt="" width="512" height="512" hidden>
@@ -554,44 +563,52 @@ body:has(#view-result:not([hidden])) footer { padding: 8px 0; }
   </div>
 
 <div id="type-summary" class="result-board detail-board">
-  <section class="axis-section" aria-labelledby="axis-heading"><h2 id="axis-heading">AIと進む、4つの傾向</h2><div id="portrait-axes" class="axis-list"></div></section>
+  <section class="axis-section" aria-labelledby="axis-heading"><h2 id="axis-heading">AIの使い方を4つの観点から</h2><div id="portrait-axes" class="axis-list"></div></section>
 </div>
 </div>
-<p class="context-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p><div id="candidates"></div>
+<p class="context-note">今回読んだ会話に見られた傾向です。能力や性格、使い方の良し悪しを判定するものではありません。</p><div id="candidates"></div>
 
 
 <div id="result-details">
 <section id="practice-section" aria-labelledby="practice-heading">
-<div class="practice-intro"><h2 id="practice-heading">会話で見えた、具体的な工夫</h2></div>
-<p class="overview-lead">会話で起きたことと、そこから考える問いをまとめました。</p>
-<nav id="practice-picks" aria-label="具体的な工夫の目次"></nav>
+<div class="practice-intro"><h2 id="practice-heading">会話に表れた、特徴的なAIの使い方</h2></div>
+<p class="overview-lead">AIへの任せ方や、進め方の選択に注目した場面です。何を残し、何を見送り、どんな条件で選んだのかを読み取れます。ほかの人より珍しい使い方か、普段も同じ選択をするかは判断していません。</p>
+<nav id="practice-picks" aria-label="特徴的なAIの使い方の目次"></nav>
 <div id="practice-cases"></div><div class="toolbar"><button id="more-practices" type="button" hidden>ほかの場面を詳しい観察で読む</button></div>
 <p id="practice-scope" class="context-note"></p>
 </section>
-<section class="materials" aria-labelledby="materials-heading"><h2 id="materials-heading">今回の分析について</h2><p id="material-overview"></p><p><strong>参考にするのは、タイプ名より具体的な場面。</strong>「詳しい観察」で気になる観点を開くと、どんな頼み方や進め方が根拠になったかを読めます。</p><p><strong>しっくりこないときは、根拠と普段の使い方を見比べてください。</strong>仕事によって使い分けていたり、今回読んだ場面が偏っていたり、AIが読み違えている可能性があります。結果に自分を合わせる必要はありません。</p><div class="toolbar"><button id="material-evidence" type="button">詳しい観察で根拠を確認</button><a href="developer.html">抽出の内訳・計算方法</a></div><details><summary>自分の使い方を振り返る、4つの問い</summary><p>最近の具体例と、逆の進め方を選んだ場面を思い出すための問いです。思い当たるものだけで構いません。</p><div id="reflection-questions"></div><p class="small">回答の入力は不要です。タイプの再判定や共有データへの追加は行いません。</p></details></section>
+<section class="materials" aria-labelledby="materials-heading"><h2 id="materials-heading">今回の分析について</h2><p id="material-overview"></p><p>タイプ名より、具体的な場面を参考にしてください。「詳しい観察」で気になる観点を開くと、どんな頼み方や進め方が根拠になったかを読めます。</p><p>結果がしっくりこないときは、根拠となった会話と普段の使い方を見比べてください。仕事によって使い分けていたり、今回読んだ場面が偏っていたり、AIが読み違えている可能性があります。結果に自分を合わせる必要はありません。</p><div class="toolbar"><button id="material-evidence" type="button">詳しい観察で根拠を確認</button><a href="developer.html">抽出の内訳・計算方法</a></div><details><summary>自分の使い方を振り返る4つの質問</summary><p>最近の具体例や、別の進め方を選んだ場面を思い出してみてください。思い当たるものだけで構いません。</p><div id="reflection-questions"></div><p class="small">回答の入力は不要です。タイプの再判定や共有データへの追加は行いません。</p></details></section>
 </div>
 </section>
 <section id="view-observations" aria-label="詳しい観察" hidden>
-<div class="panel-intro"><h1>会話から見えたことを、詳しく。</h1><p id="coverage"></p></div>
-<h2 class="observation-heading">観点ごとの観察</h2>
-<div class="filterbar"><label>観点を検索<input id="observation-search" type="search" placeholder="例：スキル、任せ方"></label><label>表示する観点<select id="observation-filter"><option value="all">すべて</option><option value="observed">観測あり</option><option value="unknown">不明・未評価あり</option></select></label><label>依頼例の職種<select id="example-role"><option value="general">共通</option><option value="planner">ゲームプランナー</option><option value="designer">デザイナー</option></select></label><span id="observation-count" class="small" role="status"></span></div>
+<div class="panel-intro"><h1>会話に見られた使い方の詳細</h1><p id="coverage"></p></div>
+<h2 class="observation-heading">観点ごとの結果</h2>
+<div class="filterbar"><label>観点を検索<input id="observation-search" type="search" placeholder="例：スキル、任せ方"></label><label>表示する観点<select id="observation-filter"><option value="all">すべて</option><option value="observed">会話に見られた使い方</option><option value="unknown">不明・未評価あり</option></select></label><label>依頼例の職種<select id="example-role"><option value="general">共通</option><option value="planner">ゲームプランナー</option><option value="designer">デザイナー</option></select></label><span id="observation-count" class="small" role="status"></span></div>
 <p id="observation-empty" class="small" hidden>一致する観点がありません。検索語や表示条件を変更してください。</p><div id="perspectives"></div>
-<section id="practice-other" class="practice-other" hidden aria-labelledby="practice-other-title"><h2 id="practice-other-title">ほかの場面</h2><div id="practice-more"></div></section><details class="support-details"><summary>ほかに気になった使い方</summary><p>従来の分析で残した発見メモです。効果を確かめたものではありません。</p><div id="portrait-discoveries" class="notes-grid"></div></details>
+<section id="practice-other" class="practice-other" hidden aria-labelledby="practice-other-title"><h2 id="practice-other-title">ほかの場面</h2><div id="practice-more"></div></section><details class="support-details"><summary>ほかに気になった使い方</summary><p>以前の分析で記録した使い方のメモです。その効果は確認していません。</p><div id="portrait-discoveries" class="notes-grid"></div></details>
 <section class="tone-section"><div class="section-head"><h2>AIへの話しかけ方</h2><p>同じ会話に複数の話し方が見られることもあります。数字は、その話し方が見られた会話の数です。</p></div><div id="portrait-tones" class="tone-grid"></div><p class="context-note">ここにない話し方も、普段は使っているかもしれません。どの話し方がよい回答につながるかは、この分析では分かりません。</p></section>
 
-<details class="support-details"><summary>分析した範囲・日時</summary><p id="sampling"></p><div id="source-coverage"></div><p id="sources"></p><p id="diagnostics"></p><p id="type-evidence"></p><p class="small">各会話の連続した最大5発言から判断しています。省略や途中切れがあり、全履歴を網羅するものではありません。</p></details>
+<details class="support-details"><summary>分析した範囲・日時</summary><p id="sampling"></p><div id="source-coverage"></div><p id="sources"></p><p id="diagnostics"></p><p id="type-evidence"></p><p class="small">各会話から連続する最大5発言を取り出して判断しています。省略した部分や途中で切れた発言もあり、履歴全体を読んだ結果ではありません。</p></details>
 <details class="support-details"><summary>履歴に残っているAIの機能</summary><div id="execution-facts"></div><p class="small">実行記録と本人の意図は別です。設定・対応形式の詳細は<a href="developer.html#execution">開発者向け詳細</a>へ。</p></details>
 <details class="support-details"><summary>診断の見方・データの扱い</summary><p>使い方を38の観点で観察し、4つの傾向にまとめています。どちらとも言える場合や材料が足りない場合は、タイプを1つに決めません。話し方や発見メモはタイプの判定に使いません。</p><p>根拠の説明は、名前などを伏せて会話の内容をまとめたものです。発見メモにある工夫の新しさや効果は、この分析では確かめていません。</p><p>分析時の抜粋は利用中のエージェントの処理先に渡ります。手元のpending.json・manifest.jsonには原文が残るため共有しないでください。</p><p><a href="developer.html">指標・判断条件・計算式を確認する</a></p></details>
 </section>
 <section id="view-comparison" aria-label="比較と共有" hidden>
-<div class="panel-intro"><h1>使い方を持ち寄る</h1><p>自分のプロフィールを保存して渡したり、相手から受け取ったプロフィールと見比べたりできます。読み込んだファイルは送信されません。</p></div>
-<section id="practice-draft-panel" hidden aria-labelledby="practice-draft-label"><label id="practice-draft-label" for="practice-draft">この使い方について、話してみる</label><p>下の文章だけを保存します。仕事や人が特定できる箇所、解釈が違う箇所を直してから使ってください。編集はこの画面だけに反映し、診断や元の会話は変えません。</p><textarea id="practice-draft" maxlength="6000"></textarea><div class="toolbar"><button id="save-practice-text" type="button">確認した文章を保存</button><button id="discard-practice-text" type="button">下書きを破棄</button></div><p id="practice-draft-status" class="small" role="status"></p></section>
-<details class="support-details"><summary>自分の結果を保存・読み込む</summary><p>今の結果を後から開くための、本人用バックアップです。根拠の説明・話し方・発見メモが含まれます。他人に渡すときは「共有用プロフィール」を使ってください。</p><div class="toolbar"><button id="export-private" type="button">本人用バックアップを保存</button></div><label for="private-file">保存した本人用バックアップを選ぶ</label><input id="private-file" type="file" accept=".json,application/json"><p class="small">読み込むと、この画面の結果が切り替わります。元のファイルは上書きせず、送信もしません。次に開いたときも同じ結果にするには、AIに「このバックアップから結果ページを作って」と依頼してください。</p></details>
+<div class="panel-intro"><h1>結果を保存・比較する</h1><p>自分のプロフィールを保存して渡したり、相手から受け取ったプロフィールと見比べたりできます。読み込んだファイルは送信されません。</p></div>
+<section id="practice-draft-panel" hidden aria-labelledby="practice-draft-label"><label id="practice-draft-label" for="practice-draft">共有する文章の下書き</label><p>下の文章だけを保存します。仕事や人が特定できる箇所、解釈が違う箇所を直してから使ってください。編集はこの画面だけに反映し、診断や元の会話は変えません。</p><textarea id="practice-draft" maxlength="6000"></textarea><div class="toolbar"><button id="save-practice-text" type="button">確認した文章を保存</button><button id="discard-practice-text" type="button">下書きを破棄</button></div><p id="practice-draft-status" class="small" role="status"></p></section>
+<details id="result-storage" class="support-details"><summary>詳しい結果を保存・復元する</summary>
+<p>タイプ、4軸、根拠の説明、具体例、話し方など、保存済みの詳しい結果を復元できます。履歴を読み直したり、再診断したりする必要はありません。</p>
+<p>このデータには仕事の内容が分かる説明が含まれる場合があります。他の人に渡す前に内容を確認してください。集計だけを渡す場合は、下の「共有用プロフィール」を使えます。</p>
+<div class="toolbar"><button id="export-private" type="button">詳しい結果をJSONで保存</button><button id="export-result-html" type="button">結果画面をHTMLで保存</button></div>
+<p class="small">JSONは結果の復元用です。HTMLは保存したファイルを開くだけで、詳しい結果を読めます。開発者向け詳細ページは含みません。</p>
+<p id="result-save-status" class="small" role="status"></p>
+<label for="private-file">復元する詳しい結果のJSONを選ぶ</label><input id="private-file" type="file" accept=".json,application/json">
+<p class="small">「詳しい結果をJSONで保存」または旧版の「本人用バックアップを保存」で保存したファイルを選んでください。共有用プロフィールには根拠や具体例がないため、詳しい結果には復元できません。</p>
+<p class="small">読み込むと、この画面の結果が切り替わります。元のファイルは上書きせず、送信もしません。読み込んだ結果を後から開くには「結果画面をHTMLで保存」を選んでください。</p></details>
 <div class="toolbar"><button id="export" class="primary" type="button">共有用プロフィールを保存</button><button id="clear-peers" type="button">比較をリセット</button></div>
 <div class="upload-box"><label for="peer-files">相手から受け取った共有用プロフィールを選ぶ（最大3人）</label><input id="peer-files" type="file" accept=".json,application/json" multiple><p id="peer-error" class="error" role="alert"></p></div><div id="comparison"></div>
 <details class="support-details"><summary>共有される情報</summary><p>観察できた使い方の割合、進め方の種類、タイプ候補、分析対象の日数、判定材料がどの程度あるかが入ります。</p><p>会話本文・氏名・日時・プロジェクト名・正確な件数・口調・発見メモの自由記述は含めません。自動送信はしません。仕事の記録は所属先のルールに従って扱ってください。</p><p>違う診断方式は比較できません。割合は能力差を表さず、仕事や抽出範囲によって変わります。</p></details>
 </section>
-<section id="view-catalog" aria-label="16タイプの一覧" hidden><div class="panel-intro catalog-intro"><h1>16の、旅のかたち。</h1><p id="catalog-guide">絵と説明で、AIとの進み方を見比べてみてください。</p></div><div id="type-grid" class="type-grid"></div><p id="catalog-description" class="catalog-footnote">保存済みの分類方式による呼び名です。</p></section>
+<section id="view-catalog" aria-label="16タイプの一覧" hidden><div class="panel-intro catalog-intro"><h1>AIの使い方を表す16人の旅人</h1><p id="catalog-guide">絵と説明で、AIへの頼み方や進め方を見比べられます。</p></div><div id="type-grid" class="type-grid"></div><p id="catalog-description" class="catalog-footnote">保存済みの分類方式による呼び名です。</p></section>
 </main><footer><span id="generated"></span><span id="updated"></span></footer>
 </div><script id="report-data" type="application/json">__REPORT_DATA__</script><script>
 __PRIVATE_BACKUP_JS__
@@ -603,20 +620,31 @@ const currentJourney=style.profile?journey[style.profile.code]:null;
 const measured=r.perspectives.filter(p=>!p.not_assessed),measuredIds=new Set(measured.map(p=>p.id)),byId=Object.fromEntries(r.perspectives.map(p=>[p.id,p]));
 const put=(id,text)=>document.getElementById(id).textContent=text;
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
+// Display wording only: saved evidence, classification and exported values stay intact.
+const axisCopy=portrait?.schema==='portrait-v1'?{
+ framing:{title:'何から相談するか',left:'条件を決めて頼む',right:'目的から相談する'},
+ discretion:{title:'どこまでAIに任せるか',left:'手順・実行範囲を指定',right:'進め方も任せる'},
+ iteration:{title:'いつ確認・修正するか',left:'まとめて受け取る',right:'途中で確認・修正する'},
+ decision:{title:'何をもとに選ぶか',left:'比較や理由をもとに選ぶ',right:'試してから選ぶ'}
+}:{};
+const axisTitle=a=>axisCopy[a.id]?.title||a.title;
+const axisLabel=(a,side)=>axisCopy[a.id]?.[side]||a[side].label;
+const statusText=value=>({'複数の会話で観測':'複数の会話で確認','少数の表現を観測':'少数の発言で確認','未観測':'今回の会話では見られない','評価可能な場面なし':'判断できる場面がない'}[value]||value);
 const views=['result','observations','comparison','catalog'];
 function revealPanel(panel){panel.setAttribute('tabindex','-1');panel.scrollIntoView?.({block:'start',behavior:'instant'});panel.focus?.({preventScroll:true});}
 function showView(id,reveal=false){for(const key of views){document.getElementById('view-'+key).hidden=key!==id;document.getElementById('nav-'+key).setAttribute('aria-pressed',String(key===id));}if(reveal)revealPanel(document.getElementById('view-'+id));}
 for(const key of views)document.getElementById('nav-'+key).onclick=()=>showView(key,true);showView('result');
-const practiceStages={request:'依頼する場面',adjustment:'やり取りの途中',review:'出てきたものを確かめる場面'};
-const responseLabels={not_visible:'その後は抜粋にない',assistant_report:'AIの返答・報告',user_report:'本人の発言で分かること'};
+document.getElementById('open-result-storage').onclick=()=>{showView('comparison');const panel=document.getElementById('result-storage');panel.open=true;revealPanel(panel);};
+const practiceStages={request:'依頼する場面',adjustment:'やり取りの途中',review:'AIの回答や成果物を確かめる場面'};
+const responseLabels={not_visible:'その後のやり取りは記録の範囲外',assistant_report:'AIの返答・報告',user_report:'本人の発言で分かること'};
 const practices=r.practices,practiceItems=practices?.items||[],featuredItems=practiceItems.filter(i=>i.featured);
 const overviewPicks=document.getElementById('practice-picks');
 function openResultDetail(target){revealPanel(target);}
 
 function practiceDraft(item){
  const c=item.case;
- return [c.title,'','場面：'+c.situation.text,'本人がしたこと：'+c.human_action.text,'AIに担ってもらったこと：'+c.ai_role.text,
- responseLabels[c.response.status]+'：'+c.response.text,'分からないこと：'+c.limitation,...(c.decision?['選択が出た条件：'+c.decision.condition.text,'見送った・切り替えた案：'+c.decision.alternative.text,...c.decision.steps.map((step,i)=>(i+1)+'. '+step.text)]:[]),'','話してみたいこと：'+c.question,
+ return [c.title,'','場面：'+c.situation.text,'本人がしたこと：'+c.human_action.text,'AIに頼んだこと：'+c.ai_role.text,
+ responseLabels[c.response.status]+'：'+c.response.text,'分からないこと：'+c.limitation,...(c.decision?['選んだときの条件：'+c.decision.condition.text,'見送った・切り替えた案：'+c.decision.alternative.text,...c.decision.steps.map((step,i)=>(i+1)+'. '+step.text)]:[]),'','話してみたいこと：'+c.question,
  '','別の場面で試すなら（分析者が作った依頼例）：'+c.try_next,'','会話の一部をAIが要約した例です。効果や普段の傾向を確かめたものではありません。'].join('\n');
 }
 function openPracticeDraft(item){
@@ -631,36 +659,36 @@ for(const item of practiceItems){
  record.append(el('h4','practice-group-title','会話で起きたこと'));reflection.append(el('h4','practice-group-title','振り返る・試してみる'));
  const flow=el('div','practice-flow');
  const d=c.decision,decisionSpecific=d&&d.kind!=='generic';
- const columns=decisionSpecific?[[d.condition.status==='stated'?'本人が述べた選択の条件':'この選択が出た場面',d.condition.text],['選んだ進め方',c.human_action.text],['見送った・切り替えた案',d.alternative.text]]:[['どんな場面？',c.situation.text],['本人はどう動いた？',c.human_action.text],[responseLabels[c.response.status],c.response.text]];
+ const columns=decisionSpecific?[['この場面でのAIの使い方',c.human_action.text],[d.condition.status==='stated'?'本人が述べた理由・条件':'選んだときの状況',d.condition.text],['見送った・切り替えた案',d.alternative.text]]:[['どんな場面？',c.situation.text],['本人が頼んだこと・選んだこと',c.human_action.text],[responseLabels[c.response.status],c.response.text]];
  for(const [heading,body] of columns){
   const step=el('div');step.append(el('h4','',heading),el('p','',body));flow.append(step);
  }
  record.append(flow);
- const question=el('div','practice-question');question.append(el('strong','','振り返る問い'),el('p','',c.question));reflection.append(question);
+ const question=el('div','practice-question');question.append(el('strong','','振り返るための質問'),el('p','',c.question));reflection.append(question);
  const context=el('dl','practice-context');
  for(const [label,body] of [['AIの役割',c.ai_role.text],...(decisionSpecific?[[responseLabels[c.response.status],c.response.text]]:[]),['まだ分からないこと',c.limitation]]){
   context.append(el('dt','',label),el('dd','',body));
  }
  record.append(context);
- const trial=el('div','practice-trial');trial.append(el('strong','','別の場面で試すなら'),el('p','',c.try_next),el('p','small','分析者が作った依頼例です。本人の発言や、効果を確認した方法ではありません。'));reflection.append(trial);
+ const trial=el('div','practice-trial');trial.append(el('strong','','別の場面で試すなら'),el('p','',c.try_next),el('p','small','分析したAIが作った依頼例です。本人の発言の引用ではありません。効果も確認していません。'));reflection.append(trial);
  if(decisionSpecific){
-  if(d.steps.length){const sequence=el('ol','decision-steps');for(const step of d.steps)sequence.append(el('li','',step.text));record.append(el('h4','steps-heading','会話で見える手順'),sequence);}
+  if(d.steps.length){const sequence=el('ol','decision-steps');for(const step of d.steps)sequence.append(el('li','',step.text));record.append(el('h4','steps-heading','会話で確認できた手順'),sequence);}
  }
- const toolbar=el('div','toolbar'),button=el('button','','話題にする文章を作る');button.type='button';button.onclick=()=>openPracticeDraft(item);toolbar.append(button);reflection.append(toolbar);layout.append(record,reflection);article.append(layout);
+ const toolbar=el('div','toolbar'),button=el('button','','共有する文章の下書きを開く');button.type='button';button.onclick=()=>openPracticeDraft(item);toolbar.append(button);reflection.append(toolbar);layout.append(record,reflection);article.append(layout);
  document.getElementById(item.featured?'practice-cases':'practice-more').append(article);
- if(item.featured){const pick=el('button','practice-pick');pick.type='button';pick.setAttribute('aria-label',c.title+'：場面と問いを見る');pick.append(el('strong','',c.title));pick.onclick=()=>openResultDetail(article);overviewPicks.append(pick);}
+ if(item.featured){const pick=el('button','practice-pick');pick.type='button';pick.setAttribute('aria-label',c.title+'：場面と質問を見る');pick.append(el('strong','',c.title));pick.onclick=()=>openResultDetail(article);overviewPicks.append(pick);}
 
 }
 if(practices){
  const more=practiceItems.filter(i=>!i.featured).length;
- document.getElementById('practice-other').hidden=!more;document.getElementById('more-practices').hidden=!more;put('practice-other-title','ほかに見えた'+more+'場面');put('more-practices','ほかの'+more+'場面を詳しい観察で読む');
- if(!practiceItems.length)put('practice-cases','今回の抜粋では、場面と本人の行動を結びつけられる材料が足りませんでした。使い方がないという意味ではありません。');
- put('practice-scope',practices.reviewed_sessions+'会話から'+practiceItems.length+'場面を整理。ここでは'+featuredItems.length+'例を紹介しています。普段の頻度や効果の順位ではありません。具体例の分析：'+new Date(practices.generated_at).toLocaleString('ja-JP'));
+ document.getElementById('practice-other').hidden=!more;document.getElementById('more-practices').hidden=!more;put('practice-other-title','ほかに確認できた'+more+'場面');put('more-practices','ほかの'+more+'場面を詳しい観察で読む');
+ if(!practiceItems.length)put('practice-cases','今回読んだ範囲では、状況と本人の行動が分かる具体例をまとめられませんでした。普段もそのような使い方をしていない、という意味ではありません。');
+ put('practice-scope',practices.reviewed_sessions+'会話から'+practiceItems.length+'場面を整理。ここでは'+featuredItems.length+'例を紹介しています。普段どれくらい使うか、効果があるかをもとに並べたものではありません。具体例の分析：'+new Date(practices.generated_at).toLocaleString('ja-JP'));
 }else{
  put('practice-cases','この保存結果では、具体的な場面の整理はまだ行っていません。AIに「今の分析範囲で使い方の具体例を追加して」と頼むと、材料が残っている場合に整理できます。');
- put('practice-scope','タイプや観察の件数から、具体的な使い方を推測して埋めることはしません。');
+ put('practice-scope','具体例は、タイプ名や件数から推測せず、会話で確認できた内容だけを載せます。');
 }
-if(!featuredItems.length)overviewPicks.append(el('p','',practices?'選び方や手順の組み合わせまで分かる例は、今回は選びませんでした。「詳しい観察」から、確認できた場面を読めます。':'この保存結果では、具体的な場面はまだ整理していません。「詳しい観察」から、保存済みの観察を読めます。'));
+if(!featuredItems.length)overviewPicks.append(el('p','',practices?'選び方や手順を詳しく紹介する例は、今回は選んでいません。「詳しい観察」から、確認できた場面を読めます。':'この保存結果では、具体的な場面はまだ整理していません。「詳しい観察」から、保存済みの観察を読めます。'));
 document.getElementById('more-practices').onclick=()=>{showView('observations');revealPanel(document.getElementById('practice-other'));};
 document.getElementById('save-practice-text').onclick=()=>{
  const draft=document.getElementById('practice-draft').value.trim();
@@ -670,33 +698,33 @@ document.getElementById('save-practice-text').onclick=()=>{
 };
 document.getElementById('discard-practice-text').onclick=()=>{document.getElementById('practice-draft').value='';document.getElementById('practice-draft-panel').hidden=true;document.getElementById('nav-result').focus?.();};
 const typeStatus={'4軸からの暫定タイプ':'今回のタイプ（暫定）','材料不足の軸あり':'まだ判断材料が足りません','中間・併用の軸あり':'複数の進め方が見られました'}[style.type_status]||style.type_status;
-put('name',r.messages?(currentJourney?.name||style.type_name):'対話の記録を集めているところ');put('type-status',typeStatus);
-put('description',currentJourney?.summary||(style.profile?style.profile.tagline:style.evidence_ready?'近い候補があります。4軸の根拠を確認してください。':'まだタイプを決める材料が足りません。観察できた使い方をご覧ください。'));
+put('name',r.messages?(currentJourney?.name||style.type_name):'分析できる会話がありません');put('type-status',typeStatus);
+put('description',currentJourney?.summary||(style.profile?style.profile.tagline:style.evidence_ready?'近い候補があります。4軸の根拠を確認してください。':'まだタイプを決める材料が足りません。今回の会話で確認できた使い方をご覧ください。'));
 const hero=document.getElementById('journey-hero');hero.hidden=true;
 if(currentJourney?.image&&r.messages){hero.setAttribute('src',currentJourney.image);hero.setAttribute('alt',currentJourney.alt);hero.hidden=false;document.getElementById('result-copy').className='result-copy has-art';}
 for(const letter of (portrait?style.type_code:''))document.getElementById('type-letters').append(el('span','',letter));
 for(const key of ['messages','sessions','days'])put(key,r[key].toLocaleString());
 put('sampling','分析対象の'+r.days+'日間に見つかった'+r.sampling.total_sessions+'会話のうち、分析できる条件を満たした'+r.sampling.eligible_sessions+'会話から'+r.sessions+'会話を選びました。');
-put('coverage',measured.length+' / '+r.perspectives.length+'観点を評価済み。観点を開くと根拠と依頼例を確認できます。');
+put('coverage',measured.length+' / '+r.perspectives.length+'観点を分析しました。各項目を開くと、根拠と依頼例を読めます。');
 put('type-evidence',portrait?'4つの傾向・話し方・発見メモの分析日時：'+new Date(portrait.generated_at).toLocaleString('ja-JP'):'この結果は以前の診断方式で分析されています。4つの傾向・話し方・発見メモは含まれていません。');
-put('material-overview','分析時点の直近'+r.days+'日間を対象に、'+r.sessions+'会話の一部を読んだ結果です。履歴全体や、普段の使い方すべてを表すものではありません。');
+put('material-overview','分析時点の直近'+r.days+'日間を対象に、'+r.sessions+'会話の一部を読んだ結果です。履歴全体や普段の使い方すべてを表すものではありません。');
 document.getElementById('material-evidence').onclick=()=>showView('observations',true);
-const reflectionQuestions={framing:'最近の依頼では、条件を先に固めましたか。それとも方向から相談しましたか。何がその選び方につながりましたか。',discretion:'手順や実行してよい範囲をどこまで決め、どこをAIに委ねましたか。仕事によって変わりますか。',iteration:'一度まとめて受け取った場面と、途中で修正した場面では、どんな違いがありましたか。',decision:'説明や比較と、実際に試した感触を、それぞれどの場面で判断材料にしましたか。'};
-for(const [key,question] of Object.entries(reflectionQuestions)){const item=el('div','reflection');item.append(el('h3','',({framing:'相談の入口',discretion:'進め方の裁量',iteration:'合わせるタイミング',decision:'選択の手がかり'})[key]),el('p','',question));document.getElementById('reflection-questions').append(item);}
+const reflectionQuestions={framing:'最近の依頼では、条件を決めてから頼みましたか。それとも、何を目指すかから相談しましたか。その進め方を選んだ理由はありますか。',discretion:'手順や実行してよい範囲をどこまで決め、どこをAIに委ねましたか。仕事によって変わりますか。',iteration:'一度まとめて受け取った場面と、途中で修正した場面では、どんな違いがありましたか。',decision:'説明や比較と、実際に試した感触を、それぞれどの場面で判断材料にしましたか。'};
+for(const [key,question] of Object.entries(reflectionQuestions)){const item=el('div','reflection');item.append(el('h3','',({framing:'何から相談するか',discretion:'どこまでAIに任せるか',iteration:'いつ確認・修正するか',decision:'何をもとに選ぶか'})[key]),el('p','',question));document.getElementById('reflection-questions').append(item);}
 if(portrait){
  put('catalog-description','4軸の組み合わせを、16通りの旅になぞらえた愛称です。職種・能力・固定した性格を示すものではありません。');
  for(const a of portrait.axes){
   const c=el('article','axis-item'),top=el('div','axis-header');
-  const label={left:a.left.label+' 寄り',right:a.right.label+' 寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state];
-  top.append(el('h3','',a.title),el('strong','',label));c.append(top);
-  const labels=el('div','axis-labels');labels.append(el('span','',a.left.label),el('span','',a.right.label));c.append(labels);
+  const label={left:'「'+axisLabel(a,'left')+'」寄り',right:'「'+axisLabel(a,'right')+'」寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state];
+  top.append(el('h3','',axisTitle(a)),el('strong','',label));c.append(top);
+  const labels=el('div','axis-labels');labels.append(el('span','',axisLabel(a,'left')),el('span','',axisLabel(a,'right')));c.append(labels);
   if(a.state!=='insufficient'&&a.left_percent!==null){const track=el('div','axis-track');track.setAttribute('aria-hidden','true');const marker=el('span','axis-marker');marker.style.left=(100-a.left_percent)+'%';track.append(marker);c.append(track);}
   const check=r.material_checks?.[a.id];
   const d=el('details');d.append(el('summary','','根拠を見る · '+a.observed_sessions+'会話'),el('p','small',a.hint));
-  if(a.state==='insufficient')d.append(el('p','axis-material','左右を決めるだけの観察がまだありません。'));
-  else if(check?.changed)d.append(el('p','axis-material','根拠の会話が1件減るだけで判定が変わる場合があります。ここは決めつけず、具体的な場面を確認してください。'));
-  d.append(el('p','evidence','左のみ '+(a.counts.left||0)+' / 右のみ '+(a.counts.right||0)+' / 両方 '+(a.counts.both||0)+'会話。未観測 '+(a.counts.not_observed||0)+' / 不明 '+(a.counts.uncertain||0)+'。'));
-  if(a.left_percent!==null)d.append(el('p','evidence','左側への配分 '+a.left_percent+'%。両方は半分ずつ配分します。性格や能力の点数ではありません。'));
+  if(a.state==='insufficient')d.append(el('p','axis-material','どちらの傾向があるか判断するには、会話の材料が足りません。'));
+  else if(check?.changed)d.append(el('p','axis-material','根拠の会話が1件減るだけで判定が変わる場合があります。具体的な場面も確認してみてください。'));
+  d.append(el('p','evidence','左のみ '+(a.counts.left||0)+' / 右のみ '+(a.counts.right||0)+' / 両方 '+(a.counts.both||0)+'会話。どちらも見られない '+(a.counts.not_observed||0)+' / 不明 '+(a.counts.uncertain||0)+'。'));
+  if(a.left_percent!==null)d.append(el('p','evidence','左の傾向に数えた割合は'+a.left_percent+'%です。両方が見られた会話は、左右に半分ずつ数えます。性格や能力の点数ではありません。'));
   for(const f of a.evidence)d.append(el('p','',f.reason));c.append(d);document.getElementById('portrait-axes').append(c);
  }
  for(const tone of portrait.tones){
@@ -704,12 +732,12 @@ if(portrait){
   const track=el('div','tone-track');track.setAttribute('aria-hidden','true');const fill=el('span');fill.style.width=(tone.assessed_sessions?100*tone.sessions/tone.assessed_sessions:0)+'%';track.append(fill);c.append(track);
   const d=el('details');d.append(el('summary','','観察した場面'),el('p','small',tone.hint),el('p','evidence','不明 '+tone.uncertain_sessions+'会話。'));
   for(const f of tone.findings)d.append(el('p','',f.reason));
-  if(!tone.findings.length)d.append(el('p','',tone.assessed_sessions?'この抜粋では未観測です。':'文脈が足りず判断できません。'));c.append(d);document.getElementById('portrait-tones').append(c);
+  if(!tone.findings.length)d.append(el('p','',tone.assessed_sessions?'今回読んだ範囲では、この話し方は見つかりませんでした。':'前後のやり取りが足りず、判断できません。'));c.append(d);document.getElementById('portrait-tones').append(c);
  }
  for(const note of portrait.discoveries){
   const c=el('article','discovery-card');c.append(el('h3','',note.title));
   const first=note.findings[0];if(first)c.append(el('p','observation',first.observation));
-  const d=el('details');d.append(el('summary','','見つけた場面と、振り返りの問い'),el('p','question',note.question));
+  const d=el('details');d.append(el('summary','','確認できた場面と、振り返るための質問'),el('p','question',note.question));
   for(const f of note.findings)d.append(el('p','',f.observation),el('p','evidence',(f.relation==='uncovered'?'38の観点にはない使い方の候補':'38の観点で見られた具体的な使い方')));
   c.append(d);document.getElementById('portrait-discoveries').append(c);
  }
@@ -725,10 +753,10 @@ for(const p of r.perspectives){
  const c=el('article','lens'),details=el('details'),summary=el('summary'),row=el('span','lens-summary');
  const count=p.not_assessed?'未評価':p.session_rate===null?'判断材料なし':p.sessions+' / '+p.assessed_sessions+'会話';
  row.append(el('span','',p.title),el('small','',count));summary.append(row);details.append(summary);
- const body=el('div','lens-body');body.append(el('p','lens-description',p.description),el('p','evidence',p.status+(p.not_assessed?'':' ／ 不明 '+p.uncertain_sessions+'会話 ／ 該当場面なし '+(p.not_applicable_sessions||0)+'会話')));
+ const body=el('div','lens-body');body.append(el('p','lens-description',p.description),el('p','evidence',statusText(p.status)+(p.not_assessed?'':' ／ 不明 '+p.uncertain_sessions+'会話 ／ 該当場面なし '+(p.not_applicable_sessions||0)+'会話')));
  if(['process','tooling'].includes(p.kind)){const forms=(p.observed_forms||[]).filter(f=>f.sessions);if(forms.length)body.append(el('p','',forms.map(f=>f.label+' '+f.sessions+'会話').join(' / ')));}
  for(const f of p.findings)body.append(el('p','',f.reason));
- const more=el('details');more.append(el('summary','','依頼例・読み取り条件'),el('p','',p.question),el('p','',p.experiment));if(p.assessment_hint)more.append(el('p','small',p.assessment_hint));
+ const more=el('details');more.append(el('summary','','依頼の例・判断に使った基準'),el('p','',p.question),el('p','',p.experiment));if(p.assessment_hint)more.append(el('p','small',p.assessment_hint));
  const example=el('div','example');example.append(el('span','example-label','依頼例（本人の発言の引用ではありません）'));const text=el('span','example-text',p.examples.general);text.dataset.perspective=p.id;example.append(text);more.append(example);body.append(more);details.append(body);c.append(details);
  groups.get(p.group).grid.append(c);groups.get(p.group).cards.push(c);observationCards.push({card:c,p});
 }
@@ -739,8 +767,8 @@ const typeGrid=document.getElementById('type-grid');
 function typeImage(t){const art=journey[t.code];if(!art?.image)return null;const img=el('img','type-art');img.setAttribute('src',art.image);img.setAttribute('alt',art.alt);img.setAttribute('width','512');img.setAttribute('height','512');img.setAttribute('loading','lazy');return img;}
 // These shelves organize the existing four-axis catalog; they do not classify the user.
 if(portrait?.schema==='portrait-v1'){
- put('catalog-guide','頼み方が近い4人ずつを並べました。横に見比べると、やり取りと選び方の違いが見えてきます。');
- const shelves=[['SG','条件も、進め方も伝える。'],['SD','条件を伝え、進め方は任せる。'],['EG','方向から相談し、進め方は伝える。'],['ED','方向から相談し、進め方は任せる。']];
+ put('catalog-guide','頼み方が似ている4人ずつを並べています。やり取りのタイミングや、何をもとに選ぶかを見比べられます。');
+ const shelves=[['SG','条件と進め方を伝える'],['SD','条件を伝え、進め方は任せる'],['EG','目的から相談し、進め方は伝える'],['ED','目的から相談し、進め方は任せる']];
  for(const [prefix,title] of shelves){
   const types=style.type_catalog.filter(t=>t.code.startsWith(prefix));
   if(!types.length)continue;
@@ -770,7 +798,7 @@ for(const t of style.type_catalog){
  const toggle=el('span','type-toggle');toggle.append(el('span','type-open',portrait?'4軸を開く':'説明を開く'),el('span','type-close','閉じる'));meta.append(toggle);
  copy.append(meta);summary.append(copy);entry.append(summary);
  const panel=el('div','type-detail');
- if(portrait){const list=el('dl','type-axes');for(const [i,a] of portrait.axes.entries()){const row=el('div','type-axis');row.append(el('dt','',a.title),el('dd','',t.tagline.split(' / ')[i]));list.append(row);}panel.append(list);}
+ if(portrait){const list=el('dl','type-axes');for(const [i,a] of portrait.axes.entries()){const row=el('div','type-axis');row.append(el('dt','',axisTitle(a)),el('dd','',t.tagline.split(' / ')[i]));list.append(row);}panel.append(list);}
  else panel.append(el('p','muted','手がかりにする観点：'+Object.keys(t.weights).map(id=>byId[id].title).join(' / ')),el('p','','試せる工夫：'+t.tip));
  entry.append(panel);typeGrid.append(entry);
 }
@@ -825,9 +853,9 @@ if(currentJourney?.image){
 if(portrait){
  for(const a of portrait.axes){
   const row=el('article','summary-axis'),head=el('div','summary-axis-header');
-  const state={left:a.left.label+' 寄り',right:a.right.label+' 寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state]||'材料不足';
-  head.append(el('h3','',a.title),el('strong','',state));row.append(head);
-  const labels=el('div','axis-labels');labels.append(el('span','',a.left.label),el('span','',a.right.label));row.append(labels);
+  const state={left:'「'+axisLabel(a,'left')+'」寄り',right:'「'+axisLabel(a,'right')+'」寄り',mixed:'中間・併用',insufficient:'材料不足'}[a.state]||'材料不足';
+  head.append(el('h3','',axisTitle(a)),el('strong','',state));row.append(head);
+  const labels=el('div','axis-labels');labels.append(el('span','',axisLabel(a,'left')),el('span','',axisLabel(a,'right')));row.append(labels);
   // A lack of evidence has no position on a scale, even when a partial estimate exists.
   if(a.state!=='insufficient'&&Number.isFinite(a.left_percent)){
    const track=el('div','axis-track'),marker=el('span','axis-marker');track.setAttribute('aria-hidden','true');marker.style.left=(100-a.left_percent)+'%';track.append(marker);row.append(track);
@@ -838,7 +866,7 @@ if(portrait){
 // Use definition order, not a ranking of quality or competence.
 const summaryExamples=measured.filter(p=>p.sessions>0).slice(0,3);
 for(const p of summaryExamples)document.getElementById('summary-examples').append(el('span','',p.title));
-if(!summaryExamples.length)put('summary-examples','今回の抜粋では観測例を表示できません。');
+if(!summaryExamples.length)put('summary-examples','今回読んだ範囲では、紹介できる使い方が見つかりませんでした。');
 function setSummaryMode(open){
  document.getElementById('summary-mode').hidden=!open;
  document.getElementById('report-shell').hidden=open;

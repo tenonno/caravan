@@ -7,6 +7,7 @@
 - 実装状況: 配布物の生成を実装。GitHubへのアップロードは別工程
 - 2026-11-03追記: 公開済み。利用者の導入手順は [0012](0012-installed-skill-workspace.md) で個人用スキルのインストールへ更新。公開ソースの選別と新しい履歴の方針は継続。
 - 関連ADR: [0004](0004-consent-and-private-data.md)、[0007](0007-stable-standalone-reports.md)
+- 2026-11-04追記：初回公開後の更新経路は[0030](0030-explicit-publication-remote.md)により、同じGitリポジトリの公開用ブランチとworktreeへ統一。公開する内容と開発履歴を送らない方針は維持する。
 
 ## 背景
 

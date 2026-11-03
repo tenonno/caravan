@@ -29,7 +29,7 @@ class BackupTests(unittest.TestCase):
             report=self.report();semantic.write(source/'report.json',report)
             saved=root/'private.json';backup.export(source,saved)
             dest=root/'restored';backup.restore(saved,dest)
-            self.assertEqual(json.loads((dest/'report.json').read_text(encoding='utf-8')),report)
+            self.assertEqual(json.loads((dest/'report.json').read_text(encoding='utf-8')),backup.current_report(report))
             self.assertIn('PRIVATE_REASON',(dest/'index.html').read_text(encoding='utf-8'))
             shared=(dest/'share-profile.json').read_text(encoding='utf-8')
             self.assertNotIn('PRIVATE_REASON',shared);self.assertNotIn('tones',shared)
@@ -37,7 +37,22 @@ class BackupTests(unittest.TestCase):
             self.assertFalse((dest/'manifest.json').exists())
             with self.assertRaises(ValueError):backup.restore(saved,dest)
             backup.restore(saved,dest,replace=True)
-            self.assertEqual(backup.read(dest/'before-restore.backup.json')['report'],report)
+            self.assertEqual(backup.read(dest/'before-restore.backup.json')['report'],backup.current_report(report))
+
+    def test_export_removes_legacy_and_refreshes_names_without_changing_evidence(self):
+        report=self.report()
+        report['type_name']='OBSOLETE'
+        report['portrait']['classification']['type_catalog'][0]['name']='OBSOLETE'
+        saved=backup.bundle(report)['report']
+        self.assertFalse(set(backup.LEGACY_FIELDS) & set(saved))
+        self.assertNotIn('OBSOLETE', json.dumps(saved))
+        for key in ('perspectives','generated_at','sessions'):
+            self.assertEqual(saved[key],report[key])
+        for key in ('axes','tones','discoveries','generated_at'):
+            self.assertEqual(saved['portrait'][key],report['portrait'][key])
+        self.assertEqual(report['type_name'],'OBSOLETE')
+        legacy=self.report(); del legacy['portrait']
+        self.assertEqual(backup.bundle(legacy)['report'],legacy)
 
     def test_reject_invalid_before_touching_existing_result(self):
         value=backup.bundle(self.report())
@@ -50,7 +65,7 @@ class BackupTests(unittest.TestCase):
         with temporary_workspace() as directory, contextlib.redirect_stdout(io.StringIO()):
             root=Path(directory);dest=root/'result';dest.mkdir()
             (dest/'index.html').write_text('ORIGINAL',encoding='utf-8')
-            del value['report']['type_catalog']
+            del value['report']['portrait']['classification']['type_catalog']
             semantic.write(root/'bad.json',value)
             with self.assertRaises(ValueError):backup.restore(root/'bad.json',dest,True)
             self.assertEqual((dest/'index.html').read_text(encoding='utf-8'),'ORIGINAL')

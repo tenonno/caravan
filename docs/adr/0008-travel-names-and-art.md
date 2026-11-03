@@ -38,3 +38,7 @@
 仕事らしすぎない名前の要望、旅の提案の選択、統一した16枚と画像制作スキルの作成依頼。
 
 [表示定義](../../skills/caravan/assets/journey-types.json)、[表示層](../../skills/caravan/scripts/journey.py)、[制作スキル](../../skills/ai-sindan-art/SKILL.md)、[プロンプト](../../skills/ai-sindan-art/references/prompts.json)、[対応テスト](../../tests/test_journey.py)。関連コミット：`6035e92`。
+
+## 2026-11-04 追記
+
+[0027](0027-current-result-backup.md)により、詳細JSONの旧分類と表示名の保存方針を変更。その他の決定は継続する。

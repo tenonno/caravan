@@ -4,112 +4,112 @@
     {
       "code": "SGBC",
       "name": "地図を描く旅人",
-      "summary": "条件と道筋を整え、届いた案を比べて選ぶ。",
+      "summary": "条件と進め方をAIに伝え、提案された案を比べて選ぶ。",
       "scene": "Traveler sits at a broad flat rock at the start of a trail drawing a clear winding route on a large blank-symbol map with a pencil. Robot stands alongside presenting two small route maps for comparison. Rolled map case and distant single hill.",
       "alt": "岩の机で地図を描く旅人と、二つの案を持つ相棒"
     },
     {
       "code": "SGBT",
       "name": "石橋を渡る旅人",
-      "summary": "条件と進め方を伝え、できあがったものを試して選ぶ。",
+      "summary": "条件と進め方をAIに伝え、できあがったものを試して選ぶ。",
       "scene": "At the END of a short carefully arranged stone path, traveler tests a newly built little stone footbridge with one boot, robot nearby carrying a rolled route plan. A complete bridge, quiet creek and a route marker without text.",
       "alt": "できあがった石橋を渡って確かめる旅人と相棒"
     },
     {
       "code": "SGIC",
       "name": "コンパスを読む旅人",
-      "summary": "条件と進め方を示し、途中で相談しながら理由を確かめる。",
+      "summary": "条件と進め方をAIに伝え、途中で相談しながら提案の理由を確かめる。",
       "scene": "Pausing halfway along a winding trail, traveler and robot both look at a brass compass held between them and an unfolded simple map, two quiet teal hills in the distance.",
       "alt": "道の途中で地図とコンパスを一緒に確かめる旅人と相棒"
     },
     {
       "code": "SGIT",
       "name": "足あとを重ねる旅人",
-      "summary": "進み方を決め、小さく試して途中で調整する。",
+      "summary": "進め方を決め、小さく試しながら途中で調整する。",
       "scene": "Traveler and robot walk side by side across sandy ground, stop at a sequence of their own footprints and reposition a small blank trail marker together. One boot testing the next step; no map held, footprints form the main visual motif.",
       "alt": "足あとを見ながら次の一歩を調整する旅人と相棒"
     },
     {
       "code": "SDBC",
       "name": "灯台で待つ旅人",
-      "summary": "行き先を伝えて道筋は任せ、届いた案を比較する。",
+      "summary": "目的を伝え、進め方はAIに任せる。提案された案を比べて選ぶ。",
       "scene": "Traveler waits seated beside a small cream lighthouse, looking at two illustrated route cards brought back by the robot from its journey. Brass lantern at their feet, miniature coastline, calm daylight, no text.",
       "alt": "灯台のそばで相棒の持ち帰った道筋を見比べる旅人"
     },
     {
       "code": "SDBT",
       "name": "小舟に乗る旅人",
-      "summary": "行き先を伝えて任せ、届いたものに触れて確かめる。",
+      "summary": "目的を伝え、進め方はAIに任せる。できあがったものを試して確かめる。",
       "scene": "At a little wooden dock the robot presents a completed tiny teal rowboat. Traveler steps carefully into the boat to try it, holding a mooring rope, cream water ripples and reeds. Friendly equal companions.",
       "alt": "相棒が用意した小舟に乗って確かめる旅人"
     },
     {
       "code": "SDIC",
       "name": "星を指さす旅人",
-      "summary": "行き先は共有し、道中の提案と理由をすり合わせる。",
+      "summary": "目的をAIと共有し、途中の提案とその理由を話し合う。",
       "scene": "Traveler and robot sit side by side on a hill with a brass astrolabe and a star chart, each pointing to the same single golden guiding star, comparing their route halfway through. Night appears only as a small teal circular vignette behind them, outer canvas stays cream.",
       "alt": "同じ星を指しながら道筋を相談する旅人と相棒"
     },
     {
       "code": "SDIT",
       "name": "帆を合わせる旅人",
-      "summary": "行き先を共有し、任せた進み方を試しながら調整する。",
+      "summary": "目的をAIと共有し、任せた進め方を試しながら調整する。",
       "scene": "Traveler and robot together in a little teal sailboat with one ochre sail, trying a new sail angle while underway, traveler holds sheet rope robot adjusts tiller. Small gentle wave curls, no dramatic sea.",
       "alt": "小さな帆船で帆の角度を試す旅人と相棒"
     },
     {
       "code": "EGBC",
       "name": "分かれ道で考える旅人",
-      "summary": "行き先から相談し、進め方を整えて候補を見比べる。",
+      "summary": "何を目指すかからAIに相談し、進め方を決めて候補を比べる。",
       "scene": "Traveler and robot at a Y-shaped woodland fork. Traveler arranges two abstract route cards on a fallen log while robot points to the routes, an orderly blank wooden signpost, thoughtful relaxed pose.",
       "alt": "分かれ道で二つの道を見比べる旅人と相棒"
     },
     {
       "code": "EGBT",
       "name": "草原を歩く旅人",
-      "summary": "行き先を探す段取りを決め、届いた候補を歩いて確かめる。",
+      "summary": "何を目指すか探す手順を決め、AIが出した候補を試して確かめる。",
       "scene": "At the edge of an open grassy meadow, traveler samples a newly suggested path by stepping onto it, robot holds a tiny route notebook and a simple blank flag marking the planned scouting route. Wide grasses and two modest distant knolls.",
       "alt": "草原の候補ルートを実際に歩いて確かめる旅人と相棒"
     },
     {
       "code": "EGIC",
       "name": "焚き火を囲む旅人",
-      "summary": "行き先と進め方を相談し、対話を重ねて選び直す。",
+      "summary": "目的や進め方をAIと相談し、やり取りしながら選び直す。",
       "scene": "Traveler and robot sit on two low logs around a tiny ochre campfire, discussing a map laid between them with two pebble route options. Calm eye contact, small teal tent behind, safe modest flame, no food or text.",
       "alt": "焚き火を囲み、地図を広げて相談する旅人と相棒"
     },
     {
       "code": "EGIT",
       "name": "飛び石を渡る旅人",
-      "summary": "探し方を決め、一歩ずつ試して次の方向を合わせる。",
+      "summary": "何を目指すか探す手順を決め、少しずつ試して次の方針を調整する。",
       "scene": "Traveler and robot crossing broad stepping stones in a shallow quiet stream, traveler points to the next stone and tests it with a boot while robot pauses on adjacent stone. Large readable stone shapes and soft reeds.",
       "alt": "飛び石を一つずつ試しながら進む旅人と相棒"
     },
     {
       "code": "EDBC",
       "name": "風を待つ旅人",
-      "summary": "行き先探しも任せ、持ち帰った候補の理由を比べる。",
+      "summary": "何を目指すかの検討もAIに任せ、候補ごとの理由を比べる。",
       "scene": "Traveler sits under a small tree with a windsock, robot returns carrying three illustrated postcards of different destinations, traveler compares them on a suitcase. Gentle breeze indicated by scarf and a couple leaves. No letters.",
       "alt": "風の吹く木陰で、相棒が集めた旅先を見比べる旅人"
     },
     {
       "code": "EDBT",
       "name": "貝殻を手に取る旅人",
-      "summary": "探索を任せ、持ち帰った発見に触れて選ぶ。",
+      "summary": "候補を探す作業をAIに任せ、出てきた候補を試して選ぶ。",
       "scene": "On a tiny cream beach the robot has brought a basket of varied shells and smooth pebbles. Traveler holds a large spiral shell to an ear, discovering through experience. A modest piece of driftwood and single teal wave.",
       "alt": "浜辺で相棒の持ち帰った貝殻を手に取る旅人"
     },
     {
       "code": "EDIC",
       "name": "星をめぐる旅人",
-      "summary": "行き先探しを任せつつ、道中の相談で方向を絞る。",
+      "summary": "何を目指すかの検討をAIに任せつつ、途中で相談して方向を絞る。",
       "scene": "Traveler and robot on a low hill beside a small brass telescope, robot proposes several constellations on a simple chart and traveler points upward discussing which to explore. Three distinct star clusters within a small teal sky vignette, cream outer background.",
       "alt": "望遠鏡のそばで次にめぐる星を相談する旅人と相棒"
     },
     {
       "code": "EDIT",
       "name": "寄り道をする旅人",
-      "summary": "行き先から一緒に探し、試して見つけたものから次を決める。",
+      "summary": "何を目指すかからAIと一緒に考え、試した結果をもとに次を決める。",
       "scene": "Traveler and robot cheerfully leave a winding path to inspect a tiny unexpected cluster of orange flowers and smooth curious stones. Traveler crouches holding one stone, robot points toward a new side path. Spontaneous curious posture, peaceful meadow.",
       "alt": "寄り道で見つけた花や石を一緒に観察する旅人と相棒"
     }
