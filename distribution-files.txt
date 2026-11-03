@@ -15,6 +15,7 @@ docs/adr/0008-travel-names-and-art.md
 docs/adr/0009-impeccable-design-workflow.md
 docs/adr/0010-presentation-summary.md
 docs/adr/0011-public-distribution.md
+docs/adr/0012-installed-skill-workspace.md
 docs/adr/README.md
 docs/adr/template.md
 docs/design/impeccable.md
@@ -26,6 +27,7 @@ skills/ai-sindan-art/agents/openai.yaml
 skills/ai-sindan-art/references/prompts.json
 skills/ai-sindan-art/scripts/export-jpeg.ps1
 skills/ai-sindan/SKILL.md
+skills/ai-sindan/LICENSE
 skills/ai-sindan/assets/developer-report.html
 skills/ai-sindan/assets/journey-types.json
 skills/ai-sindan/assets/journey/EDBC.jpg

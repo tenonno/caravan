@@ -1,6 +1,7 @@
 import importlib.util
 from contextlib import contextmanager
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -27,6 +28,58 @@ def temporary_workspace():
 
 
 class DistributionTests(unittest.TestCase):
+    def test_installed_skill_works_from_another_workspace(self):
+        # Synthetic, empty history only; never inspect the real user's home.
+        for host in ('.codex', '.claude'):
+            with self.subTest(host=host), temporary_workspace() as directory:
+                root = Path(directory).resolve()
+                installed = root / 'test home' / host / 'skills/ai-sindan'
+                for name, source in release.release_files(ROOT):
+                    prefix = 'skills/ai-sindan/'
+                    if name.startswith(prefix):
+                        target = installed / name[len(prefix):]
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(source, target)
+                before = {p.relative_to(installed): p.read_bytes()
+                          for p in installed.rglob('*') if p.is_file()}
+                workspace = root / 'diagnosis workspace'
+                workspace.mkdir()
+                empty_home = root / 'empty history'
+                empty_home.mkdir()
+                output = workspace / 'output/semantic'
+                script = installed / 'scripts/semantic.py'
+
+                def run(*args):
+                    return subprocess.run(
+                        [sys.executable, '-B', str(script), *map(str, args)],
+                        cwd=workspace, capture_output=True, encoding='utf-8',
+                        env={**os.environ, 'PYTHONIOENCODING': 'utf-8'})
+
+                self.assertEqual(run('notice').returncode, 0)
+                refused = run('prepare', '--home', empty_home, '--output', output)
+                self.assertNotEqual(refused.returncode, 0)
+                self.assertIn('Explicit consent', refused.stderr)
+                self.assertFalse(output.exists())
+                prepared = run('prepare', '--allow-agent-read', '--home', empty_home,
+                               '--output', output, '--mode', 'light')
+                self.assertEqual(prepared.returncode, 0, prepared.stderr)
+                finalized = run('finalize', '--output', output)
+                self.assertEqual(finalized.returncode, 0, finalized.stderr)
+                self.assertTrue((output / 'index.html').is_file())
+                self.assertTrue((output / 'developer.html').is_file())
+                art = subprocess.run(
+                    [sys.executable, '-B', '-c',
+                     'import sys; sys.path.insert(0, sys.argv[1]); import journey; '
+                     'items=journey.presentation({"portrait":{"schema":"portrait-v1"}})["types"]; '
+                     'assert len(items)==16; assert all(x["image"].startswith("data:image/jpeg;base64,") for x in items)',
+                     str(installed / 'scripts')],
+                    cwd=workspace, capture_output=True, text=True)
+                self.assertEqual(art.returncode, 0, art.stderr)
+                after = {p.relative_to(installed): p.read_bytes()
+                         for p in installed.rglob('*') if p.is_file()}
+                self.assertEqual(before, after)
+                self.assertEqual((installed / 'LICENSE').read_bytes(), (ROOT / 'LICENSE').read_bytes())
+
     def test_only_allowlisted_files_and_reproducible(self):
         with temporary_workspace() as directory:
             root = Path(directory)

@@ -20,7 +20,9 @@ python skills/ai-sindan/scripts/semantic.py notice
 
 ## エージェントから使う
 
-このリポジトリで「skills/ai-sindan/SKILL.md を使って診断して」と依頼します。スキルの注意・承諾手順の後、抽出→AIによる読解→集約まで実行します。別PCでは `skills/ai-sindan` フォルダ全体を本人の環境へ配置します。
+通常の利用は [READMEのインストール手順](../README.md#スキルとしてインストールする) に従い、Codexでは `$ai-sindan`、Claude Codeでは `/ai-sindan` を呼び出します。
+
+以下のコマンド例は、開発用リポジトリのルートで実行する場合の表記です。個人用スキルとして導入した場合は、スクリプトをインストール先の絶対パスで指定し、出力は診断の作業フォルダの `output/semantic/` に保存します。
 
 Python 3.10以降。追加パッケージや別APIキーは不要です。スクリプト自身はモデルAPIを呼びません。**実行中のCodexやClaude Code等が読解を担当する**ので、スクリプトだけ実行してもAI評価は生成されません。
 

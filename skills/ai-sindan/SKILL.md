@@ -5,7 +5,15 @@ description: Diagnose observable AI collaboration habits by reading a bounded sa
 
 # AIとの向き合い方 — semantic workflow v0.8
 
-Use this skill's `scripts/semantic.py` as the default. `scripts/diagnose.py` is the legacy keyword baseline and shared rendering library, NOT the AI diagnosis workflow. Resolve paths relative to this SKILL.md. Python 3.10+, no packages or API keys required. The running agent itself performs the semantic review; the script does not invoke another model.
+Use this skill's `scripts/semantic.py` as the default. `scripts/diagnose.py` is the legacy keyword baseline and shared rendering library, NOT the AI diagnosis workflow. Resolve bundled script, reference, and asset paths relative to this SKILL.md, independently of the working directory. Python 3.10+, no packages or API keys required. The running agent itself performs the semantic review; the script does not invoke another model.
+
+## Installed skill and private workspace
+
+Installation alone is not a diagnosis request: do not scan or read histories during installation. This folder is self-contained and can be installed as a personal skill in Codex or Claude Code; keep its scripts, assets, and LICENSE together.
+
+Use the directory containing the loaded SKILL.md as `<skill-dir>`. Commands below use that absolute path (quote paths containing spaces). Do not change the working directory to the skill installation to resolve scripts. Keep the user's diagnosis workspace as the working directory; choose `<private-output>` as its absolute `output/semantic` path unless the user already selected another private output directory. Do not save results, excerpts, or caches inside the installed skill. Exclude the actual diagnosis workspace, not the skill installation path, when using `--exclude-project`.
+
+If the output is inside a Git repository, ensure the output folder is ignored and no existing private output files are tracked before writing excerpts. Add a narrowly scoped ignore entry if needed; never stage outputs. If outputs are already tracked, stop before writing and explain so the user can select a private workspace. Installation or skill updates must not copy, publish, or delete diagnosis outputs.
 
 ## First: notice and consent
 
@@ -16,14 +24,14 @@ Before preparing or reading excerpts, show the user a concise notice covering:
 - Ask them to confirm that the intended scope and route are allowed by their organization. An approved Bedrock or other environment may be appropriate, but this skill neither switches routes nor guarantees any route is safe.
 - State the selected mode's excerpt limits, and that private excerpt files remain locally. Automatic redaction is incomplete.
 
-`python scripts/semantic.py notice` prints the full notice without reading history. Do not pass `--allow-agent-read` until the user explicitly authorizes reading the specified local history through the current agent after disclosure. Prior explicit authorization in the conversation remains valid; do not ask twice. Invocation of this skill alone does not count as informed approval. If route/scope changes, explain the change before continuing. If permission is absent, stop before extraction or reading excerpts.
+`python "<skill-dir>/scripts/semantic.py" notice` prints the full notice without reading history. Do not pass `--allow-agent-read` until the user explicitly authorizes reading the specified local history through the current agent after disclosure. Prior explicit authorization in the conversation remains valid; do not ask twice. Invocation of this skill alone does not count as informed approval. If route/scope changes, explain the change before continuing. If permission is absent, stop before extraction or reading excerpts.
 
 ## Prepare a bounded sample
 
 After consent:
 
 ```text
-python scripts/semantic.py prepare --allow-agent-read --mode standard --output <private-output>
+python "<skill-dir>/scripts/semantic.py" prepare --allow-agent-read --mode standard --output <private-output>
 ```
 
 Optional `--days` (default 90), `--home`, `--max-chars` (can only lower the selected mode's budget), `--exclude-project <exact working directory>`. Exclude the diagnosis project's conversation when appropriate to avoid self-referential sampling.
@@ -88,10 +96,10 @@ Include ALL 38 IDs, not just the example dimension. Each reason is 1–500 chara
 ## Finalize and explain
 
 ```text
-python scripts/semantic.py finalize --output <private-output> --reviews <reviews.json>
+python "<skill-dir>/scripts/semantic.py" finalize --output <private-output> --reviews <reviews.json>
 ```
 
-When all selected conversations are cached, omit `--reviews`. Missing or stale reviews fail closed. Finalization overwrites `<private-output>/index.html`, `developer.html`, `report.json`, and allowlisted `share-profile.json`. The result links to the separate developer page (definitions, review criteria, formulas, thresholds, type weights, and aggregate calculations; no raw excerpts or individual evidence reasons). Both HTML files are standalone for separate exports. Always link the fixed `index.html` (default `output/semantic/index.html`); do not create timestamped copies or link old snapshots. For template-only changes, run `python scripts/semantic.py render --output <private-output>` to refresh both pages from the existing `report.json` without changing the analysis date or claiming a new diagnosis. Developer thresholds describe the current implementation; older reports do not retain their original threshold settings. Verify the file was updated before linking it. The page shows its HTML update time and provides a reload button; if the app retains an old preview, ask the user to reload/reopen the same fixed file rather than inventing another filename. Do not send any file to another person without separate authorization.
+When all selected conversations are cached, omit `--reviews`. Missing or stale reviews fail closed. Finalization overwrites `<private-output>/index.html`, `developer.html`, `report.json`, and allowlisted `share-profile.json`. The result links to the separate developer page (definitions, review criteria, formulas, thresholds, type weights, and aggregate calculations; no raw excerpts or individual evidence reasons). Both HTML files are standalone for separate exports. Always link the fixed `index.html` (default `output/semantic/index.html`); do not create timestamped copies or link old snapshots. For template-only changes, run `python "<skill-dir>/scripts/semantic.py" render --output <private-output>` to refresh both pages from the existing `report.json` without changing the analysis date or claiming a new diagnosis. Developer thresholds describe the current implementation; older reports do not retain their original threshold settings. Verify the file was updated before linking it. The page shows its HTML update time and provides a reload button; if the app retains an old preview, ask the user to reload/reopen the same fixed file rather than inventing another filename. Do not send any file to another person without separate authorization.
 
 Explain the sample size, coverage and dialogue-plus-metadata character budget; distinguish reused reviews from new analysis. The algorithm summarizes semantic observations using 16 hand-authored style prototypes based on the original 18 dimensions in `assets/types.json`. If `profile` is null, keep compatible/near candidates rather than forcing a type. Prototypes, weights and thresholds remain uncalibrated; this is not MBTI or a validated psychological test. Never turn the comparison into a skill, trust, or performance ranking.
 
@@ -109,8 +117,8 @@ The twelve tooling dimensions cover model routing, reasoning settings, skill use
 For a separate local metadata inventory after the same consent:
 
 ```text
-python scripts/semantic.py scan-execution --allow-agent-read --output <private-output> --exclude-project <diagnosis-project>
-python scripts/semantic.py render --output <private-output>
+python "<skill-dir>/scripts/semantic.py" scan-execution --allow-agent-read --output <private-output> --exclude-project <diagnosis-project>
+python "<skill-dir>/scripts/semantic.py" render --output <private-output>
 ```
 
 This scans the selected period (default 90 days), excluding identified child/test sessions, and writes `execution-audit.json`. It does not produce a semantic diagnosis or alter `report.json`/its date. The page labels the audit's separate scope and time. The audit is excluded from `share-profile.json`. Raw histories are parsed locally, but only bounded structured facts are retained; no tool argument bodies, outputs, thoughts, endpoints, or credentials are sent for AI reading. Tool/skill targets are hashed. Model IDs with recognized family prefixes are retained; unknown model names are hidden (custom aliases imitating those prefixes cannot be reliably identified).
@@ -123,8 +131,8 @@ Codex supports turn-context model/effort and direct function/custom-tool events.
 After finalizing the 38-dimension sample, add its four-axis summary and independent observations:
 
 ```text
-python scripts/semantic.py prepare-portrait --allow-agent-read --output <private-output>
-python scripts/semantic.py finalize-portrait --output <private-output> --reviews <portrait-reviews.json>
+python "<skill-dir>/scripts/semantic.py" prepare-portrait --allow-agent-read --output <private-output>
+python "<skill-dir>/scripts/semantic.py" finalize-portrait --output <private-output> --reviews <portrait-reviews.json>
 ```
 
 Use the same prior consent; do not request approval again for the unchanged scope/route. Read `portrait-rubric.json` and only the missing packets in `portrait-pending.json`. These are the SAME bounded excerpts, not extra conversations. If already read in the current context, use that context without rereading. Another reading pass and the extra review output still cost tokens. No additional raw logs or configuration files may be explored to fill missing evidence. Old portrait caches are valid only for the same packet and exact definitions. Missing/stale reviews fail closed. Empty pending goes straight to finalize-portrait without --reviews.

@@ -17,6 +17,7 @@
 | [0009](0009-impeccable-design-workflow.md) | Accepted | Impeccableで既存画面を整え、検査と実画面の確認を分ける |
 | [0010](0010-presentation-summary.md) | Accepted | 固定レポート内に16:9の発表用サマリーを持つ |
 | [0011](0011-public-distribution.md) | Accepted | 明示したファイルだけをMITライセンス・新しい履歴で公開する |
+| [0012](0012-installed-skill-workspace.md) | Accepted | Codex・Claude Codeの個人用スキル導入と診断の作業場所を分ける |
 
 0002〜0008は、この会話と実装を照合した**事後記録**です。記録日は実際の決定日を意味しません。記載した比較対象は判断を説明するため今回整理したもので、過去にすべてを実験したという意味ではありません。
 
