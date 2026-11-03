@@ -37,4 +37,4 @@
 
 初回lightの固定を外し、違いを説明したうえで利用者が選べるようにしたいという要望。
 
-[README](../../README.md)、[スキル](../../skills/ai-sindan/SKILL.md)、[実行手順](../usage.md)。
+[README](../../README.md)、[スキル](../../skills/caravan/SKILL.md)、[実行手順](../usage.md)。

@@ -15,7 +15,7 @@
 ## 画面を整えるとき
 
 1. インストール済みの `SKILL.md` と該当する参照手順を読む。小規模な仕上げには `polish`、同じ世界観を大胆に表現する依頼には `bolder` を使う。「変化が欲しい」という要望を微調整だけで済ませない。正式なデザインシステムが未作成の場合も、既存テンプレートとADR 0008の世界観を基準にする。
-2. スキルの `scripts/impeccable.cmd context --target skills/ai-sindan/assets/semantic-report.html` をセッションに一度実行し、案内された手順を適用する。今回のCLI実行では `DO_NOT_TRACK=1` を設定した。
+2. スキルの `scripts/impeccable.cmd context --target skills/caravan/assets/semantic-report.html` をセッションに一度実行し、案内された手順を適用する。今回のCLI実行では `DO_NOT_TRACK=1` を設定した。
 3. 元の診断を再実行せず、既存 `report.json` を固定の2画面へrenderする。日時・画像の縦横比・材料不足と旧結果の表示を守る。
 4. 自動検査がない場合はcontextの指示に従い、編集後に手動detectを一度実行する。警告は実装と照合し、実際の問題を直す。検査のために私的レポートを公開しない。
 5. Pythonテストと両画面のNode操作テストを実行する。利用可能なブラウザーで広い画面・狭い画面、文字拡大、キーボード操作も確認する。アクセス制限で実施できない検証は明記する。
@@ -23,7 +23,7 @@
 手動検査の対象は以下の2テンプレートです。検査ログは個人のパスを含むため、保存する場合は無視対象の `output/` に置きます。
 
 ```text
-detect --json skills/ai-sindan/assets/semantic-report.html skills/ai-sindan/assets/developer-report.html
+detect --json skills/caravan/assets/semantic-report.html skills/caravan/assets/developer-report.html
 ```
 
 ## 初回検査の扱い（2026-11-03）

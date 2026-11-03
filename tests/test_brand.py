@@ -5,14 +5,14 @@ import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'skills/ai-sindan/scripts'))
+sys.path.insert(0, str(ROOT / 'skills/caravan/scripts'))
 import brand
 import diagnose
 
 
 class BrandTests(unittest.TestCase):
     def test_portable_logo_keeps_transparency_and_size_budget(self):
-        data = (ROOT / 'skills/ai-sindan/assets/brand/caravan-logo.png').read_bytes()
+        data = (ROOT / 'skills/caravan/assets/brand/caravan-logo.png').read_bytes()
         self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
         self.assertEqual(struct.unpack('>II', data[16:24]), (640, 213))
         self.assertEqual(data[25], 6)  # RGBA; do not flatten the transparent background.

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'skills/ai-sindan/scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'skills/caravan/scripts'))
 import semantic as s
 import developer_report as dev
 

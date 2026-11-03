@@ -1,6 +1,6 @@
 # Caravan
 
-<img src="skills/ai-sindan/assets/brand/caravan-logo.png" width="360" alt="Caravan">
+<img src="skills/caravan/assets/brand/caravan-logo.png" width="360" alt="Caravan">
 
 **AIと進む、あなたの旅。**
 
@@ -10,7 +10,7 @@
 
 使い方を聞き合うための試作です。能力・成果・人格の診断や、人のランキングには使いません。
 
-表示名をAI SINDANからCaravanへ変更しました。既存の導入との互換性のため、リポジトリURLとスキル名 `ai-sindan` は維持しています。
+表示名・リポジトリ名・スキル名を **Caravan / caravan** に統一しました。試用中の旧スキル `ai-sindan` は自動では切り替わらないため、以下の手順で `caravan` を導入してください。
 
 ## スキルとしてインストールする
 
@@ -24,26 +24,26 @@ Codexに次を送ります。標準のSkill Installerで、リポジトリ内の
 
 ```text
 $skill-installer で、以下のスキルをインストールしてください。
-https://github.com/tenonno/ai-sindan/tree/main/skills/ai-sindan
+https://github.com/tenonno/caravan/tree/main/skills/caravan
 今回はインストールのみ行い、会話履歴の読取や診断は始めないでください。
 ```
 
-次のターンから `$ai-sindan` で呼び出します。一覧に現れない場合はCodexを再起動してください。保存先はSkill Installerの設定に従います（標準は `~/.codex/skills/ai-sindan/`）。
+次のターンから `$caravan` で呼び出します。一覧に現れない場合はCodexを再起動してください。保存先はSkill Installerの設定に従います（標準は `~/.codex/skills/caravan/`）。
 
 ### Claude Code
 
 Claude Codeに次を送ります。個人用スキルとして配置するので、別のプロジェクトからも使えます。
 
 ```text
-https://github.com/tenonno/ai-sindan の skills/ai-sindan フォルダを取得して、
-個人用スキル ~/.claude/skills/ai-sindan/ にインストールしてください。
+https://github.com/tenonno/caravan の skills/caravan フォルダを取得して、
+個人用スキル ~/.claude/skills/caravan/ にインストールしてください。
 SKILL.mdだけでなく、scripts・assets・LICENSEを含むフォルダ一式を配置してください。
-配置後に ~/.claude/skills/ai-sindan/SKILL.md があることを確認してください。
+配置後に ~/.claude/skills/caravan/SKILL.md があることを確認してください。
 同名のスキルが既にある場合は上書きせず、状況を知らせてください。
 今回はインストールのみ行い、会話履歴の読取や診断は始めないでください。
 ```
 
-導入後は `/ai-sindan` で呼び出します。見つからない場合は新しいClaude Codeセッションを開いてください。`~` はユーザーのホームフォルダで、Windowsでも同じ個人用スキルの配置規則を使います。
+導入後は `/caravan` で呼び出します。見つからない場合は新しいClaude Codeセッションを開いてください。`~` はユーザーのホームフォルダで、Windowsでも同じ個人用スキルの配置規則を使います。
 
 ### 診断を始める
 
@@ -52,7 +52,7 @@ SKILL.mdだけでなく、scripts・assets・LICENSEを含むフォルダ一式�
 Codex:
 
 ```text
-$ai-sindan 診断してください。診断自身の会話は除外してください。
+$caravan 診断してください。診断自身の会話は除外してください。
 最初に3つの分析量の違いを説明して、私に選ばせてください。
 履歴を読む前に、対象範囲・処理先・注意事項を説明して、私の承諾を待ってください。
 ```
@@ -60,7 +60,7 @@ $ai-sindan 診断してください。診断自身の会話は除外してくだ
 Claude Code:
 
 ```text
-/ai-sindan 診断してください。診断自身の会話は除外してください。
+/caravan 診断してください。診断自身の会話は除外してください。
 最初に3つの分析量の違いを説明して、私に選ばせてください。
 履歴を読む前に、対象範囲・処理先・注意事項を説明して、私の承諾を待ってください。
 ```
@@ -77,10 +77,10 @@ Claude Code:
 
 **ローカルの履歴でも、クラウド型エージェントに読ませると、その処理先に内容が渡ります。** 機密情報・個人情報・認証情報を含む可能性があります。職場の履歴は、所属先で認められた環境と範囲でのみ利用してください。自動マスクは完全ではありません。
 
-注意文だけ確認したい場合は、エージェントに「インストール済みのai-sindanのnoticeを実行して。履歴は読まないで」と依頼できます。開発用リポジトリを取得済みなら、次のコマンドでも確認できます。
+注意文だけ確認したい場合は、エージェントに「インストール済みのcaravanのnoticeを実行して。履歴は読まないで」と依頼できます。開発用リポジトリを取得済みなら、次のコマンドでも確認できます。
 
 ```text
-python skills/ai-sindan/scripts/semantic.py notice
+python skills/caravan/scripts/semantic.py notice
 ```
 
 ## 読み取れる履歴と分析量

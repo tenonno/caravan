@@ -37,4 +37,4 @@
 
 仕事らしすぎない名前の要望、旅の提案の選択、統一した16枚と画像制作スキルの作成依頼。
 
-[表示定義](../../skills/ai-sindan/assets/journey-types.json)、[表示層](../../skills/ai-sindan/scripts/journey.py)、[制作スキル](../../skills/ai-sindan-art/SKILL.md)、[プロンプト](../../skills/ai-sindan-art/references/prompts.json)、[対応テスト](../../tests/test_journey.py)。関連コミット：`6035e92`。
+[表示定義](../../skills/caravan/assets/journey-types.json)、[表示層](../../skills/caravan/scripts/journey.py)、[制作スキル](../../skills/ai-sindan-art/SKILL.md)、[プロンプト](../../skills/ai-sindan-art/references/prompts.json)、[対応テスト](../../tests/test_journey.py)。関連コミット：`6035e92`。

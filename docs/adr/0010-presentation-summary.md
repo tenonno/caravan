@@ -38,4 +38,4 @@ PNGの保存機能が必要になる、1画面に載せる内容を利用者が�
 
 ## 関連実装
 
-[結果テンプレート](../../skills/ai-sindan/assets/semantic-report.html)、[表示と復帰のテスト](../../tests/report_ui.cjs)、[画像比率の回帰テスト](../../tests/test_journey.py)。
+[結果テンプレート](../../skills/caravan/assets/semantic-report.html)、[表示と復帰のテスト](../../tests/report_ui.cjs)、[画像比率の回帰テスト](../../tests/test_journey.py)。

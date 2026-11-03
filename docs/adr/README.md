@@ -21,6 +21,7 @@
 | [0013](0013-user-selected-analysis-mode.md) | Accepted | 分析量の違いを説明し、本人の選択と承諾の後に抽出する |
 | [0014](0014-caravan-brand.md) | Accepted | Caravanの表示名と軽量ロゴを採用し、既存の識別名・診断を維持する |
 | [0015](0015-development-browser-checks.md) | Accepted | 開発専用Playwrightで架空ページを描画し、配布には含めない |
+| [0016](0016-caravan-repository-name.md) | Accepted | 公開リポジトリ・診断スキル・配布名をCaravanへ統一する |
 
 0002〜0008は、この会話と実装を照合した**事後記録**です。記録日は実際の決定日を意味しません。記載した比較対象は判断を説明するため今回整理したもので、過去にすべてを実験したという意味ではありません。
 

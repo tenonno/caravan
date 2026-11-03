@@ -15,12 +15,12 @@
 配布用スキルでは、注意文言を出して承諾を得るまで抜粋を作成・読取しない手順を必須にしています。CLIも明示フラグなしでは抽出を拒否します。フラグを付けること自体は承諾の真正性を保証しないため、エージェントは本人の承諾なしに付けてはいけません。
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py notice
+python skills/caravan/scripts/semantic.py notice
 ```
 
 ## エージェントから使う
 
-通常の利用は [READMEのインストール手順](../README.md#スキルとしてインストールする) に従い、Codexでは `$ai-sindan`、Claude Codeでは `/ai-sindan` を呼び出します。
+通常の利用は [READMEのインストール手順](../README.md#スキルとしてインストールする) に従い、Codexでは `$caravan`、Claude Codeでは `/caravan` を呼び出します。
 
 以下のコマンド例は、開発用リポジトリのルートで実行する場合の表記です。個人用スキルとして導入した場合は、スクリプトをインストール先の絶対パスで指定し、出力は診断の作業フォルダの `output/semantic/` に保存します。
 
@@ -31,7 +31,7 @@ Python 3.10以降。追加パッケージや別APIキーは不要です。スク
 ### 1. 分析量を選び、承諾後に抽出する
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py prepare --allow-agent-read --mode <選んだモード> --output output/semantic --exclude-project "<診断フォルダの絶対パス>"
+python skills/caravan/scripts/semantic.py prepare --allow-agent-read --mode <選んだモード> --output output/semantic --exclude-project "<診断フォルダの絶対パス>"
 ```
 
 `<選んだモード>` は `light`・`standard`・`deep` のいずれかに置き換えます。スキルは [3つの分析量の違い](../README.md#読み取れる履歴と分析量) を説明し、指定がなければ本人の選択を待ちます。既に指定済みなら再選択は求めません。CLIの既定値は互換性のためstandardのままですが、スキルは選択したモードを必ず明示します。
@@ -81,7 +81,7 @@ AIの自己申告を人の行動として扱いません。返信がないこと
 ### 3. 集約してHTMLにする
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py finalize --output output/semantic --reviews output/semantic/reviews.json
+python skills/caravan/scripts/semantic.py finalize --output output/semantic --reviews output/semantic/reviews.json
 ```
 
 未評価・古い評価・存在しない根拠IDはエラーにします。この段階では詳細38観点と、互換用の旧18観点によるタイプ照合を保存します。続けて末尾の「4軸の見出し・口調・発見メモ」の手順を行うと、新しい4軸の見出しになります。旧方式では18観点の観測割合を16の仮のスタイル定義と比較します。分類の重みと閾値は未校正なので、候補が近ければ複数表示し、材料不足なら決めません。レビューの内容が真実であることをプログラムだけで保証はできません。
@@ -99,9 +99,9 @@ python skills/ai-sindan/scripts/semantic.py finalize --output output/semantic --
 
 結果ページは「結果」「詳しい観察」「比較・共有」「16タイプ」を切り替える構成です。最初の画面にはタイプ・4軸・発見メモ・口調をまとめ、根拠は折りたたんでいます。38観点は「詳しい観察」で検索・絞り込みでき、各観点を開くと説明と根拠を読めます。表示を切り替えても診断データは変わりません。
 
-4軸の16タイプには、旅をテーマにした愛称と共通の旅人・AIの相棒のイラストがあります。`skills/ai-sindan/assets/journey-types.json` がコードと表示名・短い説明の対応表です。保存済みの判定コードから表示名を選ぶため、再描画で診断結果や評価日時は変わりません。材料不足・中間の結果には、単独タイプの画像を当てはめません。旧分類には適用しません。共有JSONは評価時の名前を保持し、画像や制作プロンプトを含めません。
+4軸の16タイプには、旅をテーマにした愛称と共通の旅人・AIの相棒のイラストがあります。`skills/caravan/assets/journey-types.json` がコードと表示名・短い説明の対応表です。保存済みの判定コードから表示名を選ぶため、再描画で診断結果や評価日時は変わりません。材料不足・中間の結果には、単独タイプの画像を当てはめません。旧分類には適用しません。共有JSONは評価時の名前を保持し、画像や制作プロンプトを含めません。
 
-画像制作は `skills/ai-sindan-art/SKILL.md` にまとめています。`references/prompts.json` に使用した組み込み画像生成ツール用の全プロンプトを保存しています。元のPNGと配信用JPEGは `skills/ai-sindan/assets/journey/` にあり、HTMLには軽量なJPEGを埋め込みます。Windowsでは制作スキルの `scripts/export-jpeg.ps1` で元画像を残して配信用コピーを再作成できます。
+画像制作は `skills/ai-sindan-art/SKILL.md` にまとめています。`references/prompts.json` に使用した組み込み画像生成ツール用の全プロンプトを保存しています。元のPNGと配信用JPEGは `skills/caravan/assets/journey/` にあり、HTMLには軽量なJPEGを埋め込みます。Windowsでは制作スキルの `scripts/export-jpeg.ps1` で元画像を残して配信用コピーを再作成できます。
 
 実装・テンプレート・テスト・説明はローカルGitで管理します。私的な履歴や診断結果を含む `output/` は管理対象外です。
 
@@ -110,7 +110,7 @@ python skills/ai-sindan/scripts/semantic.py finalize --output output/semantic --
 画面だけ変更したときは、次のコマンドで保存済みの診断結果から両方を更新できます。履歴や評価キャッシュを読み直さず、診断日時も維持します。
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py render --output output/semantic
+python skills/caravan/scripts/semantic.py render --output output/semantic
 ```
 
 ## 次回は差分だけ読む
@@ -155,8 +155,8 @@ node tests/developer_ui.cjs output/semantic/developer.html
 独立した実行記録の集計も、同じ承諾の範囲内で行えます。
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py scan-execution --allow-agent-read --output output/semantic --exclude-project "<診断フォルダの絶対パス>"
-python skills/ai-sindan/scripts/semantic.py render --output output/semantic
+python skills/caravan/scripts/semantic.py scan-execution --allow-agent-read --output output/semantic --exclude-project "<診断フォルダの絶対パス>"
+python skills/caravan/scripts/semantic.py render --output output/semantic
 ```
 
 `execution-audit.json` は別の対象範囲・集計日時で表示され、既存のAI診断や診断日時を変更しません。共有JSONには含めません。Codexはモデル・推論設定と直接の呼出し、Claude Codeはモデル・tool_use/tool_resultに対応。実行コードで包まれた呼出しの内訳や、Antigravity CLIの実行メタデータは不明とします。既存の会話読取は維持します。
@@ -171,9 +171,9 @@ python skills/ai-sindan/scripts/semantic.py render --output output/semantic
 38観点の診断後、同じ上限付き抜粋を追加評価します。詳しい形式はSKILL.mdと `assets/portrait-rubric.json` にあります。
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py prepare-portrait --allow-agent-read --output output/semantic
+python skills/caravan/scripts/semantic.py prepare-portrait --allow-agent-read --output output/semantic
 # 実行中のAIが portrait-pending.json を読み、根拠付き portrait-reviews.json を作成
-python skills/ai-sindan/scripts/semantic.py finalize-portrait --output output/semantic --reviews output/semantic/portrait-reviews.json
+python skills/caravan/scripts/semantic.py finalize-portrait --output output/semantic --reviews output/semantic/portrait-reviews.json
 ```
 
 4軸は「条件を置く／方向から相談」「進め方を指定／委ねる」「一括で受け取る／途中で合わせる」「比較・理由／試用で判断」。件数から機械的に変換せず、38観点との関連と人の発言を添えてAIが文脈を読みます。両側の共存は許し、未観測を反対側にしません。1会話1票、両側は半分ずつ、各軸3会話以上・片側65%以上を暫定の傾きとします。中間と材料不足は候補併記・保留にします。軸の独立性や閾値は未校正です。

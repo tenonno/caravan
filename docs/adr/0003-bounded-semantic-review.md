@@ -39,4 +39,4 @@ light / standard / deepの3段階で会話数と本文・実行情報の文字�
 
 会話中のキーワード方式への疑問と、大量セッションのトークン節約の要望。
 
-[実行手順](../../skills/ai-sindan/SKILL.md)、[抽出・検証・集約](../../skills/ai-sindan/scripts/semantic.py)、[テスト](../../tests/test_semantic.py)。初期Git記録：`0e404ea`。
+[実行手順](../../skills/caravan/SKILL.md)、[抽出・検証・集約](../../skills/caravan/scripts/semantic.py)、[テスト](../../tests/test_semantic.py)。初期Git記録：`0e404ea`。

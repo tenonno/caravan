@@ -36,4 +36,4 @@
 
 複数のエージェントを使う人の履歴をそれぞれ診断へ含めたい、という要望。
 
-[抽出処理](../../skills/ai-sindan/scripts/semantic.py)、[Antigravity読取](../../skills/ai-sindan/scripts/antigravity.py)、[抽出テスト](../../tests/test_semantic.py)、[形式テスト](../../tests/test_antigravity.py)。関連コミット：`83aaba1`。
+[抽出処理](../../skills/caravan/scripts/semantic.py)、[Antigravity読取](../../skills/caravan/scripts/antigravity.py)、[抽出テスト](../../tests/test_semantic.py)、[形式テスト](../../tests/test_antigravity.py)。関連コミット：`83aaba1`。

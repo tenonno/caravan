@@ -37,4 +37,4 @@
 
 会話中の「他職種の使い方を知る」「観点を増やす」「優劣を測らない」「未知のテクニックと口調も見たい」という要望。
 
-[診断スキル](../../skills/ai-sindan/SKILL.md)、[4軸の定義](../../skills/ai-sindan/assets/portrait-rubric.json)、[集約](../../skills/ai-sindan/scripts/portrait.py)、[テスト](../../tests/test_portrait.py)。関連コミット：`6a6a419`、`856a3e0`。
+[診断スキル](../../skills/caravan/SKILL.md)、[4軸の定義](../../skills/caravan/assets/portrait-rubric.json)、[集約](../../skills/caravan/scripts/portrait.py)、[テスト](../../tests/test_portrait.py)。関連コミット：`6a6a419`、`856a3e0`。

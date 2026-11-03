@@ -38,6 +38,6 @@
 
 - [導入・点検手順と初回の例外](../design/impeccable.md)
 - [公式Impeccable](https://github.com/pbakaus/impeccable)
-- [結果画面テンプレート](../../skills/ai-sindan/assets/semantic-report.html)
-- [詳細画面テンプレート](../../skills/ai-sindan/assets/developer-report.html)
+- [結果画面テンプレート](../../skills/caravan/assets/semantic-report.html)
+- [詳細画面テンプレート](../../skills/caravan/assets/developer-report.html)
 - [画面操作テスト](../../tests/report_ui.cjs)

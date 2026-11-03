@@ -37,4 +37,4 @@
 
 古いHTMLを開いてしまう問題、固定リンク、開発者向け詳細、長いページの整理についての要望。
 
-[再描画処理](../../skills/ai-sindan/scripts/semantic.py)、[結果テンプレート](../../skills/ai-sindan/assets/semantic-report.html)、[詳細生成](../../skills/ai-sindan/scripts/developer_report.py)、[操作テスト](../../tests/report_ui.cjs)。関連コミット：`d690102`、`0550f46`、`486dd56`。
+[再描画処理](../../skills/caravan/scripts/semantic.py)、[結果テンプレート](../../skills/caravan/assets/semantic-report.html)、[詳細生成](../../skills/caravan/scripts/developer_report.py)、[操作テスト](../../tests/report_ui.cjs)。関連コミット：`d690102`、`0550f46`、`486dd56`。

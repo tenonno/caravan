@@ -11,7 +11,7 @@ python -m unittest discover -s tests -v
 python scripts/build_release.py
 ```
 
-出力は `output/distribution/ai-sindan.zip` と `SHA256SUMS`。ZIPは毎回上書きし、中身は `ai-sindan/` フォルダにまとめる。Gitはビルド時の依存にしない。同じファイルからは同じZIPを生成する。
+出力は `output/distribution/caravan.zip` と `SHA256SUMS`。ZIPは毎回上書きし、中身は `caravan/` フォルダにまとめる。Gitはビルド時の依存にしない。同じファイルからは同じZIPを生成する。
 
 一覧は秘密情報の自動検出機能ではない。公開前には一覧に載ったファイルの本文・画像も点検する。既に公開したファイルに後から私的情報を書かない。
 

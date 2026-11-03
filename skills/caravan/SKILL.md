@@ -1,11 +1,11 @@
 ---
-name: ai-sindan
+name: caravan
 description: Diagnose observable AI collaboration habits by reading a bounded sample of local Codex, Claude Code, or Antigravity CLI dialogue, cache evidence-based semantic reviews, and generate a private Japanese HTML report. Use for a user's request to understand or share their coding-agent collaboration style.
 ---
 
 # Caravan — AIとの向き合い方 / semantic workflow v0.8
 
-The user-facing product name is Caravan. The installed skill name remains `ai-sindan` for compatibility.
+The product is Caravan and the installed skill name is `caravan` (Codex: `$caravan`; Claude Code: `/caravan`).
 
 Use this skill's `scripts/semantic.py` as the default. `scripts/diagnose.py` is the legacy keyword baseline and shared rendering library, NOT the AI diagnosis workflow. Resolve bundled script, reference, and asset paths relative to this SKILL.md, independently of the working directory. Python 3.10+, no packages or API keys required. The running agent itself performs the semantic review; the script does not invoke another model.
 

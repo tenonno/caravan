@@ -38,4 +38,4 @@ Bedrock等は選び得る環境の例であり、安全性を名称だけで保�
 
 配布時の注意文言と機密情報の扱いについてのユーザーの要望。
 
-[診断スキル](../../skills/ai-sindan/SKILL.md)、[CLIの承諾確認](../../skills/ai-sindan/scripts/semantic.py)、[共有項目の生成](../../skills/ai-sindan/scripts/diagnose.py)、[Git除外](../../.gitignore)、[共有操作テスト](../../tests/report_ui.cjs)。
+[診断スキル](../../skills/caravan/SKILL.md)、[CLIの承諾確認](../../skills/caravan/scripts/semantic.py)、[共有項目の生成](../../skills/caravan/scripts/diagnose.py)、[Git除外](../../.gitignore)、[共有操作テスト](../../tests/report_ui.cjs)。

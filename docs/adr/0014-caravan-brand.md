@@ -4,6 +4,7 @@
 - 記録日・決定日: 2026-11-03
 - 記録種別: 新規決定
 - 実装状況: ロゴ生成・表示層への適用を実装
+- 2026-11-03追記: リポジトリURLとスキルIDの維持を [0016](0016-caravan-repository-name.md) で変更。ローカル作業場所・固定レポート・診断の維持は継続。
 - 関連ADR: [0007](0007-stable-standalone-reports.md)、[0008](0008-travel-names-and-art.md)、[0012](0012-installed-skill-workspace.md)
 
 ## 背景
@@ -36,4 +37,4 @@ AI SINDANは仮のフォルダ名だった。旅のイラストとトーンに�
 
 Caravanの採用と、既存の旅の世界観に合う画像・配布サイズへの配慮の要望。
 
-[制作記録](../design/caravan.md)、[表示用埋め込み](../../skills/ai-sindan/scripts/brand.py)、[容量と埋め込みの検証](../../tests/test_brand.py)。
+[制作記録](../design/caravan.md)、[表示用埋め込み](../../skills/caravan/scripts/brand.py)、[容量と埋め込みの検証](../../tests/test_brand.py)。

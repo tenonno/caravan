@@ -33,9 +33,9 @@ class DistributionTests(unittest.TestCase):
         for host in ('.codex', '.claude'):
             with self.subTest(host=host), temporary_workspace() as directory:
                 root = Path(directory).resolve()
-                installed = root / 'test home' / host / 'skills/ai-sindan'
+                installed = root / 'test home' / host / 'skills/caravan'
                 for name, source in release.release_files(ROOT):
-                    prefix = 'skills/ai-sindan/'
+                    prefix = 'skills/caravan/'
                     if name.startswith(prefix):
                         target = installed / name[len(prefix):]
                         target.parent.mkdir(parents=True, exist_ok=True)
@@ -90,8 +90,8 @@ class DistributionTests(unittest.TestCase):
             second = root / 'second.zip'
             self.assertEqual(release.build(root, first), release.build(root, second))
             with zipfile.ZipFile(first) as archive:
-                self.assertEqual(archive.namelist(), ['ai-sindan/README.md'])
-                self.assertEqual(archive.read('ai-sindan/README.md'), b'public')
+                self.assertEqual(archive.namelist(), ['caravan/README.md'])
+                self.assertEqual(archive.read('caravan/README.md'), b'public')
 
     def test_unsafe_paths_fail_before_creating_archive(self):
         cases = ['../secret', '/secret', 'C:/secret', 'a\\secret', 'a/../secret',
@@ -119,7 +119,7 @@ class DistributionTests(unittest.TestCase):
 
     def test_complete_skill_and_extracted_notice(self):
         selected = {name for name, _ in release.release_files(ROOT)}
-        skill = ROOT / 'skills/ai-sindan'
+        skill = ROOT / 'skills/caravan'
         expected = {p.relative_to(ROOT).as_posix() for p in skill.rglob('*')
                     if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc'}
         self.assertTrue(expected <= selected, expected - selected)
@@ -129,9 +129,9 @@ class DistributionTests(unittest.TestCase):
             release.build(ROOT, archive_path)
             with zipfile.ZipFile(archive_path) as archive:
                 archive.extractall(Path(directory) / 'unpacked')
-            unpacked = Path(directory) / 'unpacked/ai-sindan'
+            unpacked = Path(directory) / 'unpacked/caravan'
             result = subprocess.run(
-                [sys.executable, 'skills/ai-sindan/scripts/semantic.py', 'notice'],
+                [sys.executable, 'skills/caravan/scripts/semantic.py', 'notice'],
                 cwd=unpacked, capture_output=True, encoding='utf-8',
                 env={**os.environ, 'PYTHONIOENCODING': 'utf-8'})
             self.assertEqual(result.returncode, 0, result.stderr)

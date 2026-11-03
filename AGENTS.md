@@ -1,4 +1,4 @@
-# Working on AI SINDAN
+# Working on Caravan
 
 - For UI work, use the installed Impeccable skill and choose the workflow from the requested degree of change: polish for finishing details, bolder for a stronger expression of the travel world, and redesign when a new world is explicitly requested. Do not interpret a request for a visible transformation as polish alone. Read `docs/design/impeccable.md`; preserve the travel illustrations and established palette unless the user directs otherwise. Report automated checks and actual browser verification separately. If the skill is unavailable, report that limitation rather than claiming it was applied.
 
@@ -7,8 +7,8 @@
 - Keep the standard report at `output/semantic/index.html`. Overwrite it; never create timestamped HTML copies to work around preview caching.
 - Link only the fixed report after verifying it is current. Do not link earlier `ai-sindan-v*.html` snapshots. The user wants a single stable viewing location.
 - Developer details live separately at `output/semantic/developer.html`, linked from the result page. Keep both paths fixed and both pages standalone for separate exports.
-- Template-only updates should run `python skills/ai-sindan/scripts/semantic.py render --output output/semantic` to refresh both pages from the existing `report.json`. Keep the original analysis date; do not claim a new diagnosis. HTML rendering has its own visible update time.
-- Preserve the consent and bounded semantic-reading workflow in `skills/ai-sindan/SKILL.md`. Never treat agent-created test conversations as the user's behavior.
+- Template-only updates should run `python skills/caravan/scripts/semantic.py render --output output/semantic` to refresh both pages from the existing `report.json`. Keep the original analysis date; do not claim a new diagnosis. HTML rendering has its own visible update time.
+- Preserve the consent and bounded semantic-reading workflow in `skills/caravan/SKILL.md`. Never treat agent-created test conversations as the user's behavior.
 - Observe differences in usage, never quality, competence, maturity, or superiority. More frequent behaviors are not better. The eight process and twelve tooling dimensions describe unordered choices; absent situations and unclear context are excluded from their denominators. They do not affect the original 18-dimension type classifier. Unreviewed new dimensions stay explicitly unassessed.
 - Track code, templates, documentation, and tests in local Git. Keep private logs, excerpts, caches, and generated reports under ignored `output/`; do not add them to Git. Do not publish or push without a request.
 

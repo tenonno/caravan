@@ -6,7 +6,7 @@ import re
 import unittest
 from datetime import datetime, timezone
 
-SCRIPT = Path(__file__).resolve().parents[1] / 'skills/ai-sindan/scripts/diagnose.py'
+SCRIPT = Path(__file__).resolve().parents[1] / 'skills/caravan/scripts/diagnose.py'
 spec = importlib.util.spec_from_file_location('diagnose', SCRIPT)
 d = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(d)

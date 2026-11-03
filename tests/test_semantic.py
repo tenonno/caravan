@@ -6,7 +6,7 @@ import sys
 import tempfile
 import unittest
 
-SCRIPTS=Path(__file__).resolve().parents[1]/'skills/ai-sindan/scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'skills/caravan/scripts'
 sys.path.insert(0,str(SCRIPTS))
 import semantic as s
 

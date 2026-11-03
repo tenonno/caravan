@@ -36,4 +36,4 @@
 
 モデル・スキル・MCP・サブエージェントなど、より深い使い方を観測したいという要望。
 
-[定義](../../skills/ai-sindan/assets/tooling-perspectives.json)、[実行記録の処理](../../skills/ai-sindan/scripts/execution.py)、[テスト](../../tests/test_execution.py)。関連コミット：`97f3ea7`。
+[定義](../../skills/caravan/assets/tooling-perspectives.json)、[実行記録の処理](../../skills/caravan/scripts/execution.py)、[テスト](../../tests/test_execution.py)。関連コミット：`97f3ea7`。

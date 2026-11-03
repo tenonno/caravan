@@ -5,6 +5,7 @@
 - 決定日: 2026-11-03
 - 記録種別: 新規決定
 - 実装状況: 導入案内・スキル指示・配置変更の検証を実装
+- 2026-11-03追記: 呼び出し名と配置するフォルダ名は [0016](0016-caravan-repository-name.md) で `caravan` に更新。導入・承諾・出力分離の方式は継続。
 - 関連ADR: [0004](0004-consent-and-private-data.md)、[0007](0007-stable-standalone-reports.md)、[0011](0011-public-distribution.md)
 
 ## 背景
@@ -37,4 +38,4 @@
 
 Codex・Claude Codeの双方でスキルとして導入する手順を公開するという要望。
 
-[README](../../README.md)、[スキル](../../skills/ai-sindan/SKILL.md)、[配置の検証](../../tests/test_distribution.py)。
+[README](../../README.md)、[スキル](../../skills/caravan/SKILL.md)、[配置の検証](../../tests/test_distribution.py)。

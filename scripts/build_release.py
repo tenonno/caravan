@@ -49,7 +49,7 @@ def build(root, destination):
         raise ValueError('Archive must not overwrite a source file')
     with zipfile.ZipFile(destination, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
         for name, path in files:
-            info = zipfile.ZipInfo('ai-sindan/' + name, (2026, 1, 1, 0, 0, 0))
+            info = zipfile.ZipInfo('caravan/' + name, (2026, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, path.read_bytes())
@@ -57,7 +57,7 @@ def build(root, destination):
 
 
 def main():
-    destination = ROOT / 'output/distribution/ai-sindan.zip'
+    destination = ROOT / 'output/distribution/caravan.zip'
     digest, count = build(ROOT, destination)
     (destination.parent / 'SHA256SUMS').write_text(
         f'{digest}  {destination.name}\n', encoding='utf-8')
