@@ -6,6 +6,7 @@ import diagnose as base
 import rubric as definitions_source
 import portrait
 import journey
+import brand
 
 
 def h(value):
@@ -130,7 +131,7 @@ def render(report, rubric, extractor, modes):
             + '<p>モデル記録：'+h('、'.join(audit['models']) or '確認できず')+'</p>'
             + '<p>推論設定の記録：'+h('、'.join(audit['efforts']) or '確認できず')+'</p>'
             + '<p>各ファイル最大'+str(audit['limit_per_file'])+'イベント。上限による省略 '+str(audit['omitted_events'])+'件。0件は一致記録なしで、未使用の証明ではありません。</p>')
-    template = (Path(__file__).parent.parent / 'assets/developer-report.html').read_text(encoding='utf-8')
+    template = brand.embed_logo((Path(__file__).parent.parent / 'assets/developer-report.html').read_text(encoding='utf-8'))
     # One replacement pass: content must not be interpreted as a template token.
     import re
     return re.sub(r'__([A-Z]+)__', lambda m: parts[m.group(1)], template)

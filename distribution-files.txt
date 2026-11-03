@@ -17,9 +17,11 @@ docs/adr/0010-presentation-summary.md
 docs/adr/0011-public-distribution.md
 docs/adr/0012-installed-skill-workspace.md
 docs/adr/0013-user-selected-analysis-mode.md
+docs/adr/0014-caravan-brand.md
 docs/adr/README.md
 docs/adr/template.md
 docs/design/impeccable.md
+docs/design/caravan.md
 docs/distribution.md
 docs/usage.md
 scripts/build_release.py
@@ -30,6 +32,7 @@ skills/ai-sindan-art/scripts/export-jpeg.ps1
 skills/ai-sindan/SKILL.md
 skills/ai-sindan/LICENSE
 skills/ai-sindan/assets/developer-report.html
+skills/ai-sindan/assets/brand/caravan-logo.png
 skills/ai-sindan/assets/journey-types.json
 skills/ai-sindan/assets/journey/EDBC.jpg
 skills/ai-sindan/assets/journey/EDBC.png
@@ -71,6 +74,7 @@ skills/ai-sindan/assets/semantic-report.html
 skills/ai-sindan/assets/tooling-perspectives.json
 skills/ai-sindan/assets/types.json
 skills/ai-sindan/scripts/antigravity.py
+skills/ai-sindan/scripts/brand.py
 skills/ai-sindan/scripts/developer_report.py
 skills/ai-sindan/scripts/diagnose.py
 skills/ai-sindan/scripts/execution.py
@@ -81,6 +85,7 @@ skills/ai-sindan/scripts/semantic.py
 tests/developer_ui.cjs
 tests/report_ui.cjs
 tests/test_antigravity.py
+tests/test_brand.py
 tests/test_developer_report.py
 tests/test_diagnose.py
 tests/test_distribution.py

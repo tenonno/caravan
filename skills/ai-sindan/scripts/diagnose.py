@@ -8,6 +8,7 @@ import json
 import math
 from pathlib import Path
 import re
+import brand
 
 VERSION = '0.4.0'
 TYPES = json.loads((Path(__file__).parent.parent / 'assets/types.json').read_text(encoding='utf-8'))
@@ -183,7 +184,7 @@ def analyze(home, days=90, source='all', now=None):
 
 def render(report):
     name = 'semantic-report.html' if report['method'].startswith('semantic-') else 'report.html'
-    template = (Path(__file__).parent.parent / 'assets' / name).read_text(encoding='utf-8')
+    template = brand.embed_logo((Path(__file__).parent.parent / 'assets' / name).read_text(encoding='utf-8'))
     # No raw logs enter this HTML. Escaping also protects future schema extensions.
     import journey
     view = dict(report, rendered_at=datetime.now(timezone.utc).isoformat())

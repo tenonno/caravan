@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light"><title>AI SINDAN — AIとの働き方</title>
+<meta name="color-scheme" content="light"><title>Caravan — AIとの働き方</title>
 <style>
 :root {
   --paper: #f7f4eb;
@@ -47,7 +47,8 @@ h4 { font-size: 15px; }
 img { max-width: 100%; }
 .shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); width: min(100%, 1600px); min-height: 100vh; margin: auto; }
 .topbar { padding: 0 8px 40px; }
-.brand { font-size: 25px; font-weight: 750; letter-spacing: .02em; }
+.brand { min-width: 0; }
+.brand-logo { display: block; width: min(100%, 188px); height: auto; aspect-ratio: 640 / 213; object-fit: contain; background: var(--paper); padding: 6px; border-radius: 4px; }
 .brand span { display: block; font-size: 13px; color: var(--soft); margin-top: 8px; font-weight: 400; }
 .top-actions { display: flex; flex-direction: column; align-items: start; gap: 8px; font-size: 13px; margin-top: auto; padding: 28px 8px 0; }
 .quiet-button { min-height: 44px; border: 1px solid var(--control-line); border-radius: 6px; background: transparent; padding: 8px 12px; }
@@ -262,8 +263,8 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 .summary-toolbar button { flex: none; }
 .summary-sheet { position: relative; container-type: inline-size; width: min(1280px, calc(100vw - 32px), calc((100dvh - 112px) * 16 / 9)); aspect-ratio: 16 / 9; background: var(--paper); border: 1px solid var(--line); }
 .summary-content { position: absolute; inset: 0; padding: 2.5cqw 3cqw; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.6cqw; }
-.summary-brand { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqw; padding-bottom: 1cqw; border-bottom: 1px solid var(--line); }
-.summary-brand b { font-size: 1.6cqw; color: var(--accent); }
+.summary-brand { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; padding-bottom: 1cqw; border-bottom: 1px solid var(--line); }
+.summary-logo { display: block; width: 15cqw; height: auto; aspect-ratio: 640 / 213; object-fit: contain; }
 .summary-brand span { font-size: 1.15cqw; color: var(--muted); }
 .summary-main { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 4cqw; min-height: 0; }
 .summary-identity { min-width: 0; text-align: center; }
@@ -292,7 +293,7 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
   .summary-toolbar { align-items: start; }
   .summary-sheet { width: 100%; aspect-ratio: auto; }
   .summary-content { position: static; padding: 24px 20px; gap: 24px; }
-  .summary-brand b { font-size: 18px; }
+  .summary-logo { width: 160px; max-width: 48%; }
   .summary-brand span, .summary-status, .summary-axis-header h4, .summary-axis .axis-labels, .summary-bottom h3, .summary-note { font-size: 12px; }
   .summary-brand { padding-bottom: 12px; }
   .summary-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -338,13 +339,13 @@ footer { grid-column: 2; display: flex; flex-wrap: wrap; justify-content: space-
 <body><a id="skip-content" class="skip-link" href="#report-main">本文へ移動</a><section id="summary-mode" class="summary-mode" aria-label="1画面サマリー" hidden>
 <div class="summary-toolbar"><button id="close-summary" class="quiet-button" type="button">通常表示に戻る</button><p>枠内が16:9の撮影範囲です。狭い画面では読みやすい縦表示になります。</p></div>
 <article id="summary-sheet" class="summary-sheet" tabindex="-1" aria-label="診断結果のサマリー"><div class="summary-content">
-<div class="summary-brand"><b>AI SINDAN</b><span>AIとの進め方</span></div>
+<div class="summary-brand"><img class="summary-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div>
 <div class="summary-main"><div class="summary-identity"><div id="summary-image"></div><h2 id="summary-name" class="summary-name"></h2><p id="summary-description" class="summary-description"></p><p id="summary-status" class="summary-status"></p></div>
 <section class="summary-axes" aria-labelledby="summary-axes-title"><h3 id="summary-axes-title">4つの傾向</h3><div id="summary-axes"></div></section></div>
 <div class="summary-bottom"><h3>観測された使い方の一部</h3><div id="summary-examples" class="summary-examples"></div><p class="summary-note">今回の抜粋に現れた傾向です。能力・性格・使い方の優劣は測りません。</p></div>
 </div></article></section>
 <div id="report-shell" class="shell">
-<aside class="sidebar"><header class="topbar"><div class="brand">AI SINDAN<span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="reload-report" class="quiet-button" type="button">再読み込み</button></div></aside>
+<aside class="sidebar"><header class="topbar"><div class="brand"><img class="brand-logo" src="__BRANDLOGO__" width="640" height="213" alt="Caravan"><span>AIと進む、あなたの旅。</span></div></header><nav class="navigation" aria-label="診断結果の表示切り替え"><button id="nav-result" type="button" aria-controls="view-result" aria-pressed="true">あなたの結果</button><button id="nav-observations" type="button" aria-controls="view-observations" aria-pressed="false">詳しい観察</button><button id="nav-comparison" type="button" aria-controls="view-comparison" aria-pressed="false">比較・共有</button><button id="nav-catalog" type="button" aria-controls="view-catalog" aria-pressed="false">16タイプの図鑑</button></nav><div class="top-actions"><a href="developer.html">開発者向け詳細</a><button id="reload-report" class="quiet-button" type="button">再読み込み</button></div></aside>
 <main id="report-main" tabindex="-1">
 <noscript><p class="noscript">診断結果の表示にはJavaScriptが必要です。有効にしてこのファイルを開き直してください。</p></noscript>
 <section id="view-result" aria-label="診断結果">
