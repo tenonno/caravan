@@ -28,11 +28,13 @@ Python 3.10以降。追加パッケージや別APIキーは不要です。スク
 
 ## 3段階の処理
 
-### 1. 承諾後、抽出する
+### 1. 分析量を選び、承諾後に抽出する
 
 ```powershell
-python skills/ai-sindan/scripts/semantic.py prepare --allow-agent-read --mode standard --output output/semantic --exclude-project "<診断フォルダの絶対パス>"
+python skills/ai-sindan/scripts/semantic.py prepare --allow-agent-read --mode <選んだモード> --output output/semantic --exclude-project "<診断フォルダの絶対パス>"
 ```
+
+`<選んだモード>` は `light`・`standard`・`deep` のいずれかに置き換えます。スキルは [3つの分析量の違い](../README.md#読み取れる履歴と分析量) を説明し、指定がなければ本人の選択を待ちます。既に指定済みなら再選択は求めません。CLIの既定値は互換性のためstandardのままですが、スキルは選択したモードを必ず明示します。
 
 `--exclude-project` は診断自身の会話を除く例です。自分の環境の絶対パスに変更してください。`--home`、`--days`（既定90日）、`--max-chars` も指定できます。
 

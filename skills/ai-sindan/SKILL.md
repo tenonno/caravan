@@ -15,7 +15,21 @@ Use the directory containing the loaded SKILL.md as `<skill-dir>`. Commands belo
 
 If the output is inside a Git repository, ensure the output folder is ignored and no existing private output files are tracked before writing excerpts. Add a narrowly scoped ignore entry if needed; never stage outputs. If outputs are already tracked, stop before writing and explain so the user can select a private workspace. Installation or skill updates must not copy, publish, or delete diagnosis outputs.
 
-## First: notice and consent
+## First: explain analysis modes, notice, and consent
+
+When the user requests a diagnosis without choosing a mode, show the three options below and ask them to choose. Do not silently choose light for a first run, assume standard from the CLI default, or reuse a previous run's mode unless the user asks to reuse it. Wait for their choice before preparing excerpts. If they already explicitly selected a mode (including an explicit request to reuse the previous mode), honor it without asking them to choose again; briefly explain its limits.
+
+Present the comparison in the user's language; for Japanese, use:
+
+| 分析量 | 会話数の上限 | 本文＋実行情報の上限 | 選ぶ目安 |
+|---|---:|---:|---|
+| 少なめ（light） | 6 | 12,000文字 | 読取量を抑えて傾向を見る。場面が少なく、判断を保留する項目が増えることもある |
+| 中くらい（standard） | 12 | 24,000文字 | lightより多くの会話・場面を見比べる |
+| 多め（deep） | 24 | 48,000文字 | より広い場面を探る。読解・評価の時間と費用が増えやすい |
+
+Explain that all three use the same observation dimensions, four-axis summary, and output format. They change the amount of sampled dialogue, not the person's quality or the rigor of the review rules. Deep still reads bounded excerpts, not full histories; insufficient candidate histories do not fill the limits. More excerpts do not guarantee accuracy or a definite type. Total time and cost depend on the actual agent/model, cache reuse, and review output; character caps exclude instructions, reasoning, and review output and are not token or price caps. Do not invent prices or promise linear scaling.
+
+Combine this mode comparison with the notice below so the user can choose after understanding the scope and processing route. A mode selection alone is not consent: ask for explicit authorization after disclosure, which may be given together with the mode choice. Valid prior consent for an unchanged scope and route remains valid.
 
 Before preparing or reading excerpts, show the user a concise notice covering:
 
@@ -28,10 +42,10 @@ Before preparing or reading excerpts, show the user a concise notice covering:
 
 ## Prepare a bounded sample
 
-After consent:
+After the mode is selected and consent is established, pass the selected mode explicitly (replace `<selected-mode>` with `light`, `standard`, or `deep`):
 
 ```text
-python "<skill-dir>/scripts/semantic.py" prepare --allow-agent-read --mode standard --output <private-output>
+python "<skill-dir>/scripts/semantic.py" prepare --allow-agent-read --mode <selected-mode> --output <private-output>
 ```
 
 Optional `--days` (default 90), `--home`, `--max-chars` (can only lower the selected mode's budget), `--exclude-project <exact working directory>`. Exclude the diagnosis project's conversation when appropriate to avoid self-referential sampling.

@@ -16,6 +16,7 @@ docs/adr/0009-impeccable-design-workflow.md
 docs/adr/0010-presentation-summary.md
 docs/adr/0011-public-distribution.md
 docs/adr/0012-installed-skill-workspace.md
+docs/adr/0013-user-selected-analysis-mode.md
 docs/adr/README.md
 docs/adr/template.md
 docs/design/impeccable.md
