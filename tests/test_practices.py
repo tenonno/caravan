@@ -18,7 +18,7 @@ from test_distribution import temporary_workspace
 
 def example(packet, featured=True):
     return dict(schema=p.SCHEMA, cache_key=p.cache_key(packet), reviewer='SYNTHETIC FIXTURE ONLY',
-        status='case', reason='架空の場面。選択の条件を聞き合うための例。', featured=featured,
+        status='case', reason='架空例。同じ条件で比較させ、不明点を消さずに候補を絞る組み合わせ。', featured=featured, portability='portable',
         case=dict(title='比較の条件をそろえてから、案を選ぶ', stage='request',
             situation=dict(text='架空例：複数の案から、どれを採用するか考えている。', refs=['m1']),
             human_action=dict(text='本人は、同じ条件で案を比較するよう依頼した。', refs=['m1']),
@@ -27,6 +27,9 @@ def example(packet, featured=True):
             limitation='比較表の内容や採用後の結果は、この架空例にはない。',
             question='条件がぶつかったとき、どれを優先すると決めましたか？',
             try_next='同じ時間と費用の条件で案を比較し、まだ分からない点も並べて。',
+            collaboration=dict(
+                pattern=dict(text='架空例：AIに条件をそろえて比較させ、不明点を残したまま候補を絞るよう頼んだ。',refs=['m1']),
+                boundary=dict(text='架空例：比較する条件は本人が指定し、分からない点を埋めずに整理するようAIに求めた。',refs=['m1'])),
             decision=dict(kind='sequence',condition=dict(status='context',text='架空例：候補を絞る前に費用条件をそろえる場面。',refs=['m1']),
                 alternative=dict(status='unknown',text='別の案を選ぶ条件は、この架空例にはない。',refs=[]),
                 steps=[dict(text='同じ費用条件で比較するよう頼む。',refs=['m1']),dict(text='不明点を残して候補を絞るよう頼む。',refs=['m1'])])))
@@ -61,13 +64,14 @@ class PracticeTests(unittest.TestCase):
         report=dict(sessions=1,sample_key='synthetic')
         saved=dict(schema='practice-v2',sample_key='synthetic',generated_at='2026-11-03',
             reviewed_sessions=1,items=[dict(session='saved',featured=True,case=review['case'])])
+        del saved['items'][0]['case']['collaboration']
         before=copy.deepcopy(saved)
         p.validate_saved(saved,report)
         self.assertEqual(saved,before)
 
     def test_missing_context_can_produce_no_case(self):
         packet=test_portrait.PortraitTests().packet();review=example(packet)
-        review.update(status='insufficient',case=None,featured=False,reason='Triggering image is not present.')
+        review.update(status='insufficient',case=None,featured=False,portability='unsupported',reason='Triggering image is not present.')
         p.validate(review,packet)
         review['featured']=True
         with self.assertRaises(ValueError):p.validate(review,packet)
@@ -127,7 +131,8 @@ class PracticeTests(unittest.TestCase):
         p.validate_saved(value,report)  # One featured case among three is valid.
         value['items'][0]['featured']=False;p.validate_saved(value,report)  # Zero is also valid.
         legacy=copy.deepcopy(value);legacy['schema']='practice-v1'
-        for item in legacy['items']:item['featured']=True;del item['case']['decision']
+        for item in legacy['items']:
+            item['featured']=True;del item['case']['decision'];del item['case']['collaboration']
         p.validate_saved(legacy,report)
         legacy['items'][0]['featured']=False
         with self.assertRaises(ValueError):p.validate_saved(legacy,report)
@@ -136,7 +141,7 @@ class PracticeTests(unittest.TestCase):
         packet=test_portrait.PortraitTests().packet();good=example(packet)
         generic=copy.deepcopy(good);generic['case']['decision']['kind']='generic'
         with self.assertRaisesRegex(ValueError,'Generic'):p.validate(generic,packet)
-        generic['featured']=False;p.validate(generic,packet)
+        generic.update(featured=False,portability='generic');p.validate(generic,packet)
         for change in [lambda d:d.update(steps=[]),
                        lambda d:d['steps'][0].update(refs=['m2']),
                        lambda d:d['condition'].update(status='stated',refs=['m2']),
@@ -148,6 +153,49 @@ class PracticeTests(unittest.TestCase):
         tradeoff=copy.deepcopy(good);d=tradeoff['case']['decision'];d.update(kind='tradeoff')
         d['condition'].update(status='stated');d['alternative'].update(status='observed',refs=['m1'])
         p.validate(tradeoff,packet)
+
+    def test_separate_collaboration_and_portability_gate(self):
+        packet=test_portrait.PortraitTests().packet();good=example(packet)
+        for change in [lambda r:r['case'].pop('collaboration'),
+                       lambda r:r['case'].update(collaboration=None),
+                       lambda r:r.update(portability='scene_bound'),
+                       lambda r:r.update(portability='generic'),
+                       lambda r:r.update(portability='unsupported'),
+                       lambda r:r['case']['collaboration']['pattern'].update(refs=['m2']),
+                       lambda r:r['case']['collaboration']['boundary'].update(refs=['missing']),
+                       lambda r:r['case']['collaboration']['pattern'].update(refs=[]),
+                       lambda r:r['case']['collaboration']['pattern'].update(text='x'*241)]:
+            bad=copy.deepcopy(good);change(bad)
+            with self.assertRaises(ValueError):p.validate(bad,packet)
+        # A real human reference outside the grounded scene is also insufficient.
+        packet['messages'].append(dict(id='m3',role='user',text='SYNTHETIC unrelated task'))
+        good['cache_key']=p.cache_key(packet)
+        bad=copy.deepcopy(good);bad['case']['collaboration']['boundary']['refs']=['m3']
+        with self.assertRaisesRegex(ValueError,'already grounded'):p.validate(bad,packet)
+        # Scene-only observations remain available without inventing an abstraction.
+        good.update(featured=False,portability='scene_bound');good['case']['collaboration']=None
+        p.validate(good,packet)
+
+    def test_v2_cache_is_not_reused_as_v3_and_legacy_render_is_unchanged(self):
+        with temporary_workspace() as directory,contextlib.redirect_stdout(io.StringIO()):
+            output=Path(directory);packet=test_portrait.PortraitTests().packet()
+            report=test_developer_report.DeveloperReportTests().report()
+            report.update(sessions=1,sample_key=portrait.sample_key([packet]))
+            old=example(packet);old['schema']='practice-v2';old.pop('portability');old['case'].pop('collaboration')
+            # Even a mistakenly copied current hash cannot upgrade an old review.
+            portrait.write(output/'cache'/('practice-'+p.cache_key(packet)+'.json'),old)
+            report['practices']=dict(schema='practice-v2',sample_key=report['sample_key'],generated_at='2026-11-03',
+                reviewed_sessions=1,items=[dict(session=packet['session'],featured=True,case=old['case'])])
+            portrait.write(output/'report.json',report)
+            portrait.write(output/'manifest.json',dict(schema=report['method'],selected=[packet]))
+            before=copy.deepcopy(report)
+            self.assertEqual(len(p.prepare(output,True)),1)
+            with self.assertRaises(ValueError):p.finalize(output)
+            self.assertEqual(portrait.read(output/'report.json'),before)
+            portrait.write(output/'legacy.backup.json',backup.bundle(report))
+            backup.restore(output/'legacy.backup.json',output,replace=True)
+            self.assertEqual(portrait.read(output/'report.json'),before)
+            self.assertNotIn('collaboration',report['practices']['items'][0]['case'])
 
 
 if __name__=='__main__':unittest.main()

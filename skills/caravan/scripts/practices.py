@@ -19,7 +19,8 @@ def text(value, limit=400):
 
 def validate_case(item, schema=SCHEMA):
     fields = {'title', 'stage', 'situation', 'human_action', 'ai_role', 'response', 'limitation', 'question', 'try_next'}
-    if schema == 'practice-v2': fields.add('decision')
+    if schema in ('practice-v2', 'practice-v3'): fields.add('decision')
+    if schema == 'practice-v3': fields.add('collaboration')
     if not isinstance(item, dict) or set(item) != fields:
         raise ValueError('Invalid use-case fields')
     text(item['title'], 80)
@@ -37,7 +38,12 @@ def validate_case(item, schema=SCHEMA):
     response = item['response']
     if response['status'] not in ('not_visible', 'assistant_report', 'user_report'): raise ValueError('Invalid response status')
     if bool(response['refs']) != (response['status'] != 'not_visible'): raise ValueError('Response status/evidence mismatch')
-    if schema == 'practice-v2': validate_decision(item['decision'])
+    if schema in ('practice-v2', 'practice-v3'): validate_decision(item['decision'])
+    if schema == 'practice-v3' and item['collaboration'] is not None:
+        collaboration = item['collaboration']
+        if not isinstance(collaboration, dict) or set(collaboration) != {'pattern', 'boundary'}:
+            raise ValueError('Invalid collaboration fields')
+        for claim in collaboration.values(): decision_claim(claim)
 
 
 def decision_claim(claim, states=None):
@@ -66,25 +72,43 @@ def validate_decision(decision):
 
 
 def validate_featured(item, schema):
-    if schema == 'practice-v2' and item['featured'] and item['case']['decision']['kind'] == 'generic':
+    if schema in ('practice-v2', 'practice-v3') and item['featured'] and item['case']['decision']['kind'] == 'generic':
         raise ValueError('Generic observations cannot fill a featured slot')
+    if schema == 'practice-v3' and item['featured'] and item['case']['collaboration'] is None:
+        raise ValueError('Featured cases need a separately grounded collaboration account')
 
 
 def validate(review, packet):
-    if not isinstance(review, dict) or set(review) != {'schema', 'cache_key', 'reviewer', 'status', 'reason', 'featured', 'case'}:
+    if not isinstance(review, dict) or set(review) != {'schema', 'cache_key', 'reviewer', 'status', 'reason', 'featured', 'case', 'portability'}:
         raise ValueError('Invalid use-case review')
     if review['schema'] != SCHEMA or review['cache_key'] != cache_key(packet): raise ValueError('Stale use-case review')
     text(review['reviewer'], 160); text(review['reason'], 300)
     if type(review['featured']) is not bool: raise ValueError('Invalid featured flag')
     if review['status'] not in ('case', 'insufficient'): raise ValueError('Invalid review status')
+    if review['portability'] not in ('portable', 'scene_bound', 'generic', 'unsupported'):
+        raise ValueError('Invalid portability review')
+    if review['featured'] and review['portability'] != 'portable':
+        raise ValueError('Featured cases must pass the portability review')
     item = review['case']
     if review['status'] == 'insufficient':
-        if item is not None or review['featured']: raise ValueError('Insufficient evidence cannot produce a case')
+        if item is not None or review['featured'] or review['portability'] != 'unsupported':
+            raise ValueError('Insufficient evidence cannot produce a case')
         return review
     validate_case(item)
     validate_featured(review, SCHEMA)
+    if review['portability'] == 'portable' and (item['collaboration'] is None or item['decision']['kind'] == 'generic'):
+        raise ValueError('Portable review needs a grounded, non-generic collaboration account')
     messages = {m['id']: m for m in packet['messages']}
     positions = {m['id']: i for i, m in enumerate(packet['messages'])}
+    if item['collaboration'] is not None:
+        # The abstraction describes the person's choices, not AI-invented motives.
+        human_refs = set(item['human_action']['refs'])
+        decision = item['decision']
+        for claim in [decision['condition'], decision['alternative'], *decision['steps']]:
+            human_refs.update(claim['refs'])
+        for claim in item['collaboration'].values():
+            if any(r not in messages or messages[r]['role'] != 'user' or r not in human_refs for r in claim['refs']):
+                raise ValueError('Collaboration needs human evidence already grounded in the scene')
     for field in ('situation', 'human_action', 'ai_role', 'response'):
         refs = item[field]['refs']
         if any(r not in messages for r in refs): raise ValueError('Unknown use-case evidence')
@@ -113,7 +137,7 @@ def validate(review, packet):
 
 
 def validate_saved(value, report):
-    if not isinstance(value, dict) or value.get('schema') not in ('practice-v1', 'practice-v2'): raise ValueError('Unsupported use-case schema')
+    if not isinstance(value, dict) or value.get('schema') not in ('practice-v1', 'practice-v2', 'practice-v3'): raise ValueError('Unsupported use-case schema')
     schema = value['schema']
     text(value.get('sample_key'), 80)
     if value.get('sample_key') != report.get('sample_key'): raise ValueError('Use cases belong to another sample')
@@ -130,7 +154,7 @@ def validate_saved(value, report):
         seen.add(item['session']); featured += item['featured']; validate_case(item['case'], schema)
         validate_featured(item, schema)
     if featured > 3 or (schema == 'practice-v1' and featured != min(3, len(items))):
-        raise ValueError('Feature at most three cases; never fill a quota in v2')
+        raise ValueError('Feature at most three cases; never fill a quota in v2/v3')
     return value
 
 

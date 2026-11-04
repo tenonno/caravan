@@ -34,11 +34,12 @@
 | [0026](0026-restored-result-html.md) | Accepted | 詳細JSONから復元した結果を単独HTMLとして保存できるようにする |
 
 | [0027](0027-current-result-backup.md) | Accepted | 詳細JSONから旧分類を除き、現在の旅人名で保存する |
-| [0028](0028-portable-distinctive-practices.md) | Accepted | プロジェクトを知らなくても伝わる、特徴的なAIへの任せ方と選択の組み合わせを選ぶ |
+| [0028](0028-portable-distinctive-practices.md) | Superseded by 0033 | プロジェクトを知らなくても伝わる、特徴的なAIへの任せ方と選択の組み合わせを選ぶ |
 | [0029](0029-private-presentations-outside-repository.md) | Accepted | 個人の発表資料は開発履歴を含むリポジトリ外で管理する |
 | [0030](0030-explicit-publication-remote.md) | Accepted | originと公開用ブランチ・worktreeを同じGit管理下に置く |
 | [0031](0031-separate-art-originals-from-skill.md) | Accepted | 元PNGを開発用素材へ移し、診断スキルには配信用画像だけを含める |
 | [0032](0032-kimi-desktop-history.md) | Accepted | Kimiデスクトップ版のWire 1.5から本人の入力と完了したAI回答を読み取る |
+| [0033](0033-separate-collaboration-from-scene.md) | Accepted | AIとの進め方を、根拠となる作業場面と分けて生成する |
 
 0002〜0008は、この会話と実装を照合した**事後記録**です。記録日は実際の決定日を意味しません。記載した比較対象は判断を説明するため今回整理したもので、過去にすべてを実験したという意味ではありません。
 

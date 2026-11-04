@@ -432,6 +432,7 @@ body:has(#view-result:not([hidden])) footer { padding: 8px 0; }
 .practice-flow > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
 .practice-flow h4 { color: var(--accent); font-weight: 700; margin: 0; }
 .practice-flow p, .practice-context { line-height: 1.85; }
+.practice-collaboration { margin-top: 24px; max-width: 68ch; }
 .practice-context { grid-template-columns: minmax(0, 1fr); gap: 6px; margin: 28px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
 .practice-context dt { color: var(--ink); font-weight: 700; }
 .practice-context dd + dt { margin-top: 16px; }
@@ -643,7 +644,7 @@ function openResultDetail(target){revealPanel(target);}
 
 function practiceDraft(item){
  const c=item.case;
- return [c.title,'','場面：'+c.situation.text,'本人がしたこと：'+c.human_action.text,'AIに頼んだこと：'+c.ai_role.text,
+ return [c.title,'',...(c.collaboration?['AIとの進め方：'+c.collaboration.pattern.text,'人が決めた条件・任せた範囲：'+c.collaboration.boundary.text,'']:[]),'場面：'+c.situation.text,'本人がしたこと：'+c.human_action.text,'AIに頼んだこと：'+c.ai_role.text,
  responseLabels[c.response.status]+'：'+c.response.text,'分からないこと：'+c.limitation,...(c.decision?['選んだときの条件：'+c.decision.condition.text,'見送った・切り替えた案：'+c.decision.alternative.text,...c.decision.steps.map((step,i)=>(i+1)+'. '+step.text)]:[]),'','話してみたいこと：'+c.question,
  '','別の場面で試すなら（分析者が作った依頼例）：'+c.try_next,'','会話の一部をAIが要約した例です。効果や普段の傾向を確かめたものではありません。'].join('\n');
 }
@@ -655,11 +656,18 @@ function openPracticeDraft(item){
 for(const item of practiceItems){
  const c=item.case,article=el('article','practice'),head=el('div','practice-heading');
  head.append(el('h3','',c.title),el('span','',practiceStages[c.stage]));article.append(head);
+ if(c.collaboration){
+  const account=el('div','practice-flow practice-collaboration');
+  for(const [label,claim] of [['AIとの進め方',c.collaboration.pattern],['人が決めた条件・任せた範囲',c.collaboration.boundary]]){
+   const part=el('div');part.append(el('h4','',label),el('p','',claim.text));account.append(part);
+  }
+  article.append(account);
+ }
  const layout=el('div','practice-layout'),record=el('div','practice-record'),reflection=el('aside','practice-reflect');
- record.append(el('h4','practice-group-title','会話で起きたこと'));reflection.append(el('h4','practice-group-title','振り返る・試してみる'));
+ record.append(el('h4','practice-group-title',c.collaboration?'根拠となった会話の場面':'会話で起きたこと'));reflection.append(el('h4','practice-group-title','振り返る・試してみる'));
  const flow=el('div','practice-flow');
  const d=c.decision,decisionSpecific=d&&d.kind!=='generic';
- const columns=decisionSpecific?[['この場面でのAIの使い方',c.human_action.text],[d.condition.status==='stated'?'本人が述べた理由・条件':'選んだときの状況',d.condition.text],['見送った・切り替えた案',d.alternative.text]]:[['どんな場面？',c.situation.text],['本人が頼んだこと・選んだこと',c.human_action.text],[responseLabels[c.response.status],c.response.text]];
+ const columns=decisionSpecific?[...(c.collaboration?[['どんな場面？',c.situation.text]]:[]),[c.collaboration?'本人が頼んだこと・選んだこと':'この場面でのAIの使い方',c.human_action.text],[d.condition.status==='stated'?'本人が述べた理由・条件':'選んだときの状況',d.condition.text],['見送った・切り替えた案',d.alternative.text]]:[['どんな場面？',c.situation.text],['本人が頼んだこと・選んだこと',c.human_action.text],[responseLabels[c.response.status],c.response.text]];
  for(const [heading,body] of columns){
   const step=el('div');step.append(el('h4','',heading),el('p','',body));flow.append(step);
  }

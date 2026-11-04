@@ -30,19 +30,22 @@ function validateBackup(value){
 }
 function validatePractices(value,report,fail){
  const text=(v,n=400)=>typeof v==='string'&&v.trim().length>0&&[...v].length<=n;
- if(!value||!['practice-v1','practice-v2'].includes(value.schema)||!text(value.sample_key,80)||value.sample_key!==report.sample_key||!text(value.generated_at,80)||value.reviewed_sessions!==report.sessions||!Array.isArray(value.items)||value.items.length>report.sessions)fail();
+ if(!value||!['practice-v1','practice-v2','practice-v3'].includes(value.schema)||!text(value.sample_key,80)||value.sample_key!==report.sample_key||!text(value.generated_at,80)||value.reviewed_sessions!==report.sessions||!Array.isArray(value.items)||value.items.length>report.sessions)fail();
  const seen=new Set();let featured=0;
  for(const item of value.items){
   if(!item||Object.keys(item).sort().join(',')!=='case,featured,session'||!text(item.session,80)||seen.has(item.session)||typeof item.featured!=='boolean')fail();
   seen.add(item.session);featured+=item.featured;
   const c=item.case;
-  if(!c||Object.keys(c).sort().join(',')!==(value.schema==='practice-v2'?'ai_role,decision,human_action,limitation,question,response,situation,stage,title,try_next':'ai_role,human_action,limitation,question,response,situation,stage,title,try_next')||!text(c.title,80)||!['request','adjustment','review'].includes(c.stage)||['limitation','question','try_next'].some(k=>!text(c[k],300)))fail();
+  const fields=['ai_role','human_action','limitation','question','response','situation','stage','title','try_next'];
+  if(value.schema!=='practice-v1')fields.push('decision');
+  if(value.schema==='practice-v3')fields.push('collaboration');
+  if(!c||Object.keys(c).sort().join(',')!==fields.sort().join(',')||!text(c.title,80)||!['request','adjustment','review'].includes(c.stage)||['limitation','question','try_next'].some(k=>!text(c[k],300)))fail();
   for(const field of ['situation','human_action','ai_role','response']){
    const claim=c[field];
    if(!claim||Object.keys(claim).sort().join(',')!==(field==='response'?'refs,status,text':'refs,text')||!text(claim.text)||!Array.isArray(claim.refs)||claim.refs.some(r=>typeof r!=='string')||new Set(claim.refs).size!==claim.refs.length||(field!=='response'&&!claim.refs.length))fail();
   }
   if(!['not_visible','assistant_report','user_report'].includes(c.response.status)||Boolean(c.response.refs.length)!==(c.response.status!=='not_visible'))fail();
-  if(value.schema==='practice-v2'){
+  if(value.schema!=='practice-v1'){
    const d=c.decision;
    if(!d||Object.keys(d).sort().join(',')!=='alternative,condition,kind,steps'||!['generic','sequence','tradeoff','conditional'].includes(d.kind)||!Array.isArray(d.steps)||d.steps.length>4||(item.featured&&d.kind==='generic'))fail();
    function claim(q,states){
@@ -51,6 +54,13 @@ function validatePractices(value,report,fail){
    claim(d.condition,['stated','context','unknown']);claim(d.alternative,['observed','unknown']);for(const step of d.steps)claim(step);
    if(d.kind==='sequence'&&(d.steps.length<2||d.condition.status==='unknown'))fail();
    if(['tradeoff','conditional'].includes(d.kind)&&(d.condition.status!=='stated'||d.alternative.status!=='observed'))fail();
+   if(value.schema==='practice-v3'){
+    if(item.featured&&c.collaboration===null)fail();
+    if(c.collaboration!==null){
+     if(!c.collaboration||Object.keys(c.collaboration).sort().join(',')!=='boundary,pattern')fail();
+     claim(c.collaboration.pattern);claim(c.collaboration.boundary);
+    }
+   }
   }
  }
  if(featured>3||(value.schema==='practice-v1'&&featured!==Math.min(3,value.items.length)))fail();

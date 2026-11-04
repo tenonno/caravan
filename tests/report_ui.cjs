@@ -46,6 +46,14 @@ async function main(){
     ids['practice-cases'].querySelector('button').click();
     assert.equal(ids['view-comparison'].hidden,false);
     assert.ok(ids['practice-draft'].value.includes(sample.case.question));
+    if(sample.case.collaboration){
+      const article=ids['practice-cases'].querySelector('.practice');
+      const account=article.querySelector('.practice-collaboration');
+      assert.deepEqual(account.querySelectorAll('p').map(e=>e.textContent),[sample.case.collaboration.pattern.text,sample.case.collaboration.boundary.text]);
+      assert.ok(article.children.indexOf(account)<article.children.indexOf(article.querySelector('.practice-layout')));
+      assert.ok(ids['practice-draft'].value.includes(sample.case.collaboration.pattern.text));
+      assert.ok(ids['practice-draft'].value.includes(sample.case.situation.text));
+    }
     assert.ok(!ids['practice-draft'].value.includes(sample.session));
     ids['discard-practice-text'].click();
     assert.equal(ids['practice-draft'].value,'');
