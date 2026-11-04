@@ -137,6 +137,13 @@ class DistributionTests(unittest.TestCase):
         expected = {p.relative_to(ROOT).as_posix() for p in skill.rglob('*')
                     if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc'}
         self.assertTrue(expected <= selected, expected - selected)
+        self.assertFalse(any(name.startswith('dev/') for name in selected))
+        self.assertFalse(any(name.startswith('skills/caravan/assets/journey/') and
+                             name.endswith('.png') for name in selected))
+        # Guard the install payload against accidentally shipping production originals again.
+        payload_bytes = sum(path.stat().st_size for name, path in release.release_files(ROOT)
+                            if name.startswith('skills/caravan/'))
+        self.assertLess(payload_bytes, 2 * 1024 * 1024)
         self.assertTrue({'LICENSE', 'README.md', release.MANIFEST} <= selected)
         with temporary_workspace() as directory:
             archive_path = Path(directory) / 'release.zip'

@@ -42,3 +42,5 @@
 ## 2026-11-04 追記
 
 [0027](0027-current-result-backup.md)により、詳細JSONの旧分類と表示名の保存方針を変更。その他の決定は継続する。
+
+[0031](0031-separate-art-originals-from-skill.md)により、元PNGの保管先を開発用素材へ変更し、診断スキルと公開用配布から除外する。元PNGのローカルGit保持と、JPEGによる表示は継続する。

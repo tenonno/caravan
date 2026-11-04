@@ -1,7 +1,12 @@
-param([Parameter(Mandatory=$true)][string]$AssetDirectory)
+param(
+    [Parameter(Mandatory=$true)][string]$AssetDirectory,
+    [Parameter(Mandatory=$true)][string]$DeliveryDirectory
+)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $assetRoot = (Resolve-Path -LiteralPath $AssetDirectory).Path
+$deliveryRoot = (Resolve-Path -LiteralPath $DeliveryDirectory).Path
+if ($assetRoot -eq $deliveryRoot) { throw 'Originals and delivery images must use separate directories.' }
 $encoder = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object MimeType -eq 'image/jpeg'
 $parameters = [System.Drawing.Imaging.EncoderParameters]::new(1)
 $parameters.Param[0] = [System.Drawing.Imaging.EncoderParameter]::new([System.Drawing.Imaging.Encoder]::Quality, [long]82)
@@ -19,7 +24,7 @@ try {
             $graphics.Clear([System.Drawing.Color]::FromArgb(247,244,235))
             $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
             $graphics.DrawImage($original, 0, 0, $bitmap.Width, $bitmap.Height)
-            $bitmap.Save((Join-Path $assetRoot ($source.BaseName+'.jpg')), $encoder, $parameters)
+            $bitmap.Save((Join-Path $deliveryRoot ($source.BaseName+'.jpg')), $encoder, $parameters)
         } finally {
             if ($graphics) { $graphics.Dispose() }
             if ($bitmap) { $bitmap.Dispose() }

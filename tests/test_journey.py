@@ -40,7 +40,7 @@ class JourneyTests(unittest.TestCase):
             raw = base64.b64decode(t['image'].split(',', 1)[1], validate=True)
             self.assertTrue(raw.startswith(b'\xff\xd8'))
             self.assertEqual(raw, (journey.ASSETS / 'journey' / (t['code'] + '.jpg')).read_bytes())
-            self.assertTrue((journey.ASSETS / 'journey' / (t['code'] + '.png')).is_file())
+            self.assertFalse((journey.ASSETS / 'journey' / (t['code'] + '.png')).exists())
             digests.add(hashlib.sha256(raw).digest())
         self.assertEqual(len(digests), 16)
         self.assertEqual({t['code']: t['name'] for t in portrait.catalog()}, {t['code']: t['name'] for t in types})

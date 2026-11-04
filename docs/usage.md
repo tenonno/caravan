@@ -101,7 +101,7 @@ python skills/caravan/scripts/semantic.py finalize --output output/semantic --re
 
 4軸の16タイプには、旅をテーマにした愛称と共通の旅人・AIの相棒のイラストがあります。`skills/caravan/assets/journey-types.json` がコードと表示名・短い説明の対応表です。保存済みの判定コードから表示名を選ぶため、再描画で診断結果や評価日時は変わりません。材料不足・中間の結果には、単独タイプの画像を当てはめません。旧分類には適用しません。共有JSONは評価時の名前を保持し、画像や制作プロンプトを含めません。
 
-画像制作は `skills/ai-sindan-art/SKILL.md` にまとめています。`references/prompts.json` に使用した組み込み画像生成ツール用の全プロンプトを保存しています。元のPNGと配信用JPEGは `skills/caravan/assets/journey/` にあり、HTMLには軽量なJPEGを埋め込みます。Windowsでは制作スキルの `scripts/export-jpeg.ps1` で元画像を残して配信用コピーを再作成できます。
+画像制作は `skills/ai-sindan-art/SKILL.md` にまとめています。`references/prompts.json` に使用した組み込み画像生成ツール用の全プロンプトを保存しています。診断スキルには `skills/caravan/assets/journey/` のJPEG16枚を含め、HTMLへ埋め込みます。制作元のPNGは開発用の `dev/art/journey/` で保持し、公開用配布には含めません。Windowsでは制作スキルの `scripts/export-jpeg.ps1` に `-AssetDirectory` で元画像の場所、`-DeliveryDirectory` でJPEGの出力先を指定して書き出せます。元画像は変更しません。
 
 実装・テンプレート・テスト・説明はローカルGitで管理します。私的な履歴や診断結果を含む `output/` は管理対象外です。
 
