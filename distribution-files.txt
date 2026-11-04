@@ -108,3 +108,7 @@ docs/adr/0029-private-presentations-outside-repository.md
 docs/adr/0030-explicit-publication-remote.md
 docs/design/japanese-copy.md
 docs/adr/0031-separate-art-originals-from-skill.md
+
+skills/caravan/scripts/kimi.py
+tests/test_kimi.py
+docs/adr/0032-kimi-desktop-history.md

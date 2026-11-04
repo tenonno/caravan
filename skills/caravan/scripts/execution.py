@@ -13,6 +13,7 @@ FEATURES = {'model': 'モデル情報', 'effort': '推論設定', 'mcp': 'MCP呼
 LIMITATIONS = {
     'codex': 'モデル・推論設定と直接のツール呼び出しに対応。exec等の内部コード、スキル読込、フックの利用は確定しません。',
     'claude': '応答のモデル名とtool_use/tool_resultに対応。スキル・委譲は呼び出し要求であり、完了や本人の選択を意味しません。',
+    'kimi': 'Kimiデスクトップ版の実行メタデータは読取未対応です。利用なしとは扱いません。',
     'antigravity': '現在確認できている会話JSONLでは実行メタデータの読取形式が未対応です。利用なしとは扱いません。',
 }
 
@@ -115,7 +116,7 @@ class Collector:
                     self.result(block.get('tool_use_id'),stamp,block.get('is_error'))
 
     def finish(self):
-        return dict(schema=VERSION, source=self.source, status='unsupported' if self.source=='antigravity' else 'partial',
+        return dict(schema=VERSION, source=self.source, status='unsupported' if self.source in ('antigravity', 'kimi') else 'partial',
                     events=self.events, omitted_events=self.omitted, limit_per_file=LIMIT)
 
 

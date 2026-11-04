@@ -824,7 +824,7 @@ const coverageRoot=document.getElementById('source-coverage'), coverageRows=r.sa
 if(!coverageRows){coverageRoot.append(el('p','evidence','この保存済み結果には、エージェント別の抽出内訳がありません。'));}
 else{
  coverageRoot.append(el('p','evidence','条件に合う履歴がある各エージェントから最低1会話ずつ選び、残りも順番に割り当てます。普段の利用比率を再現する集計ではありません。'));
- for(const row of coverageRows){const name={codex:'Codex',claude:'Claude Code',antigravity:'Antigravity CLI'}[row.source]||row.source;coverageRoot.append(el('p','evidence',name+'：条件に合う '+row.eligible_sessions+'会話 → 分析 '+row.selected_sessions+'会話 ／ '+row.reason));}
+ for(const row of coverageRows){const name={codex:'Codex',claude:'Claude Code',antigravity:'Antigravity CLI',kimi:'Kimi'}[row.source]||row.source;coverageRoot.append(el('p','evidence',name+'：条件に合う '+row.eligible_sessions+'会話 → 分析 '+row.selected_sessions+'会話 ／ '+row.reason));}
 }
 const audit=r.execution_audit, facts=document.getElementById('execution-facts');
 if(!audit){facts.append(el('p','muted','機能の利用記録は、まだこの結果に含まれていません。使っていないという意味ではありません。'));}
@@ -838,7 +838,7 @@ else{
  for(const [source,note] of Object.entries(audit.limitations))facts.append(el('p','evidence',source+'：'+note));
  facts.append(el('p','evidence','各ファイル最大'+audit.limit_per_file+'イベント。上限による省略 '+audit.omitted_events+'件。'));
 }
-put('sources','分析した会話：'+Object.entries(r.sources).map(([k,v])=>({'codex':'Codex','claude':'Claude Code','antigravity':'Antigravity CLI'}[k]||k)+' '+v+'件').join(' / '));
+put('sources','分析した会話：'+Object.entries(r.sources).map(([k,v])=>({'codex':'Codex','claude':'Claude Code','antigravity':'Antigravity CLI','kimi':'Kimi'}[k]||k)+' '+v+'件').join(' / '));
 const unreadable=r.diagnostics.unreadable_files||0,malformed=r.diagnostics.malformed_lines||0;
 put('diagnostics',unreadable||malformed?'読み取れなかった履歴があります（ファイル '+unreadable+'件、行 '+malformed+'件）。該当する内容は分析に含まれていません。':'');
 document.getElementById('diagnostics').hidden=!(unreadable||malformed);

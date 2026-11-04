@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import diagnose as base
 import antigravity
+import kimi
 import developer_report
 import rubric
 import execution
@@ -18,7 +19,7 @@ import sampling
 RUBRIC = 'semantic-38-v3'
 EXTRACTOR = sampling.WINDOW_VERSION
 SAMPLER = sampling.VERSION
-SOURCES = ('codex', 'claude', 'antigravity')
+SOURCES = ('codex', 'claude', 'antigravity', 'kimi')
 MODES = {'light': (6, 12000), 'standard': (12, 24000), 'deep': (24, 48000)}
 PERSPECTIVES = rubric.PERSPECTIVES
 IDS = {p['id'] for p in PERSPECTIVES}
@@ -80,6 +81,18 @@ def project_key(value):
     return digest(value)[:12]
 
 
+def json_rows(path, stats):
+    with path.open(encoding='utf-8') as stream:
+        for line in stream:
+            try:
+                row = json.loads(line)
+                if not isinstance(row, dict):
+                    raise ValueError()
+                yield row
+            except (ValueError, UnicodeError):
+                stats['malformed_lines'] += 1
+
+
 def transcript(path, source, cutoff, now, stats, metadata=None, metadata_only=False):
     messages, fallback = [], []
     collector=execution.Collector(source,cutoff,now)
@@ -87,48 +100,40 @@ def transcript(path, source, cutoff, now, stats, metadata=None, metadata_only=Fa
     if metadata:
         sid, project = metadata['id'], metadata['project']
     try:
-        with path.open(encoding='utf-8') as stream:
-            for line in stream:
-                try:
-                    o = json.loads(line)
-                    if not isinstance(o, dict):
-                        raise ValueError()
-                except (ValueError, UnicodeError):
-                    stats['malformed_lines'] += 1
-                    continue
-                p = o.get('payload') or {}
+        for o in (kimi.rows(path, stats) if source == 'kimi' else json_rows(path, stats)):
+            p = o.get('payload') or {}
+            if not isinstance(p, dict):
+                continue
+            if o.get('type') == 'session_meta':
+                if isinstance(p.get('source'), dict) and 'subagent' in p['source']:
+                    stats['excluded_subagent_files'] += 1
+                    return None
+                sid = p.get('id', sid); project = p.get('cwd', project)
+            if source=='claude':
+                sid=o.get('sessionId',sid);project=o.get('cwd',project)
+            collector.feed(o)
+            if metadata_only:continue
+            if source == 'antigravity':
+                message = antigravity.message(o, stats)
+                if message:messages.append(message)
+                continue
+            role, text = None, ''
+            if source == 'codex':
+                if o.get('type') == 'response_item' and p.get('type') == 'message':
+                    role = p.get('role')
+                    if role == 'assistant' and p.get('phase') == 'commentary':
+                        continue
+                    text = base.content_text(p.get('content'))
+                elif o.get('type') == 'event_msg' and p.get('type') in ('user_message', 'agent_message'):
+                    fallback.append((o.get('timestamp'), 'user' if p['type']=='user_message' else 'assistant', p.get('message','')))
+            elif o.get('type') in ('user','assistant') and not o.get('isSidechain') and not o.get('isMeta'):
+                p = o.get('message') or {}
                 if not isinstance(p, dict):
                     continue
-                if o.get('type') == 'session_meta':
-                    if isinstance(p.get('source'), dict) and 'subagent' in p['source']:
-                        stats['excluded_subagent_files'] += 1
-                        return None
-                    sid = p.get('id', sid); project = p.get('cwd', project)
-                if source=='claude':
-                    sid=o.get('sessionId',sid);project=o.get('cwd',project)
-                collector.feed(o)
-                if metadata_only:continue
-                if source == 'antigravity':
-                    message = antigravity.message(o, stats)
-                    if message:messages.append(message)
-                    continue
-                role, text = None, ''
-                if source == 'codex':
-                    if o.get('type') == 'response_item' and p.get('type') == 'message':
-                        role = p.get('role')
-                        if role == 'assistant' and p.get('phase') == 'commentary':
-                            continue
-                        text = base.content_text(p.get('content'))
-                    elif o.get('type') == 'event_msg' and p.get('type') in ('user_message', 'agent_message'):
-                        fallback.append((o.get('timestamp'), 'user' if p['type']=='user_message' else 'assistant', p.get('message','')))
-                elif o.get('type') in ('user','assistant') and not o.get('isSidechain') and not o.get('isMeta'):
-                    p = o.get('message') or {}
-                    if not isinstance(p, dict):
-                        continue
-                    role = o['type']; text = base.content_text(p.get('content'))
-                    sid = o.get('sessionId',sid); project = o.get('cwd',project)
-                if role in ('user','assistant') and text:
-                    messages.append((o.get('timestamp'),role,text))
+                role = o['type']; text = base.content_text(p.get('content'))
+                sid = o.get('sessionId',sid); project = o.get('cwd',project)
+            if role in ('user','assistant') and text:
+                messages.append((o.get('timestamp'),role,text))
     except (OSError, UnicodeError):
         stats['unreadable_files'] += 1
         return None
@@ -170,9 +175,9 @@ def exclusions(output, extra=None):
     saved=json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
     if not isinstance(saved,list):raise ValueError('excluded-sessions.json must be a list')
     values=saved+list(extra or [])
-    if not all(isinstance(x,str) and ((x.startswith('antigravity:') and len(x)>12)
+    if not all(isinstance(x,str) and ((x.startswith('antigravity:') and len(x)>12) or (x.startswith('kimi:') and len(x)>5)
                or re.fullmatch(r'sample:[0-9a-f]{20}',x)) for x in values):
-        raise ValueError('Excluded sessions must use antigravity:<session-id> or sample:<20-hex packet session key>')
+        raise ValueError('Excluded sessions must use antigravity:<session-id>, kimi:<session-id> or sample:<20-hex packet session key>')
     return set(values)
 
 
@@ -182,6 +187,7 @@ def source_files(home, stats, excluded):
         for path in sorted(root.rglob('*.jsonl')):
             if 'subagents' not in path.parts:yield source,path,None
     for path,metadata in antigravity.sessions(home,stats,excluded):yield 'antigravity',path,metadata
+    for path,metadata in kimi.sessions(home,stats,excluded):yield 'kimi',path,metadata
 
 
 def scan_execution(home, output, days=90, consent=False, exclude_project=None, exclude_sessions=None):
@@ -395,7 +401,7 @@ def main():
     parser.add_argument('--days',type=int,default=90);parser.add_argument('--max-chars',type=int);parser.add_argument('--reviews',type=Path)
     parser.add_argument('--allow-agent-read',action='store_true',help='Only after the user consents to reading private excerpts through the current agent provider; not a Bedrock connector.')
     parser.add_argument('--exclude-project',type=Path,help='Exclude this exact working directory from analysis, e.g. the diagnosis project itself.')
-    parser.add_argument('--exclude-session',action='append',default=[],help='Exclude antigravity:<session-id> or sample:<packet session key> for any source. Repeatable; also reads <output>/excluded-sessions.json.')
+    parser.add_argument('--exclude-session',action='append',default=[],help='Exclude antigravity:<session-id>, kimi:<session-id> or sample:<packet session key> for any source. Repeatable; also reads <output>/excluded-sessions.json.')
     args=parser.parse_args()
     if args.days<1: parser.error('days must be positive')
     if args.command in ('prepare','scan-execution','prepare-portrait','prepare-practices') and not args.allow_agent_read:

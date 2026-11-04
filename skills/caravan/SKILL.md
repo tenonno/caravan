@@ -1,6 +1,6 @@
 ---
 name: caravan
-description: Diagnose observable AI collaboration habits by reading a bounded sample of local Codex, Claude Code, or Antigravity CLI dialogue, cache evidence-based semantic reviews, and generate a private Japanese HTML report. Use for a user's request to understand or share their coding-agent collaboration style.
+description: Diagnose observable AI collaboration habits by reading a bounded sample of local Codex, Claude Code, Antigravity CLI, or Windows Kimi desktop dialogue, cache evidence-based semantic reviews, and generate a private Japanese HTML report. Use for a user's request to understand or share their coding-agent collaboration style.
 ---
 
 # Caravan — AIとの向き合い方 / semantic workflow v0.10
@@ -69,6 +69,8 @@ Modes: light 6 conversations/12,000 characters of dialogue plus compact executio
 Each selected conversation supplies one contiguous window of up to five normalized messages. Prefer a user→assistant→user exchange when available, pick its anchor by a reproducible hash, and retain the preceding assistant response if adjacent. This preference can overrepresent iterative exchanges; never interpret missing reactions as a preference for one-shot work. Initially allocate at most 2,000 characters per window; water-fill across its messages, preserving short messages. Use the actual metadata size, then redistribute unused input budget to truncated selected windows up to 4,000 characters each. Do not create extra observations from this added context. Mark cuts explicitly. The budget covers excerpt text plus the compact JSON of execution metadata; other packet JSON, prompt, output, reasoning, and total agent tokens are not included. Do not read original logs to bypass these limits. Reading `pending.json` twice also consumes tokens; avoid rereading unchanged material.
 
 The command prints counts without raw content. Read `rubric.json` and `pending.json` only. `manifest.json` also contains private excerpts; don't print it unnecessarily. `pending.json` contains only missing/stale reviews. If empty, go straight to finalization. Cached reviews are accepted only when the transcript fingerprint, excerpt window and rubric/extractor versions match. Changed or newly selected conversations require review. Sampling is deterministic for an unchanged corpus but not a statistically representative survey.
+
+Kimi desktop on Windows is discovered at `~/AppData/Roaming/kimi-desktop/daimon-share/daimon/runtime/kimi-code/home`. Read only verified Wire 1.5 `sessions/*/conv-*/agents/main/wire.jsonl` messages with routing metadata in `session_index.jsonl`. Canonical explicit user inputs and completed assistant text are retained; title generation, child agents, injected context, tool results, thinking and replay duplicates are excluded. Kimi Web and standalone CLI formats are not supported. A single user turn is detected but cannot meet the existing two-user-message eligibility rule. Execution metadata remains explicitly unsupported. Use `--exclude-session kimi:<session-id>` for known test sessions; the normal consent, total budget and project exclusions also apply.
 
 ## Actually read and review
 

@@ -21,7 +21,7 @@ class SamplingTests(unittest.TestCase):
         self.assertEqual(len({r['key'] for r in selected}),12)
         for source in semantic.SOURCES:
             source_rows=[r for r in selected if r['source']==source]
-            self.assertEqual(len(source_rows),4)
+            self.assertEqual(len(source_rows),12 // len(semantic.SOURCES))
             self.assertEqual({r['date'][:7] for r in source_rows},{'2026-08','2026-09','2026-10'})
         self.assertEqual(sampling.ordered_sessions(rows),sampling.ordered_sessions(list(reversed(rows))))
         self.assertNotEqual([s['key'] for s in selected],

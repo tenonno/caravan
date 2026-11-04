@@ -107,28 +107,39 @@ class SemanticTests(unittest.TestCase):
             claude=self.home/'.claude/projects'/f'project-{i}'/f'{i}.jsonl'
             ag=self.home/'.gemini/antigravity-cli/brain'/f'ag-{i}'/'.system_generated/logs/transcript.jsonl'
             claude.parent.mkdir(parents=True);ag.parent.mkdir(parents=True)
-            crows=[];arows=[]
+            kroot=self.home/s.kimi.DESKTOP_HOME
+            kpath=kroot/'sessions/workspace'/f'conv-{i}'/'agents/main/wire.jsonl'
+            kpath.parent.mkdir(parents=True)
+            with (kroot/'session_index.jsonl').open('a',encoding='utf-8') as stream:
+                stream.write(json.dumps(dict(sessionId=f'conv-{i}',workDir='kimi-project'))+'\n')
+            crows=[];arows=[];krows=[dict(type='metadata',protocol_version='1.5')]
             for j,role in enumerate(['user','assistant','user','assistant']):
                 text='SYNTHETIC TEST ONLY. '*12+str(j)
+                kmeta=(dict(source='input',origin=dict(kind='user'),userMessageId=str(j)) if role=='user'
+                       else dict(source='llm',finish=dict(finishReason='completed'),messageId=str(j)))
+                krows.append(dict(type='agent.message.appended',kind='event',
+                                  time=int(s.base.parse_time(stamp).timestamp()*1000),
+                                  message=dict(message=dict(role=role,content=[dict(type='text',text=text)]),meta=kmeta)))
                 crows.append(dict(type=role,timestamp=stamp,sessionId=str(i),cwd='claude-project',message=dict(role=role,content=text)))
                 arows.append(dict(step_index=j,type='USER_INPUT' if role=='user' else 'PLANNER_RESPONSE',
                                   source='USER_EXPLICIT' if role=='user' else 'MODEL',status='DONE',created_at=stamp,
                                   content='<USER_REQUEST>'+text+'</USER_REQUEST>' if role=='user' else text))
             claude.write_text('\n'.join(json.dumps(row) for row in crows),encoding='utf-8')
             ag.write_text('\n'.join(json.dumps(row) for row in arows),encoding='utf-8')
+            kpath.write_text('\n'.join(json.dumps(row) for row in krows),encoding='utf-8')
 
     def test_all_sources_survive_many_projects_in_all_modes(self):
         self.mixed_fixture()
         for mode,(limit,budget) in s.MODES.items():
             m=self.prepare(mode=mode)
             counts=s.Counter(p['source'] for p in m['selected'])
-            self.assertEqual(counts,{'codex':limit-2,'claude':1,'antigravity':1})
+            self.assertEqual(counts,{'codex':limit-3,'claude':1,'antigravity':1,'kimi':1})
             self.assertLessEqual(m['read_chars'],budget)
             self.assertEqual({row['source'] for row in m['source_coverage'] if row['selected_sessions']},set(s.SOURCES))
             self.assertEqual(m['sampler'],s.SAMPLER)
-        short=self.prepare(max_chars=1800)
+        short=self.prepare(max_chars=2400)
         self.assertEqual({p['source'] for p in short['selected']},set(s.SOURCES))
-        self.assertLessEqual(short['read_chars'],1800)
+        self.assertLessEqual(short['read_chars'],2400)
         original=(self.out/'manifest.json').read_bytes()
         with self.assertRaisesRegex(ValueError,'every eligible agent'):self.prepare(max_chars=1000)
         self.assertEqual((self.out/'manifest.json').read_bytes(),original)
@@ -136,7 +147,9 @@ class SemanticTests(unittest.TestCase):
     def test_equal_source_rounds_cache_and_exclusion_coverage(self):
         self.mixed_fixture(5)
         m=self.prepare(mode='light')
-        self.assertEqual(s.Counter(p['source'] for p in m['selected']),{'codex':2,'claude':2,'antigravity':2})
+        counts=s.Counter(p['source'] for p in m['selected'])
+        self.assertEqual(set(counts),set(s.SOURCES))
+        self.assertEqual(sorted(counts.values()),[1,1,2,2])
         for p in m['selected']:s.write(self.out/'cache'/f"{p['cache_key']}.json",self.review(p))
         again=self.prepare(mode='light')
         self.assertEqual(again['cache_hits'],6)

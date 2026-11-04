@@ -44,7 +44,7 @@ python skills/caravan/scripts/semantic.py prepare --allow-agent-read --mode <選
 | standard | 12 | 24,000 |
 | deep | 24 | 48,000 |
 
-Codexの通常・アーカイブ履歴、Claude Codeのprojects配下のJSONL、Antigravity CLIの会話JSONLをローカルで読みます。システム文、ツール結果、識別できる補助エージェント、自動レビュー、コードブロック等を除外します。人とAI双方があり、人の発言が2件・計80文字以上の会話から抽出。条件を満たす各エージェントから最低1会話ずつ選び、以降もエージェントごとに1会話ずつ交代で割り当てます。各エージェント内では月・作業場所を分散させ、候補が尽きた分は他へ回します。各会話の中央付近から連続する最大5発言を選びます。1会話2,000文字以内、人の発言500文字/AIの発言600文字までで、途中切れを記録します。
+Codexの通常・アーカイブ履歴、Claude Codeのprojects配下のJSONL、Antigravity CLIの会話JSONL、Kimiデスクトップ版（Windows）のWire 1.5をローカルで読みます。システム文、ツール結果、識別できる補助エージェント、自動レビュー、コードブロック等を除外します。人とAI双方があり、人の発言が2件・計80文字以上の会話から抽出。条件を満たす各エージェントから最低1会話ずつ選び、以降もエージェントごとに1会話ずつ交代で割り当てます。各エージェント内では月・作業場所を分散させ、候補が尽きた分は他へ回します。各会話の中央付近から連続する最大5発言を選びます。1会話2,000文字以内、人の発言500文字/AIの発言600文字までで、途中切れを記録します。
 
 Antigravity CLIは次の保存先を自動検出します（Windowsでは `~` は通常 `C:/Users/<ユーザー名>`）。
 
@@ -53,6 +53,14 @@ Antigravity CLIは次の保存先を自動検出します（Windowsでは `~` �
 ```
 
 完了した `USER_INPUT / USER_EXPLICIT` の `<USER_REQUEST>` 内と、`PLANNER_RESPONSE / MODEL` の本文を使います。設定変更・自動通知・ツール記録は除外し、`transcript_full.jsonl` や分割ログを重複集計しません。未知の入力形式は推測せずスキップして診断情報に記録します。`conversation_summaries.db` は作業場所（先頭のworkspace）と親セッションIDだけを読み取り、補助エージェントを除外します。一覧DBが読めない場合は作業場所を不明として扱うため、作業場所による除外や補助エージェント判定には制限があります。バイナリの会話DBだけが残る履歴、Antigravity IDE、旧Gemini CLIはこの読取機能の対象外です。診断時に `agy` を起動したり、追加のAI呼び出しをしたりすることはありません。
+
+Kimiデスクトップ版（Windows）は、次の保存先にある `session_index.jsonl` と `sessions/*/conv-*/agents/main/wire.jsonl` を読みます。
+
+```text
+~/AppData/Roaming/kimi-desktop/daimon-share/daimon/runtime/kimi-code/home
+```
+
+対応する形式はWire 1.5です。本人の入力と完了したAIの回答を取り出し、重複する記録、タイトル生成、補助エージェント、自動で挿入された文、ツール結果、思考文を除外します。KimiのWeb版・単体CLI版や未知の形式は読みません。本人の入力が1件だけの会話も検出しますが、分析に必要な会話量には達しません。既知のテスト会話は `--exclude-session kimi:<セッションID>` で除外できます。
 
 エージェントが作った動作確認用会話は本人の診断から除きます。`--exclude-session antigravity:<セッションID>` を繰り返し指定するか、出力フォルダーの `excluded-sessions.json` に次の形式で保存すると毎回自動で除外できます。
 
@@ -178,7 +186,7 @@ python skills/caravan/scripts/semantic.py scan-execution --allow-agent-read --ou
 python skills/caravan/scripts/semantic.py render --output output/semantic
 ```
 
-`execution-audit.json` は別の対象範囲・集計日時で表示され、既存のAI診断や診断日時を変更しません。共有JSONには含めません。Codexはモデル・推論設定と直接の呼出し、Claude Codeはモデル・tool_use/tool_resultに対応。実行コードで包まれた呼出しの内訳や、Antigravity CLIの実行メタデータは不明とします。既存の会話読取は維持します。
+`execution-audit.json` は別の対象範囲・集計日時で表示され、既存のAI診断や診断日時を変更しません。共有JSONには含めません。Codexはモデル・推論設定と直接の呼出し、Claude Codeはモデル・tool_use/tool_resultに対応。実行コードで包まれた呼出しの内訳や、Antigravity CLI・Kimiの実行メタデータは不明とします。既存の会話読取は維持します。
 
 各ファイル最大512イベントを保持し、上限による省略を表示します。完全な利用回数ではありません。スキル・MCPの名前はハッシュ化し、モデルIDは既知の系列接頭辞のみ保持します（その接頭辞を使う独自名までは識別できません）。入力引数・出力本文・思考内容・接続先・認証情報を集計に出しません。フックの導入や設定ファイルの収集も行いません。
 
